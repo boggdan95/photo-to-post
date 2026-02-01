@@ -73,15 +73,70 @@ def cmd_review(args):
 
 
 def cmd_schedule(args):
-    print("schedule: Not yet implemented (Phase 4)")
+    logger = setup_logging()
+    from scripts.scheduler import schedule_posts
+
+    results = schedule_posts()
+    if results:
+        logger.info("Scheduled posts:")
+        for post in results:
+            sched = post.get("schedule", {})
+            logger.info(
+                f"  {post['id']} → {sched.get('suggested_date')} "
+                f"{sched.get('suggested_time')} ({post.get('location_display', '')})"
+            )
+        logger.info(f"\nView calendar: python run.py calendar")
 
 
 def cmd_calendar(args):
-    print("calendar: Not yet implemented (Phase 4)")
+    setup_logging()
+    from scripts.scheduler import get_calendar
+
+    calendar = get_calendar()
+    if not calendar:
+        print("\nNo hay posts programados ni publicados.\n")
+        return
+
+    print("\n=== Calendario de Publicaciones ===\n")
+    last_country = None
+    consecutive = 0
+    for date, entries in calendar.items():
+        for entry in entries:
+            status_icon = "📅" if entry["status"] == "scheduled" else "✅"
+            country = entry["country"]
+
+            # Diversity warning
+            if country == last_country:
+                consecutive += 1
+            else:
+                consecutive = 1
+                last_country = country
+
+            warning = " ⚠️  >3 mismo país" if consecutive > 3 else ""
+
+            print(
+                f"  {status_icon} {date} {entry['time']}  "
+                f"{entry['location']} ({entry['photos']} fotos){warning}"
+            )
+    print()
 
 
 def cmd_publish(args):
-    print(f"publish: Not yet implemented (Phase 4)")
+    logger = setup_logging()
+    from scripts.publisher import publish_post
+
+    post_id = args.post_id
+    logger.info(f"Publishing post: {post_id}")
+    try:
+        ig_id = publish_post(post_id)
+        if ig_id:
+            logger.info(f"Published successfully. Instagram ID: {ig_id}")
+        else:
+            logger.error("Publication failed.")
+    except ValueError as e:
+        logger.error(str(e))
+    except Exception as e:
+        logger.error(f"Publication error: {e}")
 
 
 def main():
