@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>photo-to-post{% block title_extra %}{% endblock %}</title>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: #f5f5f5; color: #333; }
+        nav { background: #1a1a2e; color: #fff; padding: 1rem 2rem; display: flex; align-items: center; gap: 2rem; }
+        nav a { color: #ccc; text-decoration: none; font-size: 0.95rem; }
+        nav a:hover, nav a.active { color: #fff; }
+        nav .brand { font-weight: 700; font-size: 1.2rem; color: #fff; }
+        .container { max-width: 1200px; margin: 2rem auto; padding: 0 1rem; }
+        .btn { display: inline-block; padding: 0.5rem 1rem; border: none; border-radius: 6px; cursor: pointer; font-size: 0.9rem; text-decoration: none; }
+        .btn-primary { background: #4361ee; color: #fff; }
+        .btn-primary:hover { background: #3a56d4; }
+        .btn-success { background: #2ec4b6; color: #fff; }
+        .btn-success:hover { background: #25a99d; }
+        .btn-danger { background: #e63946; color: #fff; }
+        .btn-danger:hover { background: #cf2f3c; }
+        .btn-sm { padding: 0.3rem 0.7rem; font-size: 0.8rem; }
+        .card { background: #fff; border-radius: 10px; box-shadow: 0 2px 8px rgba(0,0,0,0.08); overflow: hidden; }
+        .badge { display: inline-block; padding: 0.2rem 0.6rem; border-radius: 12px; font-size: 0.75rem; font-weight: 600; }
+        .badge-draft { background: #ffd166; color: #333; }
+        .badge-approved { background: #2ec4b6; color: #fff; }
+        .badge-scheduled { background: #4361ee; color: #fff; }
+        h1 { margin-bottom: 1.5rem; }
+        .empty-state { text-align: center; padding: 4rem 2rem; color: #999; }
+        .empty-state p { font-size: 1.1rem; }
+    </style>
+    {% block extra_css %}{% endblock %}
+</head>
+<body>
+    <nav>
+        <span class="brand">photo-to-post</span>
+        <a href="/">Inicio</a>
+        <a href="/review">Review</a>
+        <a href="/approved">Aprobados</a>
+        <a href="/settings">Config</a>
+    </nav>
+    <div class="container">
+        {% block content %}{% endblock %}
+    </div>
+    {% block extra_js %}{% endblock %}
+</body>
+</html>

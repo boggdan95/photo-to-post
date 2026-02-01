@@ -1,0 +1,61 @@
+{% extends "base.html" %}
+{% block title_extra %} - Configuración{% endblock %}
+
+{% block extra_css %}
+<style>
+    .settings-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; }
+    @media (max-width: 768px) { .settings-grid { grid-template-columns: 1fr; } }
+    .setting-card { padding: 1.5rem; }
+    .setting-card h2 { font-size: 1.1rem; margin-bottom: 1rem; border-bottom: 1px solid #eee; padding-bottom: 0.5rem; }
+    .field { margin-bottom: 0.75rem; }
+    .field label { display: block; font-size: 0.85rem; color: #666; margin-bottom: 0.25rem; }
+    .field span { font-weight: 600; }
+    .tag { display: inline-block; background: #e8eaf6; color: #4361ee; padding: 0.15rem 0.5rem; border-radius: 10px; font-size: 0.8rem; margin: 0.15rem; }
+</style>
+{% endblock %}
+
+{% block content %}
+<h1>Configuración</h1>
+<p style="color:#999;margin-bottom:1.5rem;font-size:0.9rem;">
+    Para editar, modifica <code>config/settings.json</code> y <code>config/hashtags.json</code>.
+</p>
+
+<div class="settings-grid">
+    <div class="card setting-card">
+        <h2>General</h2>
+        <div class="field"><label>Idioma</label><span>{{ settings.language }}</span></div>
+        <div class="field"><label>Posts por semana</label><span>{{ settings.posts_per_week }}</span></div>
+        <div class="field"><label>Horarios preferidos</label><span>{{ settings.preferred_times | join(', ') }}</span></div>
+        <div class="field"><label>Máx. posts seguidos mismo país</label><span>{{ settings.max_consecutive_same_country }}</span></div>
+    </div>
+
+    <div class="card setting-card">
+        <h2>Estilo de Captions</h2>
+        <div class="field"><label>Tono</label><span>{{ settings.caption_style.tone }}</span></div>
+        <div class="field"><label>Longitud</label><span>{{ settings.caption_style.length }}</span></div>
+        <div class="field"><label>Emojis</label><span>{{ 'Sí' if settings.caption_style.include_emoji else 'No' }}</span></div>
+        <div class="field"><label>Call to action</label><span>{{ 'Sí' if settings.caption_style.include_call_to_action else 'No' }}</span></div>
+    </div>
+
+    <div class="card setting-card">
+        <h2>Carrusel</h2>
+        <div class="field"><label>Mínimo de fotos</label><span>{{ settings.carousel.min_photos }}</span></div>
+        <div class="field"><label>Máximo de fotos</label><span>{{ settings.carousel.max_photos }}</span></div>
+    </div>
+
+    <div class="card setting-card">
+        <h2>Hashtags base</h2>
+        <div>{% for tag in hashtags.base %}<span class="tag">{{ tag }}</span>{% endfor %}</div>
+    </div>
+
+    <div class="card setting-card" style="grid-column: span 2;">
+        <h2>Hashtags por país</h2>
+        {% for country, tags in hashtags.by_country.items() %}
+        <div class="field">
+            <label>{{ country }}</label>
+            <div>{% for tag in tags %}<span class="tag">{{ tag }}</span>{% endfor %}</div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

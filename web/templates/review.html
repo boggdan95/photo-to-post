@@ -1,0 +1,181 @@
+{% extends "base.html" %}
+{% block title_extra %} - Review{% endblock %}
+
+{% block extra_css %}
+<style>
+    .posts-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(350px, 1fr)); gap: 1.5rem; }
+    .post-card { position: relative; }
+    .post-card .photos-strip { display: flex; gap: 4px; overflow-x: auto; padding: 4px; background: #000; }
+    .post-card .photos-strip img { height: 180px; width: auto; object-fit: cover; border-radius: 4px; cursor: grab; }
+    .post-card .photos-strip img.dragging { opacity: 0.4; }
+    .post-card .post-body { padding: 1rem; }
+    .post-card .location { font-weight: 600; margin-bottom: 0.5rem; }
+    .post-card .photo-count { color: #999; font-size: 0.85rem; }
+    .caption-area { width: 100%; border: 1px solid #ddd; border-radius: 6px; padding: 0.5rem; font-size: 0.9rem; resize: vertical; min-height: 60px; font-family: inherit; }
+    .hashtags-area { width: 100%; border: 1px solid #ddd; border-radius: 6px; padding: 0.5rem; font-size: 0.8rem; color: #4361ee; resize: none; min-height: 40px; font-family: inherit; margin-top: 0.5rem; }
+    .post-actions { display: flex; gap: 0.5rem; margin-top: 0.75rem; align-items: center; }
+    .post-check { width: 18px; height: 18px; }
+    .bulk-bar { background: #1a1a2e; color: #fff; padding: 1rem 2rem; border-radius: 8px; margin-bottom: 1.5rem; display: flex; justify-content: space-between; align-items: center; }
+    .save-indicator { font-size: 0.75rem; color: #2ec4b6; display: none; margin-left: 0.5rem; }
+</style>
+{% endblock %}
+
+{% block content %}
+<h1>Review Drafts</h1>
+
+{% if posts %}
+<div class="bulk-bar">
+    <label><input type="checkbox" id="select-all"> Seleccionar todos</label>
+    <div>
+        <button class="btn btn-success btn-sm" onclick="approveBulk()">Aprobar seleccionados</button>
+    </div>
+</div>
+
+<div class="posts-grid">
+{% for post in posts %}
+    <div class="card post-card" data-post-id="{{ post.id }}">
+        <div class="photos-strip" id="strip-{{ post.id }}">
+            {% for photo in post.photos %}
+            <img src="/api/photo/{{ post.id }}/{{ photo.filename }}"
+                 alt="{{ photo.filename }}"
+                 draggable="true"
+                 data-filename="{{ photo.filename }}">
+            {% endfor %}
+        </div>
+        <div class="post-body">
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+                <span class="location">{{ post.location_display }}</span>
+                <span class="badge badge-draft">{{ post.status }}</span>
+            </div>
+            <span class="photo-count">{{ post.photos|length }} fotos</span>
+
+            <textarea class="caption-area" data-post-id="{{ post.id }}"
+                      onchange="saveCaption(this)">{{ post.caption.text }}</textarea>
+            <span class="save-indicator" id="saved-{{ post.id }}">Guardado</span>
+
+            <textarea class="hashtags-area" data-post-id="{{ post.id }}"
+                      onchange="saveHashtags(this)">{{ post.caption.hashtags | join(' ') }}</textarea>
+
+            <div class="post-actions">
+                <input type="checkbox" class="post-check" value="{{ post.id }}">
+                <button class="btn btn-success btn-sm" onclick="approveOne('{{ post.id }}')">Aprobar</button>
+                <button class="btn btn-danger btn-sm" onclick="rejectOne('{{ post.id }}')">Rechazar</button>
+            </div>
+        </div>
+    </div>
+{% endfor %}
+</div>
+{% else %}
+<div class="empty-state">
+    <p>No hay borradores para revisar.</p>
+    <p style="margin-top:0.5rem;font-size:0.9rem;">Ejecuta <code>python run.py create-posts</code> para generar borradores.</p>
+</div>
+{% endif %}
+{% endblock %}
+
+{% block extra_js %}
+<script>
+// Select all checkbox
+document.getElementById('select-all')?.addEventListener('change', function() {
+    document.querySelectorAll('.post-check').forEach(cb => cb.checked = this.checked);
+});
+
+// Save caption
+function saveCaption(el) {
+    const postId = el.dataset.postId;
+    fetch(`/api/post/${postId}/caption`, {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({text: el.value})
+    }).then(() => {
+        const ind = document.getElementById(`saved-${postId}`);
+        ind.style.display = 'inline';
+        setTimeout(() => ind.style.display = 'none', 2000);
+    });
+}
+
+// Save hashtags
+function saveHashtags(el) {
+    const postId = el.dataset.postId;
+    const tags = el.value.split(/\s+/).filter(t => t.startsWith('#'));
+    fetch(`/api/post/${postId}/caption`, {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({hashtags: tags})
+    });
+}
+
+// Approve one
+function approveOne(postId) {
+    if (!confirm('Aprobar este post?')) return;
+    fetch(`/api/post/${postId}/approve`, {method: 'POST'})
+        .then(r => r.json())
+        .then(() => {
+            document.querySelector(`[data-post-id="${postId}"]`).remove();
+        });
+}
+
+// Reject one
+function rejectOne(postId) {
+    if (!confirm('Eliminar este borrador?')) return;
+    fetch(`/api/post/${postId}/reject`, {method: 'POST'})
+        .then(r => r.json())
+        .then(() => {
+            document.querySelector(`[data-post-id="${postId}"]`).remove();
+        });
+}
+
+// Bulk approve
+function approveBulk() {
+    const ids = [...document.querySelectorAll('.post-check:checked')].map(cb => cb.value);
+    if (!ids.length) return alert('Selecciona al menos un post');
+    if (!confirm(`Aprobar ${ids.length} post(s)?`)) return;
+    fetch('/api/posts/approve-bulk', {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({post_ids: ids})
+    }).then(() => location.reload());
+}
+
+// Drag & drop reorder for photos
+document.querySelectorAll('.photos-strip').forEach(strip => {
+    let dragSrc = null;
+    strip.querySelectorAll('img').forEach(img => {
+        img.addEventListener('dragstart', function(e) {
+            dragSrc = this;
+            this.classList.add('dragging');
+            e.dataTransfer.effectAllowed = 'move';
+        });
+        img.addEventListener('dragend', function() {
+            this.classList.remove('dragging');
+        });
+        img.addEventListener('dragover', function(e) {
+            e.preventDefault();
+            e.dataTransfer.dropEffect = 'move';
+        });
+        img.addEventListener('drop', function(e) {
+            e.preventDefault();
+            if (dragSrc !== this) {
+                const parent = this.parentNode;
+                const allImgs = [...parent.querySelectorAll('img')];
+                const fromIdx = allImgs.indexOf(dragSrc);
+                const toIdx = allImgs.indexOf(this);
+                if (fromIdx < toIdx) {
+                    parent.insertBefore(dragSrc, this.nextSibling);
+                } else {
+                    parent.insertBefore(dragSrc, this);
+                }
+                // Save new order
+                const postId = parent.id.replace('strip-', '');
+                const order = [...parent.querySelectorAll('img')].map(i => i.dataset.filename);
+                fetch(`/api/post/${postId}/reorder`, {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({order})
+                });
+            }
+        });
+    });
+});
+</script>
+{% endblock %}

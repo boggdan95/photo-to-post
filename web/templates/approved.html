@@ -1,0 +1,43 @@
+{% extends "base.html" %}
+{% block title_extra %} - Aprobados{% endblock %}
+
+{% block extra_css %}
+<style>
+    .posts-list { display: flex; flex-direction: column; gap: 1rem; }
+    .post-row { display: flex; align-items: center; gap: 1rem; padding: 1rem; }
+    .post-row .thumb { width: 80px; height: 80px; object-fit: cover; border-radius: 6px; }
+    .post-row .info { flex: 1; }
+    .post-row .info .loc { font-weight: 600; }
+    .post-row .info .caption-preview { color: #666; font-size: 0.85rem; margin-top: 0.25rem;
+        white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 500px; }
+</style>
+{% endblock %}
+
+{% block content %}
+<h1>Posts Aprobados</h1>
+
+{% if posts %}
+<div class="posts-list">
+{% for post in posts %}
+    <div class="card post-row">
+        {% if post.photos %}
+        <img class="thumb" src="/api/photo/{{ post.id }}/{{ post.photos[0].filename }}" alt="">
+        {% endif %}
+        <div class="info">
+            <div class="loc">{{ post.location_display }}</div>
+            <div class="caption-preview">{{ post.caption.text }}</div>
+            <div style="margin-top:0.3rem;">
+                <span class="badge badge-approved">aprobado</span>
+                <span style="color:#999;font-size:0.8rem;margin-left:0.5rem;">{{ post.photos|length }} fotos</span>
+            </div>
+        </div>
+    </div>
+{% endfor %}
+</div>
+{% else %}
+<div class="empty-state">
+    <p>No hay posts aprobados.</p>
+    <p style="margin-top:0.5rem;font-size:0.9rem;">Aprueba borradores desde <a href="/review">Review</a>.</p>
+</div>
+{% endif %}
+{% endblock %}

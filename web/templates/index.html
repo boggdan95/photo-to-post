@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+{% block content %}
+<h1>Dashboard</h1>
+<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem;">
+    <div class="card" style="padding: 1.5rem; text-align: center;">
+        <div style="font-size: 2rem; font-weight: 700;">
+            <a href="/review" style="text-decoration:none;color:#333;">Review</a>
+        </div>
+        <p style="color: #999; margin-top: 0.5rem;">Revisar borradores</p>
+    </div>
+    <div class="card" style="padding: 1.5rem; text-align: center;">
+        <div style="font-size: 2rem; font-weight: 700;">
+            <a href="/approved" style="text-decoration:none;color:#333;">Aprobados</a>
+        </div>
+        <p style="color: #999; margin-top: 0.5rem;">Posts listos</p>
+    </div>
+    <div class="card" style="padding: 1.5rem; text-align: center;">
+        <div style="font-size: 2rem; font-weight: 700;">
+            <a href="/settings" style="text-decoration:none;color:#333;">Config</a>
+        </div>
+        <p style="color: #999; margin-top: 0.5rem;">Ajustes</p>
+    </div>
+</div>
+{% endblock %}

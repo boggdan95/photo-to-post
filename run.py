@@ -64,8 +64,12 @@ def cmd_create_posts(args):
 
 
 def cmd_review(args):
-    print("review: Not yet implemented (Phase 3)")
-    print("Will launch web interface at http://localhost:5000")
+    logger = setup_logging()
+    logger.info("Starting web interface at http://localhost:5000")
+    import sys
+    sys.path.insert(0, str(BASE_DIR))
+    from web.app import app
+    app.run(debug=True, port=5000, use_reloader=False)
 
 
 def cmd_schedule(args):
