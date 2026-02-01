@@ -1,0 +1,49 @@
+# =====================
+# CREDENCIALES - NUNCA COMMITEAR
+# =====================
+config/credentials.json
+.env
+
+# =====================
+# FOTOS Y CONTENIDO
+# =====================
+01_input/
+02_classified/
+03_drafts/
+04_approved/
+05_scheduled/
+06_published/
+
+# =====================
+# PYTHON
+# =====================
+__pycache__/
+*.pyc
+*.pyo
+venv/
+.venv/
+env/
+*.egg-info/
+dist/
+build/
+
+# =====================
+# LOGS
+# =====================
+logs/
+*.log
+
+# =====================
+# OS
+# =====================
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# =====================
+# IDE
+# =====================
+.vscode/
+.idea/
+*.swp
+*.swo

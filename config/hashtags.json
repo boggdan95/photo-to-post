@@ -1,0 +1,33 @@
+{
+  "base": [
+    "#travel", "#photography", "#landscapephotography",
+    "#travelphotography", "#naturephotography"
+  ],
+
+  "by_country": {
+    "España": ["#españa", "#spain", "#visitspain", "#españaturismo"],
+    "Guatemala": ["#guatemala", "#visitguatemala", "#guatemalatravel"],
+    "Noruega": ["#norway", "#visitnorway", "#norwaynature"]
+  },
+
+  "by_type": {
+    "sunset": ["#sunset", "#goldenhour", "#sunsetlovers"],
+    "mountain": ["#mountains", "#mountainlife", "#hiking"],
+    "city": ["#cityscape", "#urbanphotography", "#streetphotography"],
+    "aurora": ["#northernlights", "#aurora", "#auroraborealis"],
+    "ruins": ["#ancientruins", "#archaeology", "#history"]
+  },
+
+  "rotation_pool": [
+    "#wanderlust", "#explorer", "#travelgram", "#instatravel",
+    "#beautifuldestinations", "#travelblogger", "#worldcaptures",
+    "#fantastic_earth", "#discoverearth", "#earthpix"
+  ],
+
+  "hashtags_per_post": {
+    "base": 3,
+    "country": 2,
+    "type": 3,
+    "rotation": 5
+  }
+}

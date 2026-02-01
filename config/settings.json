@@ -1,0 +1,29 @@
+{
+  "language": "es",
+  "posts_per_week": 3,
+  "preferred_times": ["07:00", "12:00", "19:00"],
+  "max_consecutive_same_country": 3,
+
+  "caption_style": {
+    "tone": "inspirador, reflexivo, cercano",
+    "length": "medio (2-3 oraciones)",
+    "include_emoji": true,
+    "include_call_to_action": false
+  },
+
+  "carousel": {
+    "min_photos": 3,
+    "max_photos": 10
+  },
+
+  "paths": {
+    "input": "D:/photo-to-post/01_input",
+    "base": "D:/photo-to-post"
+  },
+
+  "apis": {
+    "anthropic_model": "claude-sonnet-4-20250514",
+    "cloudinary_cloud_name": "",
+    "meta_app_id": ""
+  }
+}
