@@ -102,7 +102,7 @@ def cmd_calendar(args):
     consecutive = 0
     for date, entries in calendar.items():
         for entry in entries:
-            status_icon = "📅" if entry["status"] == "scheduled" else "✅"
+            status_icon = "[PROG]" if entry["status"] == "scheduled" else "[PUB] "
             country = entry["country"]
 
             # Diversity warning
@@ -112,7 +112,7 @@ def cmd_calendar(args):
                 consecutive = 1
                 last_country = country
 
-            warning = " ⚠️  >3 mismo país" if consecutive > 3 else ""
+            warning = " [!] >3 mismo pais" if consecutive > 3 else ""
 
             print(
                 f"  {status_icon} {date} {entry['time']}  "
