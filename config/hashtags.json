@@ -1,33 +1,36 @@
 {
   "base": [
     "#travel", "#photography", "#landscapephotography",
-    "#travelphotography", "#naturephotography"
+    "#travelphotography", "#naturephotography", "#photooftheday",
+    "#landscape", "#traveltheworld"
   ],
 
   "by_country": {
+    "México": ["#mexico", "#visitmexico", "#mexicotravel", "#viveméxico"],
     "España": ["#españa", "#spain", "#visitspain", "#españaturismo"],
-    "Guatemala": ["#guatemala", "#visitguatemala", "#guatemalatravel"],
-    "Noruega": ["#norway", "#visitnorway", "#norwaynature"]
-  },
-
-  "by_type": {
-    "sunset": ["#sunset", "#goldenhour", "#sunsetlovers"],
-    "mountain": ["#mountains", "#mountainlife", "#hiking"],
-    "city": ["#cityscape", "#urbanphotography", "#streetphotography"],
-    "aurora": ["#northernlights", "#aurora", "#auroraborealis"],
-    "ruins": ["#ancientruins", "#archaeology", "#history"]
+    "Guatemala": ["#guatemala", "#visitguatemala", "#guatemalatravel", "#guatemalacity"],
+    "Colombia": ["#colombia", "#visitcolombia", "#colombiatravel"],
+    "Perú": ["#peru", "#visitperu", "#perutravel"],
+    "Argentina": ["#argentina", "#visitargentina", "#argentinatravel"],
+    "Chile": ["#chile", "#visitchile", "#chiletravel"],
+    "Costa Rica": ["#costarica", "#visitcostarica", "#puravida"],
+    "Estados Unidos": ["#usa", "#visitusa", "#americatravel"],
+    "Noruega": ["#norway", "#visitnorway", "#norwaynature"],
+    "Italia": ["#italy", "#visititaly", "#italytravel"],
+    "Francia": ["#france", "#visitfrance", "#francetravel"],
+    "Japón": ["#japan", "#visitjapan", "#japantravel"]
   },
 
   "rotation_pool": [
     "#wanderlust", "#explorer", "#travelgram", "#instatravel",
     "#beautifuldestinations", "#travelblogger", "#worldcaptures",
-    "#fantastic_earth", "#discoverearth", "#earthpix"
+    "#fantastic_earth", "#discoverearth", "#earthpix",
+    "#traveladdict", "#roamtheplanet", "#passionpassport",
+    "#lonelyplanet", "#natgeotravel"
   ],
 
   "hashtags_per_post": {
     "base": 3,
-    "country": 2,
-    "type": 3,
-    "rotation": 5
+    "country": 2
   }
 }

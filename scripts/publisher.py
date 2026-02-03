@@ -110,7 +110,9 @@ def _publish_to_instagram(image_urls, caption_text, hashtags):
                 },
                 timeout=30,
             )
-            resp.raise_for_status()
+            if not resp.ok:
+                logger.error(f"Meta API error (carousel item): {resp.text}")
+                resp.raise_for_status()
             children_ids.append(resp.json()["id"])
 
         resp = requests.post(

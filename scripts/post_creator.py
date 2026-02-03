@@ -101,12 +101,16 @@ def _split_into_posts(photos, min_photos, max_photos):
     return posts
 
 
-def _select_hashtags(country, city):
-    """Select hashtags for a post based on country and content."""
+def _select_hashtags(country, city, ai_hashtags=None):
+    """Select hashtags: AI-generated + base + country from JSON."""
     ht = load_hashtags()
     counts = ht.get("hashtags_per_post", {})
 
     selected = []
+
+    # AI-generated hashtags (specific to the content)
+    if ai_hashtags:
+        selected.extend(ai_hashtags)
 
     # Base hashtags
     base = ht.get("base", [])
@@ -118,20 +122,6 @@ def _select_hashtags(country, city):
     n_country = min(counts.get("country", 2), len(country_tags))
     if country_tags:
         selected.extend(random.sample(country_tags, n_country))
-
-    # Type hashtags - pick a random type for now (Phase 5 will use vision)
-    by_type = ht.get("by_type", {})
-    if by_type:
-        type_key = random.choice(list(by_type.keys()))
-        type_tags = by_type[type_key]
-        n_type = min(counts.get("type", 3), len(type_tags))
-        selected.extend(random.sample(type_tags, n_type))
-
-    # Rotation pool
-    rotation = ht.get("rotation_pool", [])
-    n_rotation = min(counts.get("rotation", 5), len(rotation))
-    if rotation:
-        selected.extend(random.sample(rotation, n_rotation))
 
     return selected
 
@@ -183,12 +173,12 @@ def create_posts():
                     "taken_at": p["date"].isoformat(),
                 })
 
-            # Generate caption
+            # Generate caption + AI hashtags
             earliest_date = batch[0]["date"].strftime("%Y-%m-%d")
-            caption_text = generate_caption(country, city, len(batch), earliest_date)
+            caption_text, ai_hashtags = generate_caption(country, city, len(batch), earliest_date)
 
-            # Select hashtags
-            hashtags = _select_hashtags(country, city)
+            # Combine AI hashtags with base + country hashtags
+            hashtags = _select_hashtags(country, city, ai_hashtags)
 
             # Build post.json
             post_data = {

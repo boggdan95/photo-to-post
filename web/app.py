@@ -145,6 +145,9 @@ def reorder_photos(post_id):
     temp_dir = post_dir / "_temp_reorder"
     temp_dir.mkdir(exist_ok=True)
 
+    # Build a lookup from current filename to photo entry
+    entry_by_filename = {entry["filename"]: entry for entry in data["photos"]}
+
     # Move to temp with new numbering
     new_photo_entries = []
     for i, filename in enumerate(new_order, 1):
@@ -156,11 +159,11 @@ def reorder_photos(post_id):
         shutil.move(str(src), str(temp_dir / new_name))
 
         # Update photo entry
-        for entry in data["photos"]:
-            if entry["filename"] == filename:
-                entry["filename"] = new_name
-                new_photo_entries.append(entry)
-                break
+        entry = entry_by_filename.get(filename)
+        if entry:
+            entry = dict(entry)  # copy to avoid mutation issues
+            entry["filename"] = new_name
+            new_photo_entries.append(entry)
 
     # Move back
     for f in temp_dir.iterdir():

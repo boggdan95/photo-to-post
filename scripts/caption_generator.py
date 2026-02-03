@@ -34,7 +34,7 @@ def generate_caption(country, city, photo_count, date_taken=None):
 
     if not api_key:
         logger.warning("No Anthropic API key found. Using template caption.")
-        return _template_caption(country, city, photo_count)
+        return _template_caption(country, city, photo_count), []
 
     try:
         import anthropic
@@ -42,19 +42,28 @@ def generate_caption(country, city, photo_count, date_taken=None):
         client = anthropic.Anthropic(api_key=api_key)
 
         prompt = (
-            f"Genera un caption para Instagram sobre un post de fotos de paisajes.\n"
-            f"- Lugar: {city}, {country}\n"
-            f"- Número de fotos en el carrusel: {photo_count}\n"
-            f"- Tono: {style.get('tone', 'inspirador, reflexivo, cercano')}\n"
-            f"- Longitud: {style.get('length', 'medio (2-3 oraciones)')}\n"
-            f"- Incluir emoji: {'sí' if style.get('include_emoji', True) else 'no'}\n"
-            f"- Incluir call to action: {'sí' if style.get('include_call_to_action', False) else 'no'}\n"
-            f"- Idioma: español\n"
-            f"\nResponde SOLO con el texto del caption, sin hashtags, sin comillas."
+            f"Eres un fotógrafo de viajes que comparte sus fotos en Instagram.\n\n"
+            f"Genera un caption para un post de fotos de paisajes y viaje.\n\n"
+            f"Lugar: {city}, {country}\n"
+            f"Fotos en el carrusel: {photo_count}\n"
         )
 
         if date_taken:
-            prompt += f"\n- Fecha de las fotos: {date_taken}"
+            prompt += f"Fecha de las fotos: {date_taken}\n"
+
+        prompt += (
+            f"\nReglas:\n"
+            f"- 2-4 oraciones\n"
+            f"- Primera oración: algo personal, una reflexión o sensación del momento\n"
+            f"- Después: un dato interesante, contexto del lugar o algo que lo haga único\n"
+            f"- Tono: cercano pero informativo, como contándole a un amigo\n"
+            f"- 1-2 emojis máximo, no al inicio\n"
+            f"- No uses frases cliché (\"no hay palabras\", \"foto no le hace justicia\", \"un lugar mágico\")\n"
+            f"- No uses exclamaciones excesivas\n"
+            f"- Idioma: español\n"
+            f"- Al final del caption, agrega exactamente 3 hashtags relevantes al lugar y contenido específico de las fotos, todos en minúsculas\n"
+            f"\nResponde SOLO con el texto del caption seguido de los 3 hashtags. Sin comillas."
+        )
 
         model = settings.get("apis", {}).get("anthropic_model", "claude-sonnet-4-20250514")
         message = client.messages.create(
@@ -62,13 +71,26 @@ def generate_caption(country, city, photo_count, date_taken=None):
             max_tokens=300,
             messages=[{"role": "user", "content": prompt}],
         )
-        caption = message.content[0].text.strip()
+        raw = message.content[0].text.strip()
+
+        # Separate caption text from AI-generated hashtags
+        lines = raw.split("\n")
+        caption_lines = []
+        ai_hashtags = []
+        for line in lines:
+            tags_in_line = [w for w in line.split() if w.startswith("#")]
+            if tags_in_line and len(tags_in_line) == len(line.split()):
+                ai_hashtags.extend(tags_in_line)
+            else:
+                caption_lines.append(line)
+
+        caption = "\n".join(caption_lines).strip()
         logger.info(f"Caption generated via Claude API for {city}, {country}")
-        return caption
+        return caption, ai_hashtags
 
     except Exception as e:
         logger.warning(f"Claude API error: {e}. Using template caption.")
-        return _template_caption(country, city, photo_count)
+        return _template_caption(country, city, photo_count), []
 
 
 def _template_caption(country, city, photo_count):
