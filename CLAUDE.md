@@ -46,14 +46,22 @@ web/
 - **Anthropic**: api_key — para generar captions con Claude API
 
 ## Pendientes / próximos pasos
-1. **Corregir orden de fotos** — el reorder en la UI debe respetarse al publicar
-2. **Config desde la UI** — poder editar settings, hashtags, credenciales desde la web
+1. **Probar fix de reorder** — se corrigió el bug, falta verificar con un post nuevo
+2. **Config desde la UI** — poder editar settings, hashtags desde la web
 3. **Vista de calendario en la web**
 4. **Clasificación por visión** (Claude API) cuando no hay GPS
 5. **Mejorar UI** — hacer el flujo más visual y menos dependiente de terminal
+6. **Flujo híbrido** — terminal para ejecutar (classify, schedule, publish), UI para revisar/editar/aprobar
+
+## Para retomar
+- Exportar fotos desde Lightroom: Long edge 2048px, quality 85%, limit 10MB
+- Poner fotos en `01_input/` y correr flujo: classify → create-posts → review (web) → schedule → publish
+- El servidor web se abre con `run.py review` (usar puerto alternativo si 5000 está ocupado)
+- Meta token expira aprox. 2026-04-03 (60 días desde 2026-02-02), renovar antes
 
 ## Notas técnicas
-- Meta access token expira en ~60 días, hay que renovarlo
+- Meta access token expira en ~60 días, hay que renovarlo en Graph API Explorer y extenderlo a long-lived
 - Cloudinary free tier: límite de 10MB por archivo
 - Caption generator devuelve tupla (caption_text, ai_hashtags)
 - Instagram API: carruseles máximo 10 fotos
+- Credenciales en config/credentials.json (en .gitignore, nunca se commitean)
