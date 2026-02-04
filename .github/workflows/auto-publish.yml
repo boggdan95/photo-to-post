@@ -1,0 +1,55 @@
+# Auto-publish scheduled Instagram posts
+# Runs every hour and publishes posts that are due
+#
+# IMPORTANT: Only works if cloud_mode is enabled in settings
+# (photos must be pre-uploaded to Cloudinary when scheduling)
+#
+# Required secrets:
+#   - CLOUDINARY_CLOUD_NAME
+#   - CLOUDINARY_API_KEY
+#   - CLOUDINARY_API_SECRET
+#   - META_ACCESS_TOKEN
+#   - INSTAGRAM_USER_ID
+
+name: Auto Publish
+
+on:
+  schedule:
+    # Run every hour at minute 5 (e.g., 7:05, 8:05, etc.)
+    - cron: '5 * * * *'
+  workflow_dispatch:  # Allow manual trigger
+
+jobs:
+  auto-publish:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install dependencies
+        run: |
+          pip install requests cloudinary
+
+      - name: Run auto-publish
+        env:
+          CLOUDINARY_CLOUD_NAME: ${{ secrets.CLOUDINARY_CLOUD_NAME }}
+          CLOUDINARY_API_KEY: ${{ secrets.CLOUDINARY_API_KEY }}
+          CLOUDINARY_API_SECRET: ${{ secrets.CLOUDINARY_API_SECRET }}
+          META_ACCESS_TOKEN: ${{ secrets.META_ACCESS_TOKEN }}
+          INSTAGRAM_USER_ID: ${{ secrets.INSTAGRAM_USER_ID }}
+        run: |
+          python run.py auto-publish --max-delay 2
+
+      - name: Commit published status
+        run: |
+          git config --local user.email "github-actions[bot]@users.noreply.github.com"
+          git config --local user.name "github-actions[bot]"
+          git add -A
+          git diff --staged --quiet || git commit -m "chore: auto-publish posts [skip ci]"
+          git push
