@@ -172,16 +172,36 @@ def preview_schedule():
     return preview
 
 
+def _upload_photos_to_cloudinary(post_dir, photos):
+    """Upload all photos to Cloudinary and return updated photo entries with URLs."""
+    from scripts.publisher import _upload_to_cloudinary
+
+    updated_photos = []
+    photos_dir = Path(post_dir) / "photos"
+
+    for photo in photos:
+        photo_path = photos_dir / photo["filename"]
+        if photo_path.exists() and not photo.get("cloudinary_url"):
+            url = _upload_to_cloudinary(photo_path)
+            photo = dict(photo)
+            photo["cloudinary_url"] = url
+        updated_photos.append(photo)
+
+    return updated_photos
+
+
 def schedule_posts():
     """Schedule approved posts respecting frequency and diversity rules.
 
     Assigns dates/times to approved posts and moves them to 05_scheduled/.
+    If cloud_mode is enabled, uploads photos to Cloudinary.
     """
     settings = load_settings()
     posts_per_week = settings.get("posts_per_week", 3)
     preferred_times = settings.get("preferred_times", ["07:00", "12:00", "19:00"])
     max_consecutive = settings.get("max_consecutive_same_country", 3)
     grid_mode = settings.get("grid_mode", False)
+    cloud_mode = settings.get("cloud_mode", False)
 
     approved = _load_posts_from(APPROVED_DIR)
     if not approved:
@@ -217,6 +237,11 @@ def schedule_posts():
         post_dir = Path(post["_dir"])
         date_str = current_date.strftime("%Y-%m-%d")
         time_str = preferred_times[time_idx % len(preferred_times)]
+
+        # Upload to Cloudinary if cloud_mode is enabled
+        if cloud_mode:
+            logger.info(f"Uploading photos to Cloudinary for {post['id']}...")
+            post["photos"] = _upload_photos_to_cloudinary(post_dir, post["photos"])
 
         post["status"] = "scheduled"
         post["schedule"]["suggested_date"] = date_str

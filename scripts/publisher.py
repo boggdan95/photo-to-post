@@ -169,21 +169,30 @@ def publish_post(post_id):
         return None
 
     photos_dir = post_dir / "photos"
-    photo_files = sorted(
-        f for f in photos_dir.iterdir()
-        if f.is_file() and f.suffix.lower() in (".jpg", ".jpeg", ".png")
-    )
+    photos_data = data.get("photos", [])
 
-    if not photo_files:
-        logger.error(f"No photos found for post {post_id}")
-        return None
-
-    # Step 1: Upload all photos to Cloudinary
-    logger.info(f"Uploading {len(photo_files)} photos to Cloudinary...")
+    # Step 1: Get image URLs (use existing Cloudinary URLs or upload)
     image_urls = []
-    for photo in photo_files:
-        url = _upload_to_cloudinary(photo)
-        image_urls.append(url)
+
+    # Check if photos already have Cloudinary URLs (cloud_mode)
+    if photos_data and all(p.get("cloudinary_url") for p in photos_data):
+        logger.info("Using pre-uploaded Cloudinary URLs...")
+        image_urls = [p["cloudinary_url"] for p in photos_data]
+    else:
+        # Upload photos to Cloudinary
+        photo_files = sorted(
+            f for f in photos_dir.iterdir()
+            if f.is_file() and f.suffix.lower() in (".jpg", ".jpeg", ".png")
+        )
+
+        if not photo_files:
+            logger.error(f"No photos found for post {post_id}")
+            return None
+
+        logger.info(f"Uploading {len(photo_files)} photos to Cloudinary...")
+        for photo in photo_files:
+            url = _upload_to_cloudinary(photo)
+            image_urls.append(url)
 
     # Step 2: Publish to Instagram
     caption = data.get("caption", {})
