@@ -81,7 +81,54 @@ def settings_page():
     return render_template("settings.html", settings=settings, hashtags=hashtags)
 
 
+@app.route("/schedule")
+def schedule_page():
+    from scripts.scheduler import preview_schedule, get_calendar, _load_posts_from
+    approved = _load_posts_from(APPROVED_DIR)
+    preview = preview_schedule()
+    calendar = get_calendar()
+    settings = load_settings()
+    return render_template("schedule.html",
+                           approved=approved,
+                           preview=preview,
+                           calendar=calendar,
+                           settings=settings)
+
+
 # --- API endpoints ---
+
+@app.route("/api/settings", methods=["POST"])
+def save_settings():
+    """Save settings and hashtags configuration."""
+    body = request.get_json()
+
+    settings_path = BASE_DIR / "config" / "settings.json"
+    hashtags_path = BASE_DIR / "config" / "hashtags.json"
+
+    # Load current settings to preserve fields not in the UI (paths, apis)
+    current_settings = load_settings()
+
+    new_settings = body.get("settings", {})
+    # Merge: keep paths and apis from current, update the rest
+    current_settings["language"] = new_settings.get("language", current_settings.get("language"))
+    current_settings["posts_per_week"] = new_settings.get("posts_per_week", current_settings.get("posts_per_week"))
+    current_settings["preferred_times"] = new_settings.get("preferred_times", current_settings.get("preferred_times"))
+    current_settings["max_consecutive_same_country"] = new_settings.get("max_consecutive_same_country", current_settings.get("max_consecutive_same_country"))
+    current_settings["grid_mode"] = new_settings.get("grid_mode", current_settings.get("grid_mode", False))
+    current_settings["caption_style"] = new_settings.get("caption_style", current_settings.get("caption_style"))
+    current_settings["carousel"] = new_settings.get("carousel", current_settings.get("carousel"))
+
+    # Save settings
+    with open(settings_path, "w", encoding="utf-8") as f:
+        json.dump(current_settings, f, ensure_ascii=False, indent=2)
+
+    # Save hashtags
+    new_hashtags = body.get("hashtags", {})
+    with open(hashtags_path, "w", encoding="utf-8") as f:
+        json.dump(new_hashtags, f, ensure_ascii=False, indent=2)
+
+    return jsonify({"ok": True})
+
 
 @app.route("/api/post/<post_id>/photos")
 def get_post_photos(post_id):
@@ -129,6 +176,53 @@ def update_caption(post_id):
         json.dump(data, f, ensure_ascii=False, indent=2)
 
     return jsonify({"ok": True})
+
+
+@app.route("/api/post/<post_id>/photo/<filename>", methods=["DELETE"])
+def delete_photo(post_id, filename):
+    """Delete a photo from a post's carousel."""
+    post_dir, data = _find_post_dir(post_id)
+    if not post_dir:
+        return jsonify({"error": "Post not found"}), 404
+
+    photos_dir = post_dir / "photos"
+    photo_path = photos_dir / filename
+
+    # Don't allow deleting the last photo
+    if len(data["photos"]) <= 1:
+        return jsonify({"error": "Cannot delete the last photo"}), 400
+
+    # Remove the file
+    if photo_path.exists():
+        photo_path.unlink()
+
+    # Remove from data and renumber remaining photos
+    data["photos"] = [p for p in data["photos"] if p["filename"] != filename]
+
+    # Renumber remaining photos
+    temp_dir = post_dir / "_temp_renumber"
+    temp_dir.mkdir(exist_ok=True)
+
+    new_photo_entries = []
+    for i, entry in enumerate(data["photos"], 1):
+        old_path = photos_dir / entry["filename"]
+        new_name = f"{i:02d}.jpg"
+        if old_path.exists():
+            shutil.move(str(old_path), str(temp_dir / new_name))
+        entry = dict(entry)
+        entry["filename"] = new_name
+        new_photo_entries.append(entry)
+
+    # Move back
+    for f in temp_dir.iterdir():
+        shutil.move(str(f), str(photos_dir / f.name))
+    temp_dir.rmdir()
+
+    data["photos"] = new_photo_entries
+    with open(post_dir / "post.json", "w", encoding="utf-8") as f:
+        json.dump(data, f, ensure_ascii=False, indent=2)
+
+    return jsonify({"ok": True, "remaining": len(new_photo_entries)})
 
 
 @app.route("/api/post/<post_id>/reorder", methods=["POST"])
@@ -233,6 +327,52 @@ def approve_bulk():
         results.append({"id": pid, "ok": True})
 
     return jsonify({"results": results})
+
+
+@app.route("/api/schedule/confirm", methods=["POST"])
+def confirm_schedule():
+    """Execute the scheduled posts - move from approved to scheduled."""
+    from scripts.scheduler import schedule_posts
+    try:
+        scheduled = schedule_posts()
+        return jsonify({"ok": True, "count": len(scheduled)})
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
+
+@app.route("/api/post/<post_id>/publish-now", methods=["POST"])
+def publish_now(post_id):
+    """Publish an approved post immediately."""
+    # Find the post in approved folder
+    post_dir = APPROVED_DIR / f"post_{post_id}"
+    if not post_dir.exists():
+        return jsonify({"error": "Post not found in approved"}), 404
+
+    post_json = post_dir / "post.json"
+    with open(post_json, "r", encoding="utf-8") as f:
+        data = json.load(f)
+
+    # Move to scheduled first
+    SCHEDULED_DIR.mkdir(parents=True, exist_ok=True)
+    scheduled_path = SCHEDULED_DIR / post_dir.name
+    shutil.move(str(post_dir), str(scheduled_path))
+
+    # Update status
+    data["status"] = "scheduled"
+    data["schedule"]["scheduled_at"] = datetime.now().isoformat()
+    with open(scheduled_path / "post.json", "w", encoding="utf-8") as f:
+        json.dump(data, f, ensure_ascii=False, indent=2)
+
+    # Now publish
+    try:
+        from scripts.publisher import publish_post
+        ig_post_id = publish_post(post_id)
+        if ig_post_id:
+            return jsonify({"ok": True, "instagram_post_id": ig_post_id})
+        else:
+            return jsonify({"error": "Failed to publish"}), 500
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
 
 
 if __name__ == "__main__":
