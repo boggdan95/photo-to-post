@@ -139,6 +139,74 @@ def cmd_publish(args):
         logger.error(f"Publication error: {e}")
 
 
+def cmd_auto_publish(args):
+    """Auto-publish scheduled posts that are due."""
+    logger = setup_logging()
+    from datetime import datetime
+    from pathlib import Path
+    import json
+    from scripts.publisher import publish_post
+
+    scheduled_dir = BASE_DIR / "05_scheduled"
+    if not scheduled_dir.exists():
+        logger.info("No scheduled posts folder found.")
+        return
+
+    now = datetime.now()
+    max_delay_hours = args.max_delay or 24  # Don't publish if more than 24h late
+
+    published_count = 0
+    skipped_count = 0
+
+    for post_dir in sorted(scheduled_dir.iterdir()):
+        if not post_dir.is_dir():
+            continue
+
+        post_json = post_dir / "post.json"
+        if not post_json.exists():
+            continue
+
+        with open(post_json, "r", encoding="utf-8") as f:
+            data = json.load(f)
+
+        sched_date = data.get("schedule", {}).get("suggested_date")
+        sched_time = data.get("schedule", {}).get("suggested_time", "00:00")
+
+        if not sched_date:
+            continue
+
+        # Parse scheduled datetime
+        try:
+            sched_dt = datetime.strptime(f"{sched_date} {sched_time}", "%Y-%m-%d %H:%M")
+        except ValueError:
+            logger.warning(f"Invalid schedule for {data['id']}: {sched_date} {sched_time}")
+            continue
+
+        # Check if it's time to publish
+        if sched_dt <= now:
+            # Check if too late
+            hours_late = (now - sched_dt).total_seconds() / 3600
+            if hours_late > max_delay_hours:
+                logger.warning(
+                    f"Skipping {data['id']}: {hours_late:.1f}h late (max: {max_delay_hours}h)"
+                )
+                skipped_count += 1
+                continue
+
+            logger.info(f"Publishing {data['id']} (scheduled: {sched_date} {sched_time})...")
+            try:
+                ig_id = publish_post(data["id"])
+                if ig_id:
+                    logger.info(f"Published {data['id']} → Instagram ID: {ig_id}")
+                    published_count += 1
+                else:
+                    logger.error(f"Failed to publish {data['id']}")
+            except Exception as e:
+                logger.error(f"Error publishing {data['id']}: {e}")
+
+    logger.info(f"Auto-publish complete: {published_count} published, {skipped_count} skipped")
+
+
 def main():
     parser = argparse.ArgumentParser(
         description="photo-to-post: Automatización de Instagram"
@@ -156,6 +224,9 @@ def main():
     pub = sub.add_parser("publish", help="Publicar un post manualmente")
     pub.add_argument("--post-id", required=True, help="ID del post a publicar")
 
+    auto = sub.add_parser("auto-publish", help="Publicar automaticamente posts programados que ya toca")
+    auto.add_argument("--max-delay", type=int, default=24, help="Max horas de retraso permitido (default: 24)")
+
     args = parser.parse_args()
 
     commands = {
@@ -167,6 +238,7 @@ def main():
         "schedule": cmd_schedule,
         "calendar": cmd_calendar,
         "publish": cmd_publish,
+        "auto-publish": cmd_auto_publish,
     }
 
     if args.command in commands:
