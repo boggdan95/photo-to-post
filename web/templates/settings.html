@@ -1,5 +1,5 @@
 {% extends "base.html" %}
-{% block title_extra %} - Configuración{% endblock %}
+{% block title_extra %} - Configuracion{% endblock %}
 
 {% block extra_css %}
 <style>
@@ -9,53 +9,365 @@
     .setting-card h2 { font-size: 1.1rem; margin-bottom: 1rem; border-bottom: 1px solid #eee; padding-bottom: 0.5rem; }
     .field { margin-bottom: 0.75rem; }
     .field label { display: block; font-size: 0.85rem; color: #666; margin-bottom: 0.25rem; }
-    .field span { font-weight: 600; }
-    .tag { display: inline-block; background: #e8eaf6; color: #4361ee; padding: 0.15rem 0.5rem; border-radius: 10px; font-size: 0.8rem; margin: 0.15rem; }
+    .field input, .field select, .field textarea {
+        width: 100%; padding: 0.5rem; border: 1px solid #ddd; border-radius: 4px; font-size: 0.9rem;
+    }
+    .field input:focus, .field select:focus, .field textarea:focus {
+        outline: none; border-color: #4361ee;
+    }
+    .field input[type="number"] { width: 80px; }
+    .field input[type="checkbox"] { width: auto; margin-right: 0.5rem; }
+    .checkbox-label { display: flex; align-items: center; cursor: pointer; }
+    .tag { display: inline-block; background: #e8eaf6; color: #4361ee; padding: 0.2rem 0.5rem; border-radius: 10px; font-size: 0.8rem; margin: 0.15rem; }
+    .tag .remove { margin-left: 0.3rem; cursor: pointer; color: #999; }
+    .tag .remove:hover { color: #e63946; }
+    .tag-input-wrapper { display: flex; gap: 0.5rem; margin-top: 0.5rem; }
+    .tag-input-wrapper input { flex: 1; }
+    .tags-container { margin-top: 0.5rem; }
+    .country-section { margin-bottom: 1rem; padding-bottom: 1rem; border-bottom: 1px solid #eee; }
+    .country-section:last-child { border-bottom: none; margin-bottom: 0; }
+    .country-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem; }
+    .country-header input { font-weight: 600; }
+    .btn-icon { background: none; border: none; cursor: pointer; font-size: 1.2rem; padding: 0.2rem; color: #999; }
+    .btn-icon:hover { color: #e63946; }
+    .save-bar {
+        position: fixed; bottom: 0; left: 0; right: 0;
+        background: #1a1a2e; padding: 1rem 2rem;
+        display: flex; justify-content: flex-end; gap: 1rem;
+        box-shadow: 0 -2px 10px rgba(0,0,0,0.1);
+    }
+    .save-bar.hidden { display: none; }
+    .container { padding-bottom: 5rem; }
+    .toast {
+        position: fixed; bottom: 5rem; right: 2rem;
+        background: #2ec4b6; color: #fff; padding: 0.75rem 1.5rem;
+        border-radius: 6px; display: none;
+    }
+    .toast.error { background: #e63946; }
+    .toast.show { display: block; }
+    .add-country-form { display: flex; gap: 0.5rem; margin-top: 1rem; padding-top: 1rem; border-top: 1px solid #eee; }
+    .add-country-form input { flex: 1; }
 </style>
 {% endblock %}
 
 {% block content %}
-<h1>Configuración</h1>
-<p style="color:#999;margin-bottom:1.5rem;font-size:0.9rem;">
-    Para editar, modifica <code>config/settings.json</code> y <code>config/hashtags.json</code>.
-</p>
+<h1>Configuracion</h1>
 
 <div class="settings-grid">
+    <!-- General -->
     <div class="card setting-card">
         <h2>General</h2>
-        <div class="field"><label>Idioma</label><span>{{ settings.language }}</span></div>
-        <div class="field"><label>Posts por semana</label><span>{{ settings.posts_per_week }}</span></div>
-        <div class="field"><label>Horarios preferidos</label><span>{{ settings.preferred_times | join(', ') }}</span></div>
-        <div class="field"><label>Máx. posts seguidos mismo país</label><span>{{ settings.max_consecutive_same_country }}</span></div>
+        <div class="field">
+            <label>Idioma</label>
+            <select id="language">
+                <option value="es" {{ 'selected' if settings.language == 'es' }}>Espanol</option>
+                <option value="en" {{ 'selected' if settings.language == 'en' }}>English</option>
+            </select>
+        </div>
+        <div class="field">
+            <label>Posts por semana</label>
+            <input type="number" id="posts_per_week" value="{{ settings.posts_per_week }}" min="1" max="14">
+        </div>
+        <div class="field">
+            <label>Horarios preferidos (separados por coma)</label>
+            <input type="text" id="preferred_times" value="{{ settings.preferred_times | join(', ') }}">
+        </div>
+        <div class="field">
+            <label>Max. posts seguidos mismo pais</label>
+            <input type="number" id="max_consecutive_same_country" value="{{ settings.max_consecutive_same_country }}" min="1" max="10">
+        </div>
+        <div class="field">
+            <label class="checkbox-label">
+                <input type="checkbox" id="grid_mode" {{ 'checked' if settings.grid_mode }}>
+                Grid mode (agrupar de 3 en 3 por pais)
+            </label>
+            <small style="color:#666;display:block;margin-top:0.25rem;">Agrupa posts del mismo pais para filas coherentes en el perfil de Instagram</small>
+        </div>
     </div>
 
+    <!-- Caption Style -->
     <div class="card setting-card">
         <h2>Estilo de Captions</h2>
-        <div class="field"><label>Tono</label><span>{{ settings.caption_style.tone }}</span></div>
-        <div class="field"><label>Longitud</label><span>{{ settings.caption_style.length }}</span></div>
-        <div class="field"><label>Emojis</label><span>{{ 'Sí' if settings.caption_style.include_emoji else 'No' }}</span></div>
-        <div class="field"><label>Call to action</label><span>{{ 'Sí' if settings.caption_style.include_call_to_action else 'No' }}</span></div>
+        <div class="field">
+            <label>Tono</label>
+            <input type="text" id="caption_tone" value="{{ settings.caption_style.tone }}">
+        </div>
+        <div class="field">
+            <label>Longitud</label>
+            <input type="text" id="caption_length" value="{{ settings.caption_style.length }}">
+        </div>
+        <div class="field">
+            <label class="checkbox-label">
+                <input type="checkbox" id="include_emoji" {{ 'checked' if settings.caption_style.include_emoji }}>
+                Incluir emojis
+            </label>
+        </div>
+        <div class="field">
+            <label class="checkbox-label">
+                <input type="checkbox" id="include_call_to_action" {{ 'checked' if settings.caption_style.include_call_to_action }}>
+                Incluir call to action
+            </label>
+        </div>
     </div>
 
+    <!-- Carousel -->
     <div class="card setting-card">
         <h2>Carrusel</h2>
-        <div class="field"><label>Mínimo de fotos</label><span>{{ settings.carousel.min_photos }}</span></div>
-        <div class="field"><label>Máximo de fotos</label><span>{{ settings.carousel.max_photos }}</span></div>
+        <div class="field">
+            <label>Minimo de fotos</label>
+            <input type="number" id="carousel_min" value="{{ settings.carousel.min_photos }}" min="1" max="10">
+        </div>
+        <div class="field">
+            <label>Maximo de fotos</label>
+            <input type="number" id="carousel_max" value="{{ settings.carousel.max_photos }}" min="1" max="10">
+        </div>
     </div>
 
+    <!-- Hashtags config -->
+    <div class="card setting-card">
+        <h2>Hashtags por post</h2>
+        <div class="field">
+            <label>Hashtags base a usar</label>
+            <input type="number" id="hashtags_base_count" value="{{ hashtags.hashtags_per_post.base }}" min="0" max="10">
+        </div>
+        <div class="field">
+            <label>Hashtags de pais a usar</label>
+            <input type="number" id="hashtags_country_count" value="{{ hashtags.hashtags_per_post.country }}" min="0" max="10">
+        </div>
+    </div>
+
+    <!-- Hashtags base -->
     <div class="card setting-card">
         <h2>Hashtags base</h2>
-        <div>{% for tag in hashtags.base %}<span class="tag">{{ tag }}</span>{% endfor %}</div>
+        <div class="tags-container" id="base-tags">
+            {% for tag in hashtags.base %}
+            <span class="tag">{{ tag }}<span class="remove" onclick="removeTag(this, 'base')">&times;</span></span>
+            {% endfor %}
+        </div>
+        <div class="tag-input-wrapper">
+            <input type="text" id="new-base-tag" placeholder="#newtag" onkeypress="if(event.key==='Enter'){addTag('base');event.preventDefault();}">
+            <button class="btn btn-sm btn-primary" onclick="addTag('base')">Agregar</button>
+        </div>
     </div>
 
-    <div class="card setting-card" style="grid-column: span 2;">
-        <h2>Hashtags por país</h2>
-        {% for country, tags in hashtags.by_country.items() %}
-        <div class="field">
-            <label>{{ country }}</label>
-            <div>{% for tag in tags %}<span class="tag">{{ tag }}</span>{% endfor %}</div>
+    <!-- Rotation pool -->
+    <div class="card setting-card">
+        <h2>Pool de rotacion</h2>
+        <div class="tags-container" id="rotation-tags">
+            {% for tag in hashtags.rotation_pool %}
+            <span class="tag">{{ tag }}<span class="remove" onclick="removeTag(this, 'rotation')">&times;</span></span>
+            {% endfor %}
         </div>
-        {% endfor %}
+        <div class="tag-input-wrapper">
+            <input type="text" id="new-rotation-tag" placeholder="#newtag" onkeypress="if(event.key==='Enter'){addTag('rotation');event.preventDefault();}">
+            <button class="btn btn-sm btn-primary" onclick="addTag('rotation')">Agregar</button>
+        </div>
+    </div>
+
+    <!-- Hashtags por pais -->
+    <div class="card setting-card" style="grid-column: span 2;">
+        <h2>Hashtags por pais</h2>
+        <div id="countries-container">
+            {% for country, tags in hashtags.by_country.items() %}
+            <div class="country-section" data-country="{{ country }}">
+                <div class="country-header">
+                    <input type="text" class="country-name" value="{{ country }}" style="border:none;background:none;font-size:1rem;">
+                    <button class="btn-icon" onclick="removeCountry(this)" title="Eliminar pais">&times;</button>
+                </div>
+                <div class="tags-container country-tags">
+                    {% for tag in tags %}
+                    <span class="tag">{{ tag }}<span class="remove" onclick="removeTag(this, 'country')">&times;</span></span>
+                    {% endfor %}
+                </div>
+                <div class="tag-input-wrapper">
+                    <input type="text" placeholder="#newtag" onkeypress="if(event.key==='Enter'){addCountryTag(this);event.preventDefault();}">
+                    <button class="btn btn-sm btn-primary" onclick="addCountryTag(this.previousElementSibling)">Agregar</button>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        <div class="add-country-form">
+            <input type="text" id="new-country-name" placeholder="Nombre del pais">
+            <button class="btn btn-sm btn-success" onclick="addCountry()">Agregar pais</button>
+        </div>
     </div>
 </div>
+
+<div class="save-bar hidden" id="save-bar">
+    <button class="btn btn-danger" onclick="discardChanges()">Descartar</button>
+    <button class="btn btn-success" onclick="saveAll()">Guardar cambios</button>
+</div>
+
+<div class="toast" id="toast"></div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+let hasChanges = false;
+
+function markChanged() {
+    hasChanges = true;
+    document.getElementById('save-bar').classList.remove('hidden');
+}
+
+function showToast(msg, isError = false) {
+    const toast = document.getElementById('toast');
+    toast.textContent = msg;
+    toast.className = 'toast show' + (isError ? ' error' : '');
+    setTimeout(() => toast.classList.remove('show'), 3000);
+}
+
+// Track changes on inputs
+document.querySelectorAll('input, select').forEach(el => {
+    el.addEventListener('change', markChanged);
+    el.addEventListener('input', markChanged);
+});
+
+// Tags management
+function removeTag(el, type) {
+    el.parentElement.remove();
+    markChanged();
+}
+
+function addTag(type) {
+    const inputId = type === 'base' ? 'new-base-tag' : 'new-rotation-tag';
+    const containerId = type === 'base' ? 'base-tags' : 'rotation-tags';
+    const input = document.getElementById(inputId);
+    let val = input.value.trim();
+    if (!val) return;
+    if (!val.startsWith('#')) val = '#' + val;
+
+    const container = document.getElementById(containerId);
+    const span = document.createElement('span');
+    span.className = 'tag';
+    span.innerHTML = val + '<span class="remove" onclick="removeTag(this, \'' + type + '\')">&times;</span>';
+    container.appendChild(span);
+    input.value = '';
+    markChanged();
+}
+
+function addCountryTag(input) {
+    let val = input.value.trim();
+    if (!val) return;
+    if (!val.startsWith('#')) val = '#' + val;
+
+    const container = input.closest('.country-section').querySelector('.country-tags');
+    const span = document.createElement('span');
+    span.className = 'tag';
+    span.innerHTML = val + '<span class="remove" onclick="removeTag(this, \'country\')">&times;</span>';
+    container.appendChild(span);
+    input.value = '';
+    markChanged();
+}
+
+function removeCountry(btn) {
+    if (confirm('Eliminar este pais y sus hashtags?')) {
+        btn.closest('.country-section').remove();
+        markChanged();
+    }
+}
+
+function addCountry() {
+    const name = document.getElementById('new-country-name').value.trim();
+    if (!name) return;
+
+    const container = document.getElementById('countries-container');
+    const div = document.createElement('div');
+    div.className = 'country-section';
+    div.dataset.country = name;
+    div.innerHTML = `
+        <div class="country-header">
+            <input type="text" class="country-name" value="${name}" style="border:none;background:none;font-size:1rem;font-weight:600;">
+            <button class="btn-icon" onclick="removeCountry(this)" title="Eliminar pais">&times;</button>
+        </div>
+        <div class="tags-container country-tags"></div>
+        <div class="tag-input-wrapper">
+            <input type="text" placeholder="#newtag" onkeypress="if(event.key==='Enter'){addCountryTag(this);event.preventDefault();}">
+            <button class="btn btn-sm btn-primary" onclick="addCountryTag(this.previousElementSibling)">Agregar</button>
+        </div>
+    `;
+    container.appendChild(div);
+    document.getElementById('new-country-name').value = '';
+    markChanged();
+}
+
+function collectData() {
+    // Settings
+    const settings = {
+        language: document.getElementById('language').value,
+        posts_per_week: parseInt(document.getElementById('posts_per_week').value),
+        preferred_times: document.getElementById('preferred_times').value.split(',').map(s => s.trim()).filter(s => s),
+        max_consecutive_same_country: parseInt(document.getElementById('max_consecutive_same_country').value),
+        grid_mode: document.getElementById('grid_mode').checked,
+        caption_style: {
+            tone: document.getElementById('caption_tone').value,
+            length: document.getElementById('caption_length').value,
+            include_emoji: document.getElementById('include_emoji').checked,
+            include_call_to_action: document.getElementById('include_call_to_action').checked
+        },
+        carousel: {
+            min_photos: parseInt(document.getElementById('carousel_min').value),
+            max_photos: parseInt(document.getElementById('carousel_max').value)
+        }
+    };
+
+    // Hashtags
+    const baseTags = [...document.querySelectorAll('#base-tags .tag')].map(t => t.textContent.replace('×', '').trim());
+    const rotationTags = [...document.querySelectorAll('#rotation-tags .tag')].map(t => t.textContent.replace('×', '').trim());
+
+    const byCountry = {};
+    document.querySelectorAll('.country-section').forEach(section => {
+        const name = section.querySelector('.country-name').value.trim();
+        const tags = [...section.querySelectorAll('.country-tags .tag')].map(t => t.textContent.replace('×', '').trim());
+        if (name) byCountry[name] = tags;
+    });
+
+    const hashtags = {
+        base: baseTags,
+        by_country: byCountry,
+        rotation_pool: rotationTags,
+        hashtags_per_post: {
+            base: parseInt(document.getElementById('hashtags_base_count').value),
+            country: parseInt(document.getElementById('hashtags_country_count').value)
+        }
+    };
+
+    return { settings, hashtags };
+}
+
+async function saveAll() {
+    const data = collectData();
+    try {
+        const res = await fetch('/api/settings', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(data)
+        });
+        const json = await res.json();
+        if (json.ok) {
+            showToast('Configuracion guardada');
+            hasChanges = false;
+            document.getElementById('save-bar').classList.add('hidden');
+        } else {
+            showToast('Error: ' + (json.error || 'Unknown'), true);
+        }
+    } catch (e) {
+        showToast('Error al guardar: ' + e.message, true);
+    }
+}
+
+function discardChanges() {
+    if (confirm('Descartar todos los cambios?')) {
+        location.reload();
+    }
+}
+
+// Warn before leaving with unsaved changes
+window.addEventListener('beforeunload', (e) => {
+    if (hasChanges) {
+        e.preventDefault();
+        e.returnValue = '';
+    }
+});
+</script>
 {% endblock %}
