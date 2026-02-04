@@ -6,8 +6,11 @@
     .posts-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(350px, 1fr)); gap: 1.5rem; }
     .post-card { position: relative; }
     .post-card .photos-strip { display: flex; gap: 4px; overflow-x: auto; padding: 4px; background: #000; }
+    .post-card .photos-strip .photo-wrapper { position: relative; display: inline-block; }
     .post-card .photos-strip img { height: 180px; width: auto; object-fit: cover; border-radius: 4px; cursor: grab; }
     .post-card .photos-strip img.dragging { opacity: 0.4; }
+    .photo-delete { position: absolute; top: 4px; right: 4px; background: rgba(230,57,70,0.9); color: #fff; border: none; border-radius: 50%; width: 22px; height: 22px; cursor: pointer; font-size: 14px; line-height: 20px; display: none; }
+    .photo-wrapper:hover .photo-delete { display: block; }
     .post-card .post-body { padding: 1rem; }
     .post-card .location { font-weight: 600; margin-bottom: 0.5rem; }
     .post-card .photo-count { color: #999; font-size: 0.85rem; }
@@ -36,10 +39,13 @@
     <div class="card post-card" data-post-id="{{ post.id }}">
         <div class="photos-strip" id="strip-{{ post.id }}">
             {% for photo in post.photos %}
-            <img src="/api/photo/{{ post.id }}/{{ photo.filename }}"
-                 alt="{{ photo.filename }}"
-                 draggable="true"
-                 data-filename="{{ photo.filename }}">
+            <div class="photo-wrapper">
+                <img src="/api/photo/{{ post.id }}/{{ photo.filename }}"
+                     alt="{{ photo.filename }}"
+                     draggable="true"
+                     data-filename="{{ photo.filename }}">
+                <button class="photo-delete" onclick="deletePhoto('{{ post.id }}', '{{ photo.filename }}')" title="Eliminar foto">&times;</button>
+            </div>
             {% endfor %}
         </div>
         <div class="post-body">
@@ -137,12 +143,44 @@ function approveBulk() {
     }).then(() => location.reload());
 }
 
+// Delete photo from carousel
+function deletePhoto(postId, filename) {
+    const strip = document.getElementById(`strip-${postId}`);
+    const photoCount = strip.querySelectorAll('.photo-wrapper').length;
+    if (photoCount <= 1) {
+        alert('No puedes eliminar la ultima foto. Usa "Rechazar" para eliminar el post completo.');
+        return;
+    }
+    if (!confirm('Eliminar esta foto del carrusel?')) return;
+    fetch(`/api/post/${postId}/photo/${filename}`, {method: 'DELETE'})
+        .then(r => r.json())
+        .then(res => {
+            if (res.ok) {
+                // Remove from DOM and renumber
+                const wrapper = strip.querySelector(`img[data-filename="${filename}"]`).parentElement;
+                wrapper.remove();
+                // Update filenames after deletion
+                const imgs = [...strip.querySelectorAll('img')];
+                imgs.forEach((img, idx) => {
+                    const newName = String(idx + 1).padStart(2, '0') + '.jpg';
+                    img.dataset.filename = newName;
+                    img.src = `/api/photo/${postId}/${newName}?t=${Date.now()}`;
+                });
+                // Update photo count
+                const countEl = strip.closest('.post-card').querySelector('.photo-count');
+                countEl.textContent = imgs.length + ' fotos';
+            }
+        });
+}
+
 // Drag & drop reorder for photos
 document.querySelectorAll('.photos-strip').forEach(strip => {
     let dragSrc = null;
-    strip.querySelectorAll('img').forEach(img => {
+    let dragWrapper = null;
+    strip.querySelectorAll('.photo-wrapper img').forEach(img => {
         img.addEventListener('dragstart', function(e) {
             dragSrc = this;
+            dragWrapper = this.parentElement;
             this.classList.add('dragging');
             e.dataTransfer.effectAllowed = 'move';
         });
@@ -156,22 +194,33 @@ document.querySelectorAll('.photos-strip').forEach(strip => {
         img.addEventListener('drop', function(e) {
             e.preventDefault();
             if (dragSrc !== this) {
-                const parent = this.parentNode;
-                const allImgs = [...parent.querySelectorAll('img')];
-                const fromIdx = allImgs.indexOf(dragSrc);
-                const toIdx = allImgs.indexOf(this);
+                const parent = strip;
+                const targetWrapper = this.parentElement;
+                const allWrappers = [...parent.querySelectorAll('.photo-wrapper')];
+                const fromIdx = allWrappers.indexOf(dragWrapper);
+                const toIdx = allWrappers.indexOf(targetWrapper);
                 if (fromIdx < toIdx) {
-                    parent.insertBefore(dragSrc, this.nextSibling);
+                    parent.insertBefore(dragWrapper, targetWrapper.nextSibling);
                 } else {
-                    parent.insertBefore(dragSrc, this);
+                    parent.insertBefore(dragWrapper, targetWrapper);
                 }
                 // Save new order
                 const postId = parent.id.replace('strip-', '');
-                const order = [...parent.querySelectorAll('img')].map(i => i.dataset.filename);
+                const order = [...parent.querySelectorAll('.photo-wrapper img')].map(i => i.dataset.filename);
                 fetch(`/api/post/${postId}/reorder`, {
                     method: 'POST',
                     headers: {'Content-Type': 'application/json'},
                     body: JSON.stringify({order})
+                }).then(r => r.json()).then(res => {
+                    if (res.ok) {
+                        // Update data-filename and src to match new numbering
+                        const imgs = [...parent.querySelectorAll('.photo-wrapper img')];
+                        imgs.forEach((img, idx) => {
+                            const newName = String(idx + 1).padStart(2, '0') + '.jpg';
+                            img.dataset.filename = newName;
+                            img.src = `/api/photo/${postId}/${newName}?t=${Date.now()}`;
+                        });
+                    }
                 });
             }
         });
