@@ -85,6 +85,93 @@ def _apply_diversity_rule(posts, max_consecutive):
     return result
 
 
+def _apply_grid_mode(posts, group_size=3):
+    """Reorder posts to group same country in blocks of group_size for Instagram grid aesthetics."""
+    if not posts:
+        return posts
+
+    from collections import defaultdict
+
+    # Group posts by country
+    by_country = defaultdict(list)
+    for post in posts:
+        by_country[post.get("country", "Unknown")].append(post)
+
+    # Sort countries by number of posts (descending) to handle larger groups first
+    sorted_countries = sorted(by_country.keys(), key=lambda c: len(by_country[c]), reverse=True)
+
+    result = []
+    # Keep taking groups of 3 from each country in round-robin fashion
+    while any(by_country.values()):
+        for country in sorted_countries:
+            if by_country[country]:
+                # Take up to group_size posts from this country
+                chunk = []
+                while by_country[country] and len(chunk) < group_size:
+                    chunk.append(by_country[country].pop(0))
+                result.extend(chunk)
+
+    return result
+
+
+def preview_schedule():
+    """Preview how posts would be scheduled without actually moving them.
+
+    Returns list of dicts with post info and proposed schedule.
+    """
+    settings = load_settings()
+    posts_per_week = settings.get("posts_per_week", 3)
+    preferred_times = settings.get("preferred_times", ["07:00", "12:00", "19:00"])
+    max_consecutive = settings.get("max_consecutive_same_country", 3)
+    grid_mode = settings.get("grid_mode", False)
+
+    approved = _load_posts_from(APPROVED_DIR)
+    if not approved:
+        return []
+
+    # Apply ordering rule based on mode
+    if grid_mode:
+        approved = _apply_grid_mode(approved, group_size=3)
+    else:
+        approved = _apply_diversity_rule(approved, max_consecutive)
+
+    # Calculate posting interval
+    days_between = 7 / posts_per_week
+    time_idx = 0
+
+    # Find the next available date
+    scheduled_dates = _get_scheduled_dates()
+    next_date = datetime.now().date() + timedelta(days=1)
+
+    while True:
+        date_str = next_date.strftime("%Y-%m-%d")
+        existing = scheduled_dates.get(date_str, [])
+        if len(existing) < 1:
+            break
+        next_date += timedelta(days=1)
+
+    preview = []
+    current_date = next_date
+
+    for post in approved:
+        date_str = current_date.strftime("%Y-%m-%d")
+        time_str = preferred_times[time_idx % len(preferred_times)]
+
+        preview.append({
+            "id": post["id"],
+            "location": post.get("location_display", ""),
+            "country": post.get("country", ""),
+            "photos": len(post.get("photos", [])),
+            "scheduled_date": date_str,
+            "scheduled_time": time_str,
+        })
+
+        time_idx += 1
+        current_date += timedelta(days=days_between)
+
+    return preview
+
+
 def schedule_posts():
     """Schedule approved posts respecting frequency and diversity rules.
 
@@ -94,14 +181,18 @@ def schedule_posts():
     posts_per_week = settings.get("posts_per_week", 3)
     preferred_times = settings.get("preferred_times", ["07:00", "12:00", "19:00"])
     max_consecutive = settings.get("max_consecutive_same_country", 3)
+    grid_mode = settings.get("grid_mode", False)
 
     approved = _load_posts_from(APPROVED_DIR)
     if not approved:
         logger.info("No approved posts to schedule.")
         return []
 
-    # Apply diversity rule
-    approved = _apply_diversity_rule(approved, max_consecutive)
+    # Apply ordering rule based on mode
+    if grid_mode:
+        approved = _apply_grid_mode(approved, group_size=3)
+    else:
+        approved = _apply_diversity_rule(approved, max_consecutive)
 
     # Calculate posting interval
     days_between = 7 / posts_per_week
@@ -197,4 +288,6 @@ def get_calendar():
                             "photos": len(post.get("photos", [])),
                         })
 
-    return dict(sorted(calendar.items()))
+    # Filter out None keys and sort
+    filtered = {k: v for k, v in calendar.items() if k is not None}
+    return dict(sorted(filtered.items(), key=lambda x: x[0] if x[0] != "unknown" else "9999-99-99"))
