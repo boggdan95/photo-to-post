@@ -115,6 +115,7 @@ def save_settings():
     current_settings["preferred_times"] = new_settings.get("preferred_times", current_settings.get("preferred_times"))
     current_settings["max_consecutive_same_country"] = new_settings.get("max_consecutive_same_country", current_settings.get("max_consecutive_same_country"))
     current_settings["grid_mode"] = new_settings.get("grid_mode", current_settings.get("grid_mode", False))
+    current_settings["cloud_mode"] = new_settings.get("cloud_mode", current_settings.get("cloud_mode", False))
     current_settings["caption_style"] = new_settings.get("caption_style", current_settings.get("caption_style"))
     current_settings["carousel"] = new_settings.get("carousel", current_settings.get("carousel"))
 

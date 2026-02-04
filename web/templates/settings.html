@@ -83,6 +83,13 @@
             </label>
             <small style="color:#666;display:block;margin-top:0.25rem;">Agrupa posts del mismo pais para filas coherentes en el perfil de Instagram</small>
         </div>
+        <div class="field">
+            <label class="checkbox-label">
+                <input type="checkbox" id="cloud_mode" {{ 'checked' if settings.cloud_mode }}>
+                Cloud mode (subir fotos al programar)
+            </label>
+            <small style="color:#666;display:block;margin-top:0.25rem;">Sube fotos a Cloudinary al programar. Permite auto-publish desde GitHub Actions</small>
+        </div>
     </div>
 
     <!-- Caption Style -->
@@ -299,6 +306,7 @@ function collectData() {
         preferred_times: document.getElementById('preferred_times').value.split(',').map(s => s.trim()).filter(s => s),
         max_consecutive_same_country: parseInt(document.getElementById('max_consecutive_same_country').value),
         grid_mode: document.getElementById('grid_mode').checked,
+        cloud_mode: document.getElementById('cloud_mode').checked,
         caption_style: {
             tone: document.getElementById('caption_tone').value,
             length: document.getElementById('caption_length').value,
