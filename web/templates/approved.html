@@ -3,13 +3,21 @@
 
 {% block extra_css %}
 <style>
-    .posts-list { display: flex; flex-direction: column; gap: 1rem; }
-    .post-row { display: flex; align-items: center; gap: 1rem; padding: 1rem; }
-    .post-row .thumb { width: 80px; height: 80px; object-fit: cover; border-radius: 6px; }
-    .post-row .info { flex: 1; }
-    .post-row .info .loc { font-weight: 600; }
-    .post-row .info .caption-preview { color: #666; font-size: 0.85rem; margin-top: 0.25rem;
-        white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 500px; }
+    .posts-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(400px, 1fr)); gap: 1.5rem; }
+    .post-card { position: relative; }
+    .post-card .photos-strip { display: flex; gap: 4px; overflow-x: auto; padding: 4px; background: #000; }
+    .post-card .photos-strip img { height: 160px; width: auto; object-fit: cover; border-radius: 4px; }
+    .post-card .photo-number {
+        position: absolute; top: 8px; left: 8px;
+        background: rgba(0,0,0,0.7); color: #fff;
+        font-size: 0.7rem; padding: 2px 6px; border-radius: 4px;
+    }
+    .post-card .photo-wrapper { position: relative; display: inline-block; }
+    .post-card .post-body { padding: 1rem; }
+    .post-card .location { font-weight: 600; margin-bottom: 0.5rem; }
+    .post-card .photo-count { color: #999; font-size: 0.85rem; }
+    .caption-text { font-size: 0.9rem; color: #333; margin: 0.5rem 0; line-height: 1.4; }
+    .hashtags { font-size: 0.8rem; color: #4361ee; margin-top: 0.5rem; }
 </style>
 {% endblock %}
 
@@ -17,18 +25,27 @@
 <h1>Posts Aprobados</h1>
 
 {% if posts %}
-<div class="posts-list">
+<div class="posts-grid">
 {% for post in posts %}
-    <div class="card post-row">
-        {% if post.photos %}
-        <img class="thumb" src="/api/photo/{{ post.id }}/{{ post.photos[0].filename }}" alt="">
-        {% endif %}
-        <div class="info">
-            <div class="loc">{{ post.location_display }}</div>
-            <div class="caption-preview">{{ post.caption.text }}</div>
-            <div style="margin-top:0.3rem;">
+    <div class="card post-card" data-post-id="{{ post.id }}">
+        <div class="photos-strip">
+            {% for photo in post.photos %}
+            <div class="photo-wrapper">
+                <img src="/api/photo/{{ post.id }}/{{ photo.filename }}" alt="{{ photo.filename }}">
+                <span class="photo-number">{{ loop.index }}</span>
+            </div>
+            {% endfor %}
+        </div>
+        <div class="post-body">
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+                <span class="location">{{ post.location_display }}</span>
                 <span class="badge badge-approved">aprobado</span>
-                <span style="color:#999;font-size:0.8rem;margin-left:0.5rem;">{{ post.photos|length }} fotos</span>
+            </div>
+            <span class="photo-count">{{ post.photos|length }} fotos</span>
+            <div class="caption-text">{{ post.caption.text }}</div>
+            <div class="hashtags">{{ post.caption.hashtags | join(' ') }}</div>
+            <div style="margin-top: 1rem;">
+                <button class="btn btn-primary btn-sm" onclick="publishNow('{{ post.id }}', this)">Publicar ahora</button>
             </div>
         </div>
     </div>
@@ -40,4 +57,33 @@
     <p style="margin-top:0.5rem;font-size:0.9rem;">Aprueba borradores desde <a href="/review">Review</a>.</p>
 </div>
 {% endif %}
+{% endblock %}
+
+{% block extra_js %}
+<script>
+async function publishNow(postId, btn) {
+    if (!confirm('Publicar este post ahora en Instagram?')) return;
+
+    btn.disabled = true;
+    btn.textContent = 'Publicando...';
+
+    try {
+        const res = await fetch(`/api/post/${postId}/publish-now`, {method: 'POST'});
+        const data = await res.json();
+
+        if (data.ok) {
+            alert('Publicado exitosamente en Instagram!');
+            location.reload();
+        } else {
+            alert('Error: ' + (data.error || 'Unknown error'));
+            btn.disabled = false;
+            btn.textContent = 'Publicar ahora';
+        }
+    } catch (e) {
+        alert('Error: ' + e.message);
+        btn.disabled = false;
+        btn.textContent = 'Publicar ahora';
+    }
+}
+</script>
 {% endblock %}
