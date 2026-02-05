@@ -6,8 +6,10 @@ Sistema de automatización para publicar fotos de paisajes en Instagram. Flujo: 
 ## Estado actual
 - **Flujo completo funcionando** — publicaciones reales en Instagram desde 2026-02-02
 - **UI web completa** — review, aprobados, programación, config, todo editable desde el navegador
+- **Lanzador de escritorio** — doble clic para abrir la app, sin necesidad de terminal
 - **Credenciales configuradas**: Cloudinary, Meta Graph API (long-lived token ~60 días), Anthropic API
 - **Captions con IA**: Claude API genera captions estilo informativo+personal + 3 hashtags contextuales
+- **Clasificación por visión**: Si una foto no tiene GPS, usa Claude Haiku para identificar el lugar
 - **Grid mode**: Agrupa posts de 3 en 3 por país para filas coherentes en el perfil de Instagram
 - **Auto-publish**: Comando para publicación automática de posts programados
 
@@ -47,10 +49,10 @@ web/
 ## Flujo de carpetas
 ```
 01_input/ → classify → 02_classified/{país}/{ciudad}/ → create-posts → 03_drafts/
-→ review (web :5000) → 04_approved/ → schedule → 05_scheduled/ → publish/auto-publish → 06_published/{año}/{mes}/
+→ review (web :5001) → 04_approved/ → schedule → 05_scheduled/ → publish/auto-publish → 06_published/{año}/{mes}/
 ```
 
-## UI Web (http://localhost:5000)
+## UI Web (http://localhost:5001)
 - **/review** — Revisar borradores: arrastrar para reordenar, X para eliminar foto, editar caption/hashtags, aprobar/rechazar
 - **/approved** — Posts aprobados: ver carrusel con orden final, botón "Publicar ahora"
 - **/schedule** — Programación: preview de fechas, calendario mensual, preview del grid de Instagram
@@ -90,9 +92,9 @@ Para publicación automática local:
 - **Anthropic**: api_key — para generar captions con Claude API
 
 ## Pendientes / próximos pasos
-1. **Clasificación por visión** (Claude API) cuando no hay GPS
-2. **Probar grid mode** con múltiples países para verificar agrupación
-3. **GitHub Actions** — activar cloud_mode y configurar secrets para auto-publish en la nube
+1. **Probar grid mode** con múltiples países para verificar agrupación
+2. **GitHub Actions** — activar cloud_mode y configurar secrets para auto-publish en la nube
+3. **Task Scheduler** — configurar auto-publish local si se desea publicación automática
 
 ## Para retomar
 - Exportar fotos desde Lightroom: Long edge 2048px, quality 85%, limit 10MB
@@ -100,9 +102,15 @@ Para publicación automática local:
 - El servidor web se abre con `run.py review`
 - Meta token expira aprox. 2026-04-03 (60 días desde 2026-02-02), renovar antes
 
+## Lanzador de escritorio
+- **photo-to-post.bat** — Abre el servidor y el navegador automáticamente
+- Acceso directo en el escritorio apunta al .bat
+- Puerto 5001 (evita conflicto con otras apps en 5000)
+
 ## Notas técnicas
 - Meta access token expira en ~60 días, renovar en Graph API Explorer y extender a long-lived
 - Cloudinary free tier: 25GB/mes, más que suficiente para ~60 fotos/mes
 - Instagram API: carruseles máximo 10 fotos
+- **Carruseles**: El publisher espera a que Meta procese cada imagen (status FINISHED) antes de publicar
 - Si cloud_mode=true, las URLs de Cloudinary se guardan en post.json al programar
 - El publisher usa URLs existentes si ya están en post.json, evita subir duplicados
