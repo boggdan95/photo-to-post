@@ -10,9 +10,21 @@ from flask import Flask, jsonify, render_template, request
 import sys
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
-from scripts.utils import BASE_DIR, load_settings, load_hashtags
+from scripts.utils import BASE_DIR, load_settings, load_hashtags, count_files, count_posts
 
 app = Flask(__name__)
+
+
+def _get_counts():
+    """Get counts for all pipeline stages."""
+    return {
+        "input": count_files(BASE_DIR / "01_input"),
+        "classified": count_files(BASE_DIR / "02_classified"),
+        "drafts": count_posts(BASE_DIR / "03_drafts"),
+        "approved": count_posts(BASE_DIR / "04_approved"),
+        "scheduled": count_posts(BASE_DIR / "05_scheduled"),
+        "published": count_posts(BASE_DIR / "06_published"),
+    }
 
 DRAFTS_DIR = BASE_DIR / "03_drafts"
 APPROVED_DIR = BASE_DIR / "04_approved"
@@ -59,7 +71,8 @@ def _find_post_dir(post_id):
 
 @app.route("/")
 def index():
-    return render_template("index.html")
+    counts = _get_counts()
+    return render_template("index.html", counts=counts)
 
 
 @app.route("/review")
@@ -96,6 +109,53 @@ def schedule_page():
 
 
 # --- API endpoints ---
+
+@app.route("/api/status")
+def api_status():
+    """Return pipeline counts as JSON."""
+    return jsonify(_get_counts())
+
+
+@app.route("/api/run/<command>", methods=["POST"])
+def api_run_command(command):
+    """Run a pipeline command (classify, create-posts)."""
+    import io
+    import sys
+    import logging
+
+    allowed_commands = ["classify", "create-posts"]
+    if command not in allowed_commands:
+        return jsonify({"error": f"Command not allowed: {command}"}), 400
+
+    # Capture log output
+    log_capture = io.StringIO()
+    handler = logging.StreamHandler(log_capture)
+    handler.setLevel(logging.INFO)
+    handler.setFormatter(logging.Formatter('%(message)s'))
+
+    logger = logging.getLogger("photo-to-post")
+    logger.addHandler(handler)
+
+    try:
+        if command == "classify":
+            from scripts.classifier import classify_all
+            results = classify_all()
+            message = f"Clasificadas {len(results)} fotos"
+
+        elif command == "create-posts":
+            from scripts.post_creator import create_posts
+            results = create_posts()
+            message = f"Creados {len(results)} posts"
+
+        log_output = log_capture.getvalue()
+        logger.removeHandler(handler)
+
+        return jsonify({"ok": True, "message": message, "log": log_output})
+
+    except Exception as e:
+        logger.removeHandler(handler)
+        return jsonify({"ok": False, "error": str(e), "log": log_capture.getvalue()}), 500
+
 
 @app.route("/api/settings", methods=["POST"])
 def save_settings():

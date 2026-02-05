@@ -1,24 +1,224 @@
 {% extends "base.html" %}
+{% block title_extra %} - Dashboard{% endblock %}
+
+{% block extra_css %}
+<style>
+    .pipeline { display: flex; flex-direction: column; gap: 1rem; max-width: 800px; margin: 0 auto; }
+
+    .pipeline-step {
+        display: grid; grid-template-columns: 1fr auto 1fr; gap: 1rem; align-items: center;
+        padding: 1rem; background: #fff; border-radius: 10px;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+    }
+    .pipeline-step.ready { border-left: 4px solid #2ec4b6; }
+    .pipeline-step.empty { border-left: 4px solid #ddd; opacity: 0.7; }
+    .pipeline-step.action { border-left: 4px solid #4361ee; }
+
+    .step-info h3 { font-size: 1rem; margin-bottom: 0.25rem; }
+    .step-info .count { font-size: 1.5rem; font-weight: 700; color: #4361ee; }
+    .step-info .desc { font-size: 0.85rem; color: #666; }
+
+    .step-action { text-align: center; }
+    .step-action .btn { min-width: 140px; }
+
+    .step-result { text-align: right; }
+    .step-result .arrow { color: #ccc; font-size: 1.5rem; }
+
+    .pipeline-arrow { text-align: center; color: #ccc; font-size: 1.5rem; }
+
+    .quick-actions { display: flex; gap: 1rem; justify-content: center; margin: 2rem 0; flex-wrap: wrap; }
+    .quick-actions .btn { padding: 0.75rem 1.5rem; }
+
+    .status-bar {
+        display: flex; gap: 0.5rem; justify-content: center; margin-bottom: 2rem;
+        flex-wrap: wrap;
+    }
+    .status-item {
+        background: #f5f5f5; padding: 0.5rem 1rem; border-radius: 20px;
+        font-size: 0.85rem;
+    }
+    .status-item strong { color: #4361ee; }
+
+    .loading { opacity: 0.5; pointer-events: none; }
+    .spinner { display: inline-block; width: 16px; height: 16px; border: 2px solid #fff;
+        border-top-color: transparent; border-radius: 50%; animation: spin 0.8s linear infinite; }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    .log-output {
+        background: #1a1a2e; color: #0f0; padding: 1rem; border-radius: 6px;
+        font-family: monospace; font-size: 0.8rem; max-height: 200px; overflow-y: auto;
+        display: none; margin-top: 1rem; white-space: pre-wrap;
+    }
+    .log-output.visible { display: block; }
+</style>
+{% endblock %}
+
 {% block content %}
-<h1>Dashboard</h1>
-<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem;">
-    <div class="card" style="padding: 1.5rem; text-align: center;">
-        <div style="font-size: 2rem; font-weight: 700;">
-            <a href="/review" style="text-decoration:none;color:#333;">Review</a>
+<h1>photo-to-post</h1>
+
+<div class="status-bar">
+    <div class="status-item"><strong id="count-input">{{ counts.input }}</strong> fotos en entrada</div>
+    <div class="status-item"><strong id="count-classified">{{ counts.classified }}</strong> clasificadas</div>
+    <div class="status-item"><strong id="count-drafts">{{ counts.drafts }}</strong> borradores</div>
+    <div class="status-item"><strong id="count-approved">{{ counts.approved }}</strong> aprobados</div>
+    <div class="status-item"><strong id="count-scheduled">{{ counts.scheduled }}</strong> programados</div>
+    <div class="status-item"><strong id="count-published">{{ counts.published }}</strong> publicados</div>
+</div>
+
+<div class="pipeline">
+    <!-- Step 1: Input -->
+    <div class="pipeline-step {{ 'ready' if counts.input > 0 else 'empty' }}">
+        <div class="step-info">
+            <h3>1. Fotos de entrada</h3>
+            <div class="count" id="step-input">{{ counts.input }}</div>
+            <div class="desc">Pon fotos en <code>01_input/</code></div>
         </div>
-        <p style="color: #999; margin-top: 0.5rem;">Revisar borradores</p>
+        <div class="step-action">
+            {% if counts.input > 0 %}
+            <button class="btn btn-primary" onclick="runCommand('classify', this)">
+                Clasificar
+            </button>
+            {% else %}
+            <span style="color:#999">Esperando fotos...</span>
+            {% endif %}
+        </div>
+        <div class="step-result">
+            <span class="arrow">→</span>
+        </div>
     </div>
-    <div class="card" style="padding: 1.5rem; text-align: center;">
-        <div style="font-size: 2rem; font-weight: 700;">
-            <a href="/approved" style="text-decoration:none;color:#333;">Aprobados</a>
+
+    <!-- Step 2: Classified -->
+    <div class="pipeline-step {{ 'ready' if counts.classified > 0 else 'empty' }}">
+        <div class="step-info">
+            <h3>2. Fotos clasificadas</h3>
+            <div class="count" id="step-classified">{{ counts.classified }}</div>
+            <div class="desc">Por pais y ciudad</div>
         </div>
-        <p style="color: #999; margin-top: 0.5rem;">Posts listos</p>
+        <div class="step-action">
+            {% if counts.classified > 0 %}
+            <button class="btn btn-primary" onclick="runCommand('create-posts', this)">
+                Crear posts
+            </button>
+            {% else %}
+            <span style="color:#999">Clasificar primero</span>
+            {% endif %}
+        </div>
+        <div class="step-result">
+            <span class="arrow">→</span>
+        </div>
     </div>
-    <div class="card" style="padding: 1.5rem; text-align: center;">
-        <div style="font-size: 2rem; font-weight: 700;">
-            <a href="/settings" style="text-decoration:none;color:#333;">Config</a>
+
+    <!-- Step 3: Drafts -->
+    <div class="pipeline-step {{ 'ready' if counts.drafts > 0 else 'empty' }}">
+        <div class="step-info">
+            <h3>3. Borradores</h3>
+            <div class="count" id="step-drafts">{{ counts.drafts }}</div>
+            <div class="desc">Posts con captions generados</div>
         </div>
-        <p style="color: #999; margin-top: 0.5rem;">Ajustes</p>
+        <div class="step-action">
+            {% if counts.drafts > 0 %}
+            <a href="/review" class="btn btn-success">Revisar</a>
+            {% else %}
+            <span style="color:#999">Crear posts primero</span>
+            {% endif %}
+        </div>
+        <div class="step-result">
+            <span class="arrow">→</span>
+        </div>
+    </div>
+
+    <!-- Step 4: Approved -->
+    <div class="pipeline-step {{ 'ready' if counts.approved > 0 else 'empty' }}">
+        <div class="step-info">
+            <h3>4. Aprobados</h3>
+            <div class="count" id="step-approved">{{ counts.approved }}</div>
+            <div class="desc">Listos para programar o publicar</div>
+        </div>
+        <div class="step-action">
+            {% if counts.approved > 0 %}
+            <a href="/schedule" class="btn btn-primary">Programar</a>
+            <a href="/approved" class="btn btn-success" style="margin-top:0.5rem;display:block;">Publicar</a>
+            {% else %}
+            <span style="color:#999">Aprobar borradores</span>
+            {% endif %}
+        </div>
+        <div class="step-result">
+            <span class="arrow">→</span>
+        </div>
+    </div>
+
+    <!-- Step 5: Published -->
+    <div class="pipeline-step {{ 'ready' if counts.published > 0 else 'empty' }}">
+        <div class="step-info">
+            <h3>5. Publicados</h3>
+            <div class="count" id="step-published">{{ counts.published }}</div>
+            <div class="desc">En Instagram</div>
+        </div>
+        <div class="step-action">
+            <span style="color:#2ec4b6">✓ Completado</span>
+        </div>
+        <div class="step-result"></div>
     </div>
 </div>
+
+<div class="log-output" id="log-output"></div>
+
+<div class="quick-actions">
+    <a href="/settings" class="btn btn-primary">Configuracion</a>
+    <button class="btn btn-success" onclick="refreshCounts()">Actualizar</button>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+async function runCommand(command, btn) {
+    const originalText = btn.innerHTML;
+    btn.innerHTML = '<span class="spinner"></span> Ejecutando...';
+    btn.disabled = true;
+    btn.classList.add('loading');
+
+    const logOutput = document.getElementById('log-output');
+    logOutput.classList.add('visible');
+    logOutput.textContent = `Ejecutando ${command}...\n`;
+
+    try {
+        const res = await fetch(`/api/run/${command}`, {method: 'POST'});
+        const data = await res.json();
+
+        if (data.ok) {
+            logOutput.textContent += data.log || 'Completado.\n';
+            logOutput.textContent += `\n✓ ${data.message}`;
+            // Refresh counts
+            await refreshCounts();
+        } else {
+            logOutput.textContent += `\n✗ Error: ${data.error}`;
+        }
+    } catch (e) {
+        logOutput.textContent += `\n✗ Error: ${e.message}`;
+    }
+
+    btn.innerHTML = originalText;
+    btn.disabled = false;
+    btn.classList.remove('loading');
+}
+
+async function refreshCounts() {
+    try {
+        const res = await fetch('/api/status');
+        const data = await res.json();
+
+        document.getElementById('count-input').textContent = data.input;
+        document.getElementById('count-classified').textContent = data.classified;
+        document.getElementById('count-drafts').textContent = data.drafts;
+        document.getElementById('count-approved').textContent = data.approved;
+        document.getElementById('count-scheduled').textContent = data.scheduled;
+        document.getElementById('count-published').textContent = data.published;
+
+        // Refresh page to update buttons
+        location.reload();
+    } catch (e) {
+        console.error('Failed to refresh:', e);
+    }
+}
+</script>
 {% endblock %}
