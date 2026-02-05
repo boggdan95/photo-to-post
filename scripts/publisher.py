@@ -58,6 +58,43 @@ def _upload_to_cloudinary(image_path):
     return url
 
 
+def _check_container_status(container_id, access_token, max_attempts=10):
+    """Check if a media container is ready for publishing."""
+    import requests
+    import time
+
+    api_base = "https://graph.facebook.com/v21.0"
+
+    for attempt in range(max_attempts):
+        resp = requests.get(
+            f"{api_base}/{container_id}",
+            params={
+                "fields": "status_code",
+                "access_token": access_token,
+            },
+            timeout=30,
+        )
+        if not resp.ok:
+            logger.warning(f"Status check failed: {resp.text}")
+            time.sleep(2)
+            continue
+
+        status = resp.json().get("status_code")
+        logger.debug(f"Container {container_id} status: {status}")
+
+        if status == "FINISHED":
+            return True
+        elif status in ("ERROR", "EXPIRED"):
+            logger.error(f"Container {container_id} failed with status: {status}")
+            return False
+
+        # Still processing, wait and retry
+        time.sleep(2)
+
+    logger.warning(f"Container {container_id} still not ready after {max_attempts} attempts")
+    return False
+
+
 def _publish_to_instagram(image_urls, caption_text, hashtags):
     """Publish a carousel post to Instagram via Meta Graph API.
 
@@ -76,6 +113,7 @@ def _publish_to_instagram(image_urls, caption_text, hashtags):
         )
 
     import requests
+    import time
 
     full_caption = caption_text
     if hashtags:
@@ -115,6 +153,12 @@ def _publish_to_instagram(image_urls, caption_text, hashtags):
                 resp.raise_for_status()
             children_ids.append(resp.json()["id"])
 
+        # Wait for all carousel items to be processed
+        logger.info("Waiting for carousel items to be processed...")
+        for child_id in children_ids:
+            if not _check_container_status(child_id, access_token):
+                raise RuntimeError(f"Carousel item {child_id} failed to process")
+
         resp = requests.post(
             f"{api_base}/{ig_user_id}/media",
             data={
@@ -128,6 +172,11 @@ def _publish_to_instagram(image_urls, caption_text, hashtags):
         resp.raise_for_status()
         creation_id = resp.json()["id"]
 
+    # Wait for container to be ready before publishing
+    logger.info("Waiting for media container to be ready...")
+    if not _check_container_status(creation_id, access_token):
+        raise RuntimeError(f"Media container {creation_id} failed to process")
+
     # Publish the container
     resp = requests.post(
         f"{api_base}/{ig_user_id}/media_publish",
@@ -137,7 +186,9 @@ def _publish_to_instagram(image_urls, caption_text, hashtags):
         },
         timeout=60,
     )
-    resp.raise_for_status()
+    if not resp.ok:
+        logger.error(f"Publish failed: {resp.text}")
+        resp.raise_for_status()
     ig_post_id = resp.json()["id"]
 
     logger.info(f"Published to Instagram: {ig_post_id}")
