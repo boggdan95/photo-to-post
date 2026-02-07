@@ -22,10 +22,17 @@ def _get_api_key():
         return None
 
 
-def generate_caption(country, city, photo_count, date_taken=None):
+def generate_caption(country, city, photo_count, date_taken=None, context=None):
     """Generate an Instagram caption using Claude API.
 
-    Returns a string with the caption text (without hashtags).
+    Args:
+        country: Country name
+        city: City name
+        photo_count: Number of photos in carousel
+        date_taken: Optional date string
+        context: Optional context/keywords from user (e.g., "Pyramids, sunrise, drone shot")
+
+    Returns a tuple (caption_text, ai_hashtags).
     Falls back to a template if API key is not configured.
     """
     api_key = _get_api_key()
@@ -50,6 +57,9 @@ def generate_caption(country, city, photo_count, date_taken=None):
 
         if date_taken:
             prompt += f"Fecha de las fotos: {date_taken}\n"
+
+        if context:
+            prompt += f"Contexto adicional: {context}\n"
 
         prompt += (
             f"\nReglas:\n"

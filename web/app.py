@@ -420,6 +420,9 @@ def regenerate_caption(post_id):
     if not post_dir:
         return jsonify({"error": "Post not found"}), 404
 
+    body = request.get_json() or {}
+    context = body.get("context", "").strip()
+
     try:
         from scripts.caption_generator import generate_caption
         from scripts.post_creator import _select_hashtags
@@ -433,8 +436,8 @@ def regenerate_caption(post_id):
         taken_at = first_photo.get("taken_at", "")
         date_str = taken_at[:10] if taken_at else ""
 
-        # Generate new caption
-        caption_text, ai_hashtags = generate_caption(country, city, photo_count, date_str)
+        # Generate new caption with optional context
+        caption_text, ai_hashtags = generate_caption(country, city, photo_count, date_str, context)
 
         # Get full hashtags
         hashtags = _select_hashtags(country, city, ai_hashtags)

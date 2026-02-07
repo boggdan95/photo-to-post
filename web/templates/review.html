@@ -196,10 +196,25 @@ function saveCaption(el) {
 
 // Regenerate caption with AI
 async function regenerateCaption(postId) {
-    if (!confirm('Regenerar caption con IA? El caption actual se perderá.')) return;
+    const context = prompt(
+        'Contexto para el caption (opcional):\n\n' +
+        'Ej: "Pirámides al amanecer, vista drone, colores del cielo"\n\n' +
+        'Dejar vacío para generar sin contexto adicional:'
+    );
+
+    if (context === null) return; // Cancelled
+
+    const btn = document.querySelector(`[data-post-id="${postId}"] .btn[onclick*="regenerateCaption"]`);
+    const originalText = btn.textContent;
+    btn.textContent = '...';
+    btn.disabled = true;
 
     try {
-        const res = await fetch(`/api/post/${postId}/regenerate-caption`, {method: 'POST'});
+        const res = await fetch(`/api/post/${postId}/regenerate-caption`, {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify({context})
+        });
         const data = await res.json();
 
         if (data.ok) {
@@ -218,6 +233,9 @@ async function regenerateCaption(postId) {
     } catch (e) {
         alert('Error: ' + e.message);
     }
+
+    btn.textContent = originalText;
+    btn.disabled = false;
 }
 
 // Save hashtags
@@ -345,10 +363,20 @@ function rejectFromView() {
 }
 
 async function regenerateCaptionFromView() {
-    if (!confirm('Regenerar caption con IA? El caption actual se perderá.')) return;
+    const context = prompt(
+        'Contexto para el caption (opcional):\n\n' +
+        'Ej: "Pirámides al amanecer, vista drone, colores del cielo"\n\n' +
+        'Dejar vacío para generar sin contexto adicional:'
+    );
+
+    if (context === null) return; // Cancelled
 
     try {
-        const res = await fetch(`/api/post/${viewPostId}/regenerate-caption`, {method: 'POST'});
+        const res = await fetch(`/api/post/${viewPostId}/regenerate-caption`, {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify({context})
+        });
         const data = await res.json();
 
         if (data.ok) {
