@@ -26,6 +26,7 @@ def _get_counts():
         "published": count_posts(BASE_DIR / "06_published"),
     }
 
+CLASSIFIED_DIR = BASE_DIR / "02_classified"
 DRAFTS_DIR = BASE_DIR / "03_drafts"
 APPROVED_DIR = BASE_DIR / "04_approved"
 SCHEDULED_DIR = BASE_DIR / "05_scheduled"
@@ -94,6 +95,40 @@ def index():
     return render_template("index.html", counts=counts)
 
 
+@app.route("/classified")
+def classified_page():
+    """Show classified photos grouped by country/city."""
+    locations = []
+    if CLASSIFIED_DIR.exists():
+        for country_dir in sorted(CLASSIFIED_DIR.iterdir()):
+            if not country_dir.is_dir():
+                continue
+            country = country_dir.name
+            for city_dir in sorted(country_dir.iterdir()):
+                if not city_dir.is_dir():
+                    continue
+                city = city_dir.name
+                photos = []
+                for f in sorted(city_dir.iterdir()):
+                    if f.is_file() and f.suffix.lower() in (".jpg", ".jpeg", ".png"):
+                        photos.append({
+                            "filename": f.name,
+                            "path": f"{country}/{city}/{f.name}"
+                        })
+                if photos:
+                    locations.append({
+                        "country": country,
+                        "city": city,
+                        "photos": photos,
+                        "count": len(photos)
+                    })
+    # Sort by count descending
+    locations.sort(key=lambda x: x["count"], reverse=True)
+    settings = load_settings()
+    min_photos = settings.get("carousel", {}).get("min_photos", 3)
+    return render_template("classified.html", locations=locations, min_photos=min_photos)
+
+
 @app.route("/review")
 def review():
     drafts = _load_posts(DRAFTS_DIR)
@@ -159,6 +194,100 @@ def published_page():
 def api_status():
     """Return pipeline counts as JSON."""
     return jsonify(_get_counts())
+
+
+@app.route("/api/classified/<path:photo_path>")
+def serve_classified_photo(photo_path):
+    """Serve a classified photo."""
+    from flask import send_file
+    photo_file = CLASSIFIED_DIR / photo_path
+    if not photo_file.exists():
+        return "Not found", 404
+    return send_file(str(photo_file))
+
+
+@app.route("/api/classified/locations")
+def get_locations():
+    """Get list of all locations."""
+    locations = []
+    if CLASSIFIED_DIR.exists():
+        for country_dir in sorted(CLASSIFIED_DIR.iterdir()):
+            if not country_dir.is_dir():
+                continue
+            country = country_dir.name
+            for city_dir in sorted(country_dir.iterdir()):
+                if not city_dir.is_dir():
+                    continue
+                city = city_dir.name
+                locations.append({"country": country, "city": city})
+    return jsonify(locations)
+
+
+@app.route("/api/classified/move", methods=["POST"])
+def move_photo():
+    """Move a photo to a different location."""
+    body = request.get_json()
+    photo_path = body.get("photo_path")  # e.g. "Guatemala/Antigua Guatemala/photo.jpg"
+    new_country = body.get("new_country")
+    new_city = body.get("new_city")
+
+    if not all([photo_path, new_country, new_city]):
+        return jsonify({"error": "Missing required fields"}), 400
+
+    src = CLASSIFIED_DIR / photo_path
+    if not src.exists():
+        return jsonify({"error": "Photo not found"}), 404
+
+    dest_dir = CLASSIFIED_DIR / new_country / new_city
+    dest_dir.mkdir(parents=True, exist_ok=True)
+    dest = dest_dir / src.name
+
+    shutil.move(str(src), str(dest))
+
+    # Clean up empty directories
+    old_city_dir = src.parent
+    old_country_dir = old_city_dir.parent
+    if old_city_dir.exists() and not any(old_city_dir.iterdir()):
+        old_city_dir.rmdir()
+    if old_country_dir.exists() and not any(old_country_dir.iterdir()):
+        old_country_dir.rmdir()
+
+    return jsonify({"ok": True, "new_path": f"{new_country}/{new_city}/{src.name}"})
+
+
+@app.route("/api/classified/merge", methods=["POST"])
+def merge_locations():
+    """Merge one location into another."""
+    body = request.get_json()
+    from_country = body.get("from_country")
+    from_city = body.get("from_city")
+    to_country = body.get("to_country")
+    to_city = body.get("to_city")
+
+    if not all([from_country, from_city, to_country, to_city]):
+        return jsonify({"error": "Missing required fields"}), 400
+
+    src_dir = CLASSIFIED_DIR / from_country / from_city
+    if not src_dir.exists():
+        return jsonify({"error": "Source location not found"}), 404
+
+    dest_dir = CLASSIFIED_DIR / to_country / to_city
+    dest_dir.mkdir(parents=True, exist_ok=True)
+
+    moved = 0
+    for f in list(src_dir.iterdir()):
+        if f.is_file():
+            shutil.move(str(f), str(dest_dir / f.name))
+            moved += 1
+
+    # Clean up empty directories
+    if src_dir.exists() and not any(src_dir.iterdir()):
+        src_dir.rmdir()
+    country_dir = CLASSIFIED_DIR / from_country
+    if country_dir.exists() and not any(country_dir.iterdir()):
+        country_dir.rmdir()
+
+    return jsonify({"ok": True, "moved": moved})
 
 
 @app.route("/api/run/<command>", methods=["POST"])

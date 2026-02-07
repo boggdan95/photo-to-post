@@ -1,0 +1,206 @@
+{% extends "base.html" %}
+{% block title_extra %} - Clasificados{% endblock %}
+
+{% block extra_css %}
+<style>
+    .summary {
+        background: #fff; padding: 1rem; border-radius: 10px; margin-bottom: 1.5rem;
+        display: flex; gap: 2rem; align-items: center; flex-wrap: wrap;
+    }
+    .summary-stat { text-align: center; }
+    .summary-stat .num { font-size: 1.5rem; font-weight: 700; color: #4361ee; }
+    .summary-stat .label { font-size: 0.85rem; color: #666; }
+
+    .locations-list { display: flex; flex-direction: column; gap: 1rem; }
+
+    .location-card {
+        background: #fff; border-radius: 10px; overflow: hidden;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+    }
+    .location-card.low-count { border-left: 4px solid #ffd166; }
+    .location-card.good-count { border-left: 4px solid #2ec4b6; }
+
+    .location-header {
+        padding: 1rem; display: flex; justify-content: space-between; align-items: center;
+        border-bottom: 1px solid #eee; cursor: pointer;
+    }
+    .location-header:hover { background: #f9f9f9; }
+    .location-title { font-weight: 600; }
+    .location-title .country { color: #666; font-weight: 400; }
+    .location-count {
+        display: inline-block; padding: 0.2rem 0.6rem; border-radius: 12px;
+        font-size: 0.85rem; font-weight: 600;
+    }
+    .location-count.low { background: #ffd166; color: #333; }
+    .location-count.good { background: #2ec4b6; color: #fff; }
+
+    .location-photos {
+        display: none; padding: 1rem; background: #f5f5f5;
+        flex-wrap: wrap; gap: 8px;
+    }
+    .location-photos.expanded { display: flex; }
+
+    .photo-thumb {
+        width: 100px; height: 100px; object-fit: cover; border-radius: 6px;
+        cursor: pointer; transition: transform 0.2s;
+    }
+    .photo-thumb:hover { transform: scale(1.05); }
+    .photo-thumb.selected { outline: 3px solid #4361ee; }
+
+    .location-actions {
+        padding: 0.5rem 1rem; background: #f9f9f9; border-top: 1px solid #eee;
+        display: none; gap: 0.5rem; align-items: center;
+    }
+    .location-actions.expanded { display: flex; }
+
+    .merge-select { padding: 0.4rem; border-radius: 4px; border: 1px solid #ddd; }
+
+    .warning-box {
+        background: #fff3cd; border: 1px solid #ffc107; padding: 1rem;
+        border-radius: 8px; margin-bottom: 1rem;
+    }
+    .warning-box h4 { margin-bottom: 0.5rem; color: #856404; }
+    .warning-box p { color: #856404; font-size: 0.9rem; }
+
+    .photo-modal {
+        display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+        background: rgba(0,0,0,0.9); z-index: 1000; justify-content: center; align-items: center;
+    }
+    .photo-modal.visible { display: flex; }
+    .photo-modal img { max-width: 90%; max-height: 90%; object-fit: contain; }
+    .photo-modal .close { position: absolute; top: 20px; right: 30px; color: #fff; font-size: 2rem; cursor: pointer; }
+</style>
+{% endblock %}
+
+{% block content %}
+<h1>Fotos Clasificadas</h1>
+
+<div class="summary">
+    <div class="summary-stat">
+        <div class="num">{{ locations|length }}</div>
+        <div class="label">ubicaciones</div>
+    </div>
+    <div class="summary-stat">
+        <div class="num">{{ locations|sum(attribute='count') }}</div>
+        <div class="label">fotos totales</div>
+    </div>
+    <div class="summary-stat">
+        <div class="num">{{ locations|selectattr('count', 'ge', min_photos)|list|length }}</div>
+        <div class="label">listas para post ({{ min_photos }}+ fotos)</div>
+    </div>
+    <div style="flex-grow:1;"></div>
+    <a href="/" class="btn btn-primary">Crear Posts</a>
+</div>
+
+{% set low_count_locations = locations|selectattr('count', 'lt', min_photos)|list %}
+{% if low_count_locations %}
+<div class="warning-box">
+    <h4>{{ low_count_locations|length }} ubicaciones con pocas fotos</h4>
+    <p>Las ubicaciones con menos de {{ min_photos }} fotos no generaran posts. Puedes mover sus fotos a otra ubicacion cercana.</p>
+</div>
+{% endif %}
+
+<div class="locations-list">
+{% for loc in locations %}
+    <div class="location-card {{ 'low-count' if loc.count < min_photos else 'good-count' }}"
+         data-country="{{ loc.country }}" data-city="{{ loc.city }}">
+        <div class="location-header" onclick="toggleLocation(this)">
+            <span class="location-title">
+                {{ loc.city }} <span class="country">/ {{ loc.country }}</span>
+            </span>
+            <span class="location-count {{ 'low' if loc.count < min_photos else 'good' }}">
+                {{ loc.count }} fotos
+            </span>
+        </div>
+        <div class="location-photos">
+            {% for photo in loc.photos %}
+            <img src="/api/classified/{{ photo.path }}"
+                 class="photo-thumb"
+                 data-path="{{ photo.path }}"
+                 onclick="viewPhoto(this, event)"
+                 title="{{ photo.filename }}">
+            {% endfor %}
+        </div>
+        <div class="location-actions">
+            <span style="font-size:0.85rem;color:#666;">Mover todo a:</span>
+            <select class="merge-select" onchange="mergeLocation(this)">
+                <option value="">Seleccionar destino...</option>
+                {% for other in locations if other.country != loc.country or other.city != loc.city %}
+                <option value="{{ other.country }}|{{ other.city }}">{{ other.city }} / {{ other.country }}</option>
+                {% endfor %}
+            </select>
+        </div>
+    </div>
+{% endfor %}
+</div>
+
+<div class="photo-modal" onclick="closeModal()">
+    <span class="close">&times;</span>
+    <img src="" id="modal-img">
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+function toggleLocation(header) {
+    const card = header.parentElement;
+    const photos = card.querySelector('.location-photos');
+    const actions = card.querySelector('.location-actions');
+    photos.classList.toggle('expanded');
+    actions.classList.toggle('expanded');
+}
+
+function viewPhoto(img, event) {
+    event.stopPropagation();
+    const modal = document.querySelector('.photo-modal');
+    document.getElementById('modal-img').src = img.src;
+    modal.classList.add('visible');
+}
+
+function closeModal() {
+    document.querySelector('.photo-modal').classList.remove('visible');
+}
+
+async function mergeLocation(select) {
+    const dest = select.value;
+    if (!dest) return;
+
+    const [toCountry, toCity] = dest.split('|');
+    const card = select.closest('.location-card');
+    const fromCountry = card.dataset.country;
+    const fromCity = card.dataset.city;
+
+    if (!confirm(`Mover todas las fotos de "${fromCity}" a "${toCity}"?`)) {
+        select.value = '';
+        return;
+    }
+
+    try {
+        const res = await fetch('/api/classified/merge', {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify({
+                from_country: fromCountry,
+                from_city: fromCity,
+                to_country: toCountry,
+                to_city: toCity
+            })
+        });
+        const data = await res.json();
+        if (data.ok) {
+            alert(`${data.moved} fotos movidas. Recargando...`);
+            location.reload();
+        } else {
+            alert('Error: ' + data.error);
+        }
+    } catch (e) {
+        alert('Error: ' + e.message);
+    }
+    select.value = '';
+}
+
+document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') closeModal();
+});
+</script>
+{% endblock %}
