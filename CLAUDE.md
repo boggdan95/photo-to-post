@@ -30,10 +30,12 @@ web/
   app.py                  ← Flask API: settings, fotos, publicación, programación
   templates/
     base.html             ← Layout con navegación
-    index.html            ← Página de inicio
-    review.html           ← Review drafts: reorder, eliminar fotos, editar caption
+    index.html            ← Dashboard con pipeline visual
+    classified.html       ← Ver/mover fotos clasificadas antes de crear posts
+    review.html           ← Review drafts: reorder, eliminar, dividir, aprobar
     approved.html         ← Posts aprobados: carrusel, publicar ahora
     schedule.html         ← Programación: preview, calendario, grid de Instagram
+    published.html        ← Historial de posts publicados
     settings.html         ← Config editable: todos los settings y hashtags
 .github/workflows/
   auto-publish.yml        ← GitHub Action para auto-publish (requiere cloud_mode)
@@ -53,9 +55,11 @@ web/
 ```
 
 ## UI Web (http://localhost:5001)
-- **/review** — Revisar borradores: arrastrar para reordenar, X para eliminar foto, editar caption/hashtags, aprobar/rechazar
+- **/classified** — Ver fotos clasificadas por ubicación, mover/merge ubicaciones con pocas fotos
+- **/review** — Revisar borradores: reordenar, eliminar fotos, editar caption, dividir posts grandes, aprobar/rechazar
 - **/approved** — Posts aprobados: ver carrusel con orden final, botón "Publicar ahora"
 - **/schedule** — Programación: preview de fechas, calendario mensual, preview del grid de Instagram
+- **/published** — Historial de posts publicados con fecha e ID de Instagram
 - **/settings** — Configuración: editar todo sin tocar JSON (idioma, posts/semana, horarios, grid_mode, cloud_mode, hashtags)
 
 ## Settings importantes
@@ -92,7 +96,7 @@ Para publicación automática local:
 - **Anthropic**: api_key — para generar captions con Claude API
 
 ## Pendientes / próximos pasos
-1. **Probar grid mode** con múltiples países para verificar agrupación
+1. **Probar flujo completo** con las nuevas fotos clasificadas
 2. **GitHub Actions** — activar cloud_mode y configurar secrets para auto-publish en la nube
 3. **Task Scheduler** — configurar auto-publish local si se desea publicación automática
 
@@ -106,6 +110,12 @@ Para publicación automática local:
 - **photo-to-post.bat** — Abre el servidor y el navegador automáticamente
 - Acceso directo en el escritorio apunta al .bat
 - Puerto 5001 (evita conflicto con otras apps en 5000)
+
+## Comportamiento importante
+- **min_photos**: Ubicaciones con menos de 3 fotos NO generan posts (configurable en `carousel.min_photos`)
+- **Fotos no se pierden**: Al eliminar foto de carrusel o rechazar post, las fotos regresan a `02_classified`
+- **Dividir posts**: Posts con 6+ fotos pueden dividirse en dos desde Review
+- **Merge ubicaciones**: En /classified puedes fusionar ubicaciones pequeñas con otras cercanas
 
 ## Notas técnicas
 - Meta access token expira en ~60 días, renovar en Graph API Explorer y extender a long-lived
