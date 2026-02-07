@@ -15,8 +15,8 @@ name: Auto Publish
 
 on:
   schedule:
-    # Run every hour at minute 5 (e.g., 7:05, 8:05, etc.)
-    - cron: '5 * * * *'
+    # Run every 30 minutes
+    - cron: '0,30 * * * *'
   workflow_dispatch:  # Allow manual trigger
 
 jobs:
