@@ -52,6 +52,7 @@ def _load_posts(directory, prefix="draft_"):
 
 def _find_post_dir(post_id):
     """Find the directory containing a post by its ID."""
+    # Check main stage directories
     for stage_dir in [DRAFTS_DIR, APPROVED_DIR, SCHEDULED_DIR]:
         if not stage_dir.exists():
             continue
@@ -64,6 +65,24 @@ def _find_post_dir(post_id):
                     data = json.load(f)
                 if data.get("id") == post_id:
                     return d, data
+
+    # Check published directory (year/month structure)
+    if PUBLISHED_DIR.exists():
+        for year_dir in PUBLISHED_DIR.iterdir():
+            if not year_dir.is_dir():
+                continue
+            for month_dir in year_dir.iterdir():
+                if not month_dir.is_dir():
+                    continue
+                for d in month_dir.iterdir():
+                    if not d.is_dir():
+                        continue
+                    pj = d / "post.json"
+                    if pj.exists():
+                        with open(pj, "r", encoding="utf-8") as f:
+                            data = json.load(f)
+                        if data.get("id") == post_id:
+                            return d, data
     return None, None
 
 
@@ -106,6 +125,32 @@ def schedule_page():
                            preview=preview,
                            calendar=calendar,
                            settings=settings)
+
+
+@app.route("/published")
+def published_page():
+    """Show published posts history."""
+    posts = []
+    if PUBLISHED_DIR.exists():
+        # Iterate through year/month structure
+        for year_dir in sorted(PUBLISHED_DIR.iterdir(), reverse=True):
+            if not year_dir.is_dir():
+                continue
+            for month_dir in sorted(year_dir.iterdir(), reverse=True):
+                if not month_dir.is_dir():
+                    continue
+                for post_dir in sorted(month_dir.iterdir(), reverse=True):
+                    if not post_dir.is_dir():
+                        continue
+                    post_json = post_dir / "post.json"
+                    if post_json.exists():
+                        with open(post_json, "r", encoding="utf-8") as f:
+                            post = json.load(f)
+                        post["_dir"] = str(post_dir)
+                        post["_year"] = year_dir.name
+                        post["_month"] = month_dir.name
+                        posts.append(post)
+    return render_template("published.html", posts=posts)
 
 
 # --- API endpoints ---

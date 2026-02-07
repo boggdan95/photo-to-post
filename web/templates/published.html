@@ -1,0 +1,80 @@
+{% extends "base.html" %}
+{% block title_extra %} - Publicados{% endblock %}
+
+{% block extra_css %}
+<style>
+    .posts-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(400px, 1fr)); gap: 1.5rem; }
+    .post-card { position: relative; }
+    .post-card .photos-strip { display: flex; gap: 4px; overflow-x: auto; padding: 4px; background: #000; }
+    .post-card .photos-strip img { height: 140px; width: auto; object-fit: cover; border-radius: 4px; }
+    .post-card .photo-number {
+        position: absolute; top: 8px; left: 8px;
+        background: rgba(0,0,0,0.7); color: #fff;
+        font-size: 0.7rem; padding: 2px 6px; border-radius: 4px;
+    }
+    .post-card .photo-wrapper { position: relative; display: inline-block; }
+    .post-card .post-body { padding: 1rem; }
+    .post-card .location { font-weight: 600; margin-bottom: 0.5rem; }
+    .post-card .photo-count { color: #999; font-size: 0.85rem; }
+    .caption-text { font-size: 0.9rem; color: #333; margin: 0.5rem 0; line-height: 1.4; max-height: 4.2rem; overflow: hidden; }
+    .hashtags { font-size: 0.8rem; color: #4361ee; margin-top: 0.5rem; }
+    .badge-published { background: #06d6a0; color: #fff; }
+    .meta-info { font-size: 0.8rem; color: #666; margin-top: 0.5rem; }
+    .meta-info a { color: #4361ee; }
+    .stats { display: flex; gap: 1rem; margin-top: 0.75rem; }
+    .stats .stat { font-size: 0.85rem; color: #666; }
+    .month-header { font-size: 1.1rem; font-weight: 600; color: #666; margin: 1.5rem 0 1rem; padding-bottom: 0.5rem; border-bottom: 1px solid #ddd; }
+    .month-header:first-child { margin-top: 0; }
+</style>
+{% endblock %}
+
+{% block content %}
+<h1>Posts Publicados</h1>
+
+{% if posts %}
+{% set current_month = namespace(value='') %}
+<div class="posts-grid">
+{% for post in posts %}
+    {% set month_key = post._year ~ '-' ~ post._month %}
+    {% if month_key != current_month.value %}
+        {% set current_month.value = month_key %}
+        </div>
+        <div class="month-header">{{ post._month }}/{{ post._year }}</div>
+        <div class="posts-grid">
+    {% endif %}
+    <div class="card post-card">
+        <div class="photos-strip">
+            {% for photo in post.photos %}
+            <div class="photo-wrapper">
+                <img src="/api/photo/{{ post.id }}/{{ photo.filename }}" alt="{{ photo.filename }}">
+                <span class="photo-number">{{ loop.index }}</span>
+            </div>
+            {% endfor %}
+        </div>
+        <div class="post-body">
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+                <span class="location">{{ post.location_display }}</span>
+                <span class="badge badge-published">publicado</span>
+            </div>
+            <span class="photo-count">{{ post.photos|length }} fotos</span>
+            <div class="caption-text">{{ post.caption.text[:150] }}{% if post.caption.text|length > 150 %}...{% endif %}</div>
+            <div class="hashtags">{{ post.caption.hashtags | join(' ') }}</div>
+            <div class="meta-info">
+                {% if post.schedule and post.schedule.published_at %}
+                Publicado: {{ post.schedule.published_at[:10] }} {{ post.schedule.published_at[11:16] }}
+                {% endif %}
+                {% if post.meta and post.meta.instagram_post_id %}
+                | IG ID: {{ post.meta.instagram_post_id }}
+                {% endif %}
+            </div>
+        </div>
+    </div>
+{% endfor %}
+</div>
+{% else %}
+<div class="empty-state">
+    <p>No hay posts publicados aun.</p>
+    <p style="margin-top:0.5rem;font-size:0.9rem;">Publica desde <a href="/approved">Aprobados</a> o programa en <a href="/schedule">Programar</a>.</p>
+</div>
+{% endif %}
+{% endblock %}
