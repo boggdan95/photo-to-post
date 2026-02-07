@@ -91,12 +91,7 @@ def _split_into_posts(photos, min_photos, max_photos):
             combined = posts[-1] + current_batch
             if len(combined) <= max_photos:
                 posts[-1] = combined
-            else:
-                # Keep as small post anyway
-                posts.append(current_batch)
-        else:
-            # Only group and it's small - keep it anyway
-            posts.append(current_batch)
+            # If can't merge and too small, discard (don't create small posts)
 
     return posts
 
@@ -144,6 +139,20 @@ def create_posts():
     groups = _scan_classified()
     if not groups:
         logger.info("No classified photos found in 02_classified/")
+        return []
+
+    # Filter out locations with fewer than min_photos
+    skipped = []
+    for (country, city), photos in list(groups.items()):
+        if len(photos) < min_photos:
+            skipped.append(f"{city}, {country} ({len(photos)} fotos)")
+            del groups[(country, city)]
+
+    if skipped:
+        logger.info(f"Omitidas {len(skipped)} ubicaciones con <{min_photos} fotos: {', '.join(skipped)}")
+
+    if not groups:
+        logger.info("No hay ubicaciones con suficientes fotos para crear posts")
         return []
 
     created = []
