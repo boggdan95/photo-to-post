@@ -413,6 +413,51 @@ def update_caption(post_id):
     return jsonify({"ok": True})
 
 
+@app.route("/api/post/<post_id>/regenerate-caption", methods=["POST"])
+def regenerate_caption(post_id):
+    """Regenerate caption using AI."""
+    post_dir, data = _find_post_dir(post_id)
+    if not post_dir:
+        return jsonify({"error": "Post not found"}), 404
+
+    try:
+        from scripts.caption_generator import generate_caption
+        from scripts.post_creator import _select_hashtags
+
+        country = data.get("country", "")
+        city = data.get("city", "")
+        photo_count = len(data.get("photos", []))
+
+        # Get date from first photo
+        first_photo = data.get("photos", [{}])[0]
+        taken_at = first_photo.get("taken_at", "")
+        date_str = taken_at[:10] if taken_at else ""
+
+        # Generate new caption
+        caption_text, ai_hashtags = generate_caption(country, city, photo_count, date_str)
+
+        # Get full hashtags
+        hashtags = _select_hashtags(country, city, ai_hashtags)
+
+        # Update post
+        data["caption"]["text"] = caption_text
+        data["caption"]["hashtags"] = hashtags
+        data["caption"]["generated_by"] = "claude-api"
+        data["caption"]["edited"] = False
+
+        with open(post_dir / "post.json", "w", encoding="utf-8") as f:
+            json.dump(data, f, ensure_ascii=False, indent=2)
+
+        return jsonify({
+            "ok": True,
+            "caption": caption_text,
+            "hashtags": hashtags
+        })
+
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
+
 def _return_photo_to_classified(photo_path, photo_entry, country, city):
     """Move a photo back to 02_classified."""
     if not photo_path.exists():

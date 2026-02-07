@@ -94,8 +94,12 @@
             </div>
             <span class="photo-count">{{ post.photos|length }} fotos</span>
 
-            <textarea class="caption-area" data-post-id="{{ post.id }}"
-                      onchange="saveCaption(this)">{{ post.caption.text }}</textarea>
+            <div style="display:flex;gap:0.5rem;align-items:flex-start;">
+                <textarea class="caption-area" data-post-id="{{ post.id }}" style="flex:1;"
+                          onchange="saveCaption(this)">{{ post.caption.text }}</textarea>
+                <button class="btn btn-sm" style="background:#666;color:#fff;font-size:0.7rem;padding:0.3rem 0.5rem;"
+                        onclick="regenerateCaption('{{ post.id }}')" title="Regenerar caption con IA">🔄 IA</button>
+            </div>
             <span class="save-indicator" id="saved-{{ post.id }}">Guardado</span>
 
             <textarea class="hashtags-area" data-post-id="{{ post.id }}"
@@ -126,7 +130,10 @@
     <div class="view-modal-content">
         <div class="view-modal-photos" id="view-modal-photos"></div>
         <div class="view-modal-info">
-            <h2 id="view-modal-location"></h2>
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:0.5rem;">
+                <h2 id="view-modal-location" style="margin:0;"></h2>
+                <button class="btn btn-sm" style="background:#666;color:#fff;" onclick="regenerateCaptionFromView()">🔄 Regenerar caption</button>
+            </div>
             <textarea id="view-modal-caption" onchange="saveViewCaption()"></textarea>
             <textarea class="hashtags-edit" id="view-modal-hashtags" onchange="saveViewHashtags()"></textarea>
             <div class="view-modal-actions">
@@ -185,6 +192,32 @@ function saveCaption(el) {
         ind.style.display = 'inline';
         setTimeout(() => ind.style.display = 'none', 2000);
     });
+}
+
+// Regenerate caption with AI
+async function regenerateCaption(postId) {
+    if (!confirm('Regenerar caption con IA? El caption actual se perderá.')) return;
+
+    try {
+        const res = await fetch(`/api/post/${postId}/regenerate-caption`, {method: 'POST'});
+        const data = await res.json();
+
+        if (data.ok) {
+            // Update textarea
+            const card = document.querySelector(`[data-post-id="${postId}"]`);
+            card.querySelector('.caption-area').value = data.caption;
+            card.querySelector('.hashtags-area').value = data.hashtags.join(' ');
+
+            const ind = document.getElementById(`saved-${postId}`);
+            ind.textContent = 'Regenerado!';
+            ind.style.display = 'inline';
+            setTimeout(() => ind.style.display = 'none', 2000);
+        } else {
+            alert('Error: ' + data.error);
+        }
+    } catch (e) {
+        alert('Error: ' + e.message);
+    }
 }
 
 // Save hashtags
@@ -309,6 +342,32 @@ function rejectFromView() {
             closeViewModal();
             document.querySelector(`[data-post-id="${viewPostId}"]`).remove();
         });
+}
+
+async function regenerateCaptionFromView() {
+    if (!confirm('Regenerar caption con IA? El caption actual se perderá.')) return;
+
+    try {
+        const res = await fetch(`/api/post/${viewPostId}/regenerate-caption`, {method: 'POST'});
+        const data = await res.json();
+
+        if (data.ok) {
+            // Update modal
+            document.getElementById('view-modal-caption').value = data.caption;
+            document.getElementById('view-modal-hashtags').value = data.hashtags.join(' ');
+
+            // Sync with card
+            const card = document.querySelector(`[data-post-id="${viewPostId}"]`);
+            card.querySelector('.caption-area').value = data.caption;
+            card.querySelector('.hashtags-area').value = data.hashtags.join(' ');
+
+            alert('Caption regenerado!');
+        } else {
+            alert('Error: ' + data.error);
+        }
+    } catch (e) {
+        alert('Error: ' + e.message);
+    }
 }
 
 // Close view modal on Escape
