@@ -20,6 +20,27 @@
     .post-check { width: 18px; height: 18px; }
     .bulk-bar { background: #1a1a2e; color: #fff; padding: 1rem 2rem; border-radius: 8px; margin-bottom: 1.5rem; display: flex; justify-content: space-between; align-items: center; }
     .save-indicator { font-size: 0.75rem; color: #2ec4b6; display: none; margin-left: 0.5rem; }
+
+    /* Split modal */
+    .split-modal { display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.8); z-index: 1000; justify-content: center; align-items: center; }
+    .split-modal.visible { display: flex; }
+    .split-modal-content { background: #fff; border-radius: 10px; max-width: 900px; width: 95%; max-height: 90vh; overflow-y: auto; }
+    .split-modal-header { padding: 1rem; border-bottom: 1px solid #eee; display: flex; justify-content: space-between; align-items: center; }
+    .split-modal-header h3 { margin: 0; }
+    .split-modal-close { background: none; border: none; font-size: 1.5rem; cursor: pointer; color: #666; }
+    .split-modal-body { padding: 1rem; }
+    .split-instructions { background: #f0f7ff; padding: 0.75rem; border-radius: 6px; margin-bottom: 1rem; font-size: 0.9rem; }
+    .split-photos { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 1rem; }
+    .split-photo { position: relative; cursor: pointer; }
+    .split-photo img { width: 120px; height: 120px; object-fit: cover; border-radius: 6px; border: 3px solid transparent; }
+    .split-photo.selected img { border-color: #e63946; }
+    .split-photo .photo-label { position: absolute; top: 4px; left: 4px; background: rgba(0,0,0,0.7); color: #fff; padding: 2px 6px; border-radius: 4px; font-size: 0.75rem; }
+    .split-photo.selected .photo-label { background: #e63946; }
+    .split-summary { display: flex; gap: 2rem; margin: 1rem 0; }
+    .split-summary div { padding: 0.5rem 1rem; background: #f5f5f5; border-radius: 6px; }
+    .split-summary .count { font-weight: 700; color: #4361ee; }
+    .split-summary .warn { color: #e63946; }
+    .split-modal-footer { padding: 1rem; border-top: 1px solid #eee; display: flex; justify-content: flex-end; gap: 0.5rem; }
 </style>
 {% endblock %}
 
@@ -67,7 +88,7 @@
                 <button class="btn btn-success btn-sm" onclick="approveOne('{{ post.id }}')">Aprobar</button>
                 <button class="btn btn-danger btn-sm" onclick="rejectOne('{{ post.id }}')">Rechazar</button>
                 {% if post.photos|length >= 6 %}
-                <button class="btn btn-primary btn-sm" onclick="splitPost('{{ post.id }}', {{ post.photos|length }})" title="Dividir en 2 posts">Dividir</button>
+                <button class="btn btn-primary btn-sm" onclick="openSplitModal('{{ post.id }}')" title="Dividir en 2 posts">Dividir</button>
                 {% endif %}
             </div>
         </div>
@@ -80,6 +101,33 @@
     <p style="margin-top:0.5rem;font-size:0.9rem;">Ejecuta <code>python run.py create-posts</code> para generar borradores.</p>
 </div>
 {% endif %}
+
+<!-- Split Modal -->
+<div class="split-modal" id="split-modal">
+    <div class="split-modal-content">
+        <div class="split-modal-header">
+            <h3>Dividir Post</h3>
+            <button class="split-modal-close" onclick="closeSplitModal()">&times;</button>
+        </div>
+        <div class="split-modal-body">
+            <div class="split-instructions">
+                Haz clic en las fotos que quieres <strong>mover al nuevo post</strong>. Las fotos no seleccionadas se quedan en el post original.
+            </div>
+            <div class="split-photos" id="split-photos"></div>
+            <div class="split-summary">
+                <div>Post original: <span class="count" id="split-keep">0</span> fotos</div>
+                <div>Nuevo post: <span class="count" id="split-move">0</span> fotos</div>
+            </div>
+            <div id="split-warning" style="color:#e63946;font-size:0.9rem;display:none;">
+                Ambos posts deben tener al menos 3 fotos.
+            </div>
+        </div>
+        <div class="split-modal-footer">
+            <button class="btn" style="background:#666;color:#fff;" onclick="closeSplitModal()">Cancelar</button>
+            <button class="btn btn-primary" id="split-confirm-btn" onclick="confirmSplit()">Dividir</button>
+        </div>
+    </div>
+</div>
 {% endblock %}
 
 {% block extra_js %}
@@ -137,30 +185,92 @@ function rejectOne(postId) {
         });
 }
 
-// Split post
-function splitPost(postId, totalPhotos) {
-    const splitAfter = prompt(
-        `Dividir post de ${totalPhotos} fotos.\n\n` +
-        `¿Despues de cuantas fotos dividir? (min 3, max ${totalPhotos - 3})`,
-        Math.floor(totalPhotos / 2)
-    );
-    if (!splitAfter) return;
+// Split post with selection modal
+let splitPostId = null;
+let splitPhotos = [];
+let selectedForNewPost = new Set();
 
-    const n = parseInt(splitAfter);
-    if (isNaN(n) || n < 3 || n > totalPhotos - 3) {
-        alert('Numero invalido. Ambas partes deben tener al menos 3 fotos.');
-        return;
+function openSplitModal(postId) {
+    splitPostId = postId;
+    selectedForNewPost.clear();
+
+    // Get photos from the strip
+    const strip = document.getElementById(`strip-${postId}`);
+    const imgs = strip.querySelectorAll('.photo-wrapper img');
+    splitPhotos = [...imgs].map(img => ({
+        filename: img.dataset.filename,
+        src: img.src
+    }));
+
+    // Build photo grid
+    const container = document.getElementById('split-photos');
+    container.innerHTML = splitPhotos.map((p, i) => `
+        <div class="split-photo" data-filename="${p.filename}" onclick="toggleSplitPhoto(this)">
+            <img src="${p.src}">
+            <span class="photo-label">${i + 1}</span>
+        </div>
+    `).join('');
+
+    updateSplitSummary();
+    document.getElementById('split-modal').classList.add('visible');
+}
+
+function closeSplitModal() {
+    document.getElementById('split-modal').classList.remove('visible');
+    splitPostId = null;
+    splitPhotos = [];
+    selectedForNewPost.clear();
+}
+
+function toggleSplitPhoto(el) {
+    const filename = el.dataset.filename;
+    if (selectedForNewPost.has(filename)) {
+        selectedForNewPost.delete(filename);
+        el.classList.remove('selected');
+    } else {
+        selectedForNewPost.add(filename);
+        el.classList.add('selected');
     }
+    updateSplitSummary();
+}
 
-    fetch(`/api/post/${postId}/split`, {
+function updateSplitSummary() {
+    const total = splitPhotos.length;
+    const moveCount = selectedForNewPost.size;
+    const keepCount = total - moveCount;
+
+    document.getElementById('split-keep').textContent = keepCount;
+    document.getElementById('split-move').textContent = moveCount;
+
+    const warning = document.getElementById('split-warning');
+    const btn = document.getElementById('split-confirm-btn');
+
+    if (keepCount < 3 || moveCount < 3) {
+        warning.style.display = 'block';
+        btn.disabled = true;
+        btn.style.opacity = '0.5';
+    } else {
+        warning.style.display = 'none';
+        btn.disabled = false;
+        btn.style.opacity = '1';
+    }
+}
+
+function confirmSplit() {
+    if (selectedForNewPost.size < 3) return;
+
+    const photosToMove = [...selectedForNewPost];
+
+    fetch(`/api/post/${splitPostId}/split-select`, {
         method: 'POST',
         headers: {'Content-Type': 'application/json'},
-        body: JSON.stringify({split_after: n})
+        body: JSON.stringify({photos_to_move: photosToMove})
     })
     .then(r => r.json())
     .then(res => {
         if (res.ok) {
-            alert(`Post dividido: ${res.original_photos} + ${res.new_post_photos} fotos`);
+            closeSplitModal();
+            alert(`Post dividido: ${res.original_photos} + ${res.new_post_photos} fotos.\nEl nuevo post necesita caption.`);
             location.reload();
         } else {
             alert('Error: ' + res.error);

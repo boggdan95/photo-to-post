@@ -710,6 +710,112 @@ def split_post(post_id):
     })
 
 
+@app.route("/api/post/<post_id>/split-select", methods=["POST"])
+def split_post_select(post_id):
+    """Split a post by selecting specific photos to move to new post."""
+    post_dir, data = _find_post_dir(post_id)
+    if not post_dir:
+        return jsonify({"error": "Post not found"}), 404
+
+    body = request.get_json()
+    photos_to_move = set(body.get("photos_to_move", []))
+
+    if not photos_to_move:
+        return jsonify({"error": "No photos selected to move"}), 400
+
+    photos = data.get("photos", [])
+    settings = load_settings()
+    min_photos = settings.get("carousel", {}).get("min_photos", 3)
+
+    # Separate photos
+    keep_photos = [p for p in photos if p["filename"] not in photos_to_move]
+    move_photos = [p for p in photos if p["filename"] in photos_to_move]
+
+    if len(keep_photos) < min_photos or len(move_photos) < min_photos:
+        return jsonify({
+            "error": f"Both posts must have at least {min_photos} photos"
+        }), 400
+
+    # Create new post
+    new_post_id = f"post_{datetime.now().strftime('%Y%m%d')}_{datetime.now().strftime('%H%M%S')}"
+    new_draft_dir = DRAFTS_DIR / f"draft_{new_post_id}"
+    new_photos_dir = new_draft_dir / "photos"
+    new_photos_dir.mkdir(parents=True, exist_ok=True)
+
+    photos_dir = post_dir / "photos"
+
+    # Move selected photos to new post and renumber
+    new_photo_entries = []
+    for i, entry in enumerate(move_photos, 1):
+        old_path = photos_dir / entry["filename"]
+        new_name = f"{i:02d}.jpg"
+        if old_path.exists():
+            shutil.move(str(old_path), str(new_photos_dir / new_name))
+        new_entry = dict(entry)
+        new_entry["filename"] = new_name
+        new_photo_entries.append(new_entry)
+
+    # Create new post.json with placeholder caption
+    new_post_data = {
+        "id": new_post_id,
+        "status": "draft",
+        "country": data["country"],
+        "city": data["city"],
+        "location_display": data["location_display"],
+        "photos": new_photo_entries,
+        "caption": {
+            "text": "[Editar caption]",
+            "hashtags": data["caption"]["hashtags"],
+            "generated_by": "split",
+            "edited": False,
+        },
+        "schedule": {
+            "suggested_date": None,
+            "suggested_time": None,
+            "scheduled_at": None,
+            "published_at": None,
+        },
+        "meta": {
+            "created_at": datetime.now().isoformat(),
+            "approved_at": None,
+            "instagram_post_id": None,
+            "split_from": post_id,
+        },
+    }
+
+    with open(new_draft_dir / "post.json", "w", encoding="utf-8") as f:
+        json.dump(new_post_data, f, ensure_ascii=False, indent=2)
+
+    # Renumber remaining photos in original post
+    temp_dir = post_dir / "_temp_split"
+    temp_dir.mkdir(exist_ok=True)
+
+    updated_entries = []
+    for i, entry in enumerate(keep_photos, 1):
+        old_path = photos_dir / entry["filename"]
+        new_name = f"{i:02d}.jpg"
+        if old_path.exists():
+            shutil.move(str(old_path), str(temp_dir / new_name))
+        new_entry = dict(entry)
+        new_entry["filename"] = new_name
+        updated_entries.append(new_entry)
+
+    for f in temp_dir.iterdir():
+        shutil.move(str(f), str(photos_dir / f.name))
+    temp_dir.rmdir()
+
+    data["photos"] = updated_entries
+    with open(post_dir / "post.json", "w", encoding="utf-8") as f:
+        json.dump(data, f, ensure_ascii=False, indent=2)
+
+    return jsonify({
+        "ok": True,
+        "original_photos": len(keep_photos),
+        "new_post_id": new_post_id,
+        "new_post_photos": len(move_photos)
+    })
+
+
 @app.route("/api/posts/approve-bulk", methods=["POST"])
 def approve_bulk():
     """Approve multiple posts at once."""
