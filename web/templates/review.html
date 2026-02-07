@@ -66,6 +66,9 @@
                 <input type="checkbox" class="post-check" value="{{ post.id }}">
                 <button class="btn btn-success btn-sm" onclick="approveOne('{{ post.id }}')">Aprobar</button>
                 <button class="btn btn-danger btn-sm" onclick="rejectOne('{{ post.id }}')">Rechazar</button>
+                {% if post.photos|length >= 6 %}
+                <button class="btn btn-primary btn-sm" onclick="splitPost('{{ post.id }}', {{ post.photos|length }})" title="Dividir en 2 posts">Dividir</button>
+                {% endif %}
             </div>
         </div>
     </div>
@@ -123,12 +126,46 @@ function approveOne(postId) {
 
 // Reject one
 function rejectOne(postId) {
-    if (!confirm('Eliminar este borrador?')) return;
+    if (!confirm('Rechazar este borrador? Las fotos volveran a Clasificados.')) return;
     fetch(`/api/post/${postId}/reject`, {method: 'POST'})
         .then(r => r.json())
-        .then(() => {
+        .then(res => {
             document.querySelector(`[data-post-id="${postId}"]`).remove();
+            if (res.photos_returned) {
+                alert(`${res.photos_returned} foto(s) devueltas a Clasificados`);
+            }
         });
+}
+
+// Split post
+function splitPost(postId, totalPhotos) {
+    const splitAfter = prompt(
+        `Dividir post de ${totalPhotos} fotos.\n\n` +
+        `¿Despues de cuantas fotos dividir? (min 3, max ${totalPhotos - 3})`,
+        Math.floor(totalPhotos / 2)
+    );
+    if (!splitAfter) return;
+
+    const n = parseInt(splitAfter);
+    if (isNaN(n) || n < 3 || n > totalPhotos - 3) {
+        alert('Numero invalido. Ambas partes deben tener al menos 3 fotos.');
+        return;
+    }
+
+    fetch(`/api/post/${postId}/split`, {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({split_after: n})
+    })
+    .then(r => r.json())
+    .then(res => {
+        if (res.ok) {
+            alert(`Post dividido: ${res.original_photos} + ${res.new_post_photos} fotos`);
+            location.reload();
+        } else {
+            alert('Error: ' + res.error);
+        }
+    });
 }
 
 // Bulk approve
@@ -151,7 +188,7 @@ function deletePhoto(postId, filename) {
         alert('No puedes eliminar la ultima foto. Usa "Rechazar" para eliminar el post completo.');
         return;
     }
-    if (!confirm('Eliminar esta foto del carrusel?')) return;
+    if (!confirm('Quitar esta foto del carrusel? (volvera a Clasificados)')) return;
     fetch(`/api/post/${postId}/photo/${filename}`, {method: 'DELETE'})
         .then(r => r.json())
         .then(res => {
