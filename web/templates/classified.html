@@ -93,10 +93,21 @@
 </div>
 
 {% set low_count_locations = locations|selectattr('count', 'lt', min_photos)|list %}
+{% set ready_locations = locations|selectattr('count', 'ge', min_photos)|list %}
+
+<div style="display:flex;gap:1rem;margin-bottom:1rem;">
+    <div style="background:#2ec4b6;color:#fff;padding:0.5rem 1rem;border-radius:6px;">
+        <strong>{{ ready_locations|length }}</strong> listas para post
+    </div>
+    <div style="background:#ffd166;color:#333;padding:0.5rem 1rem;border-radius:6px;">
+        <strong>{{ low_count_locations|length }}</strong> esperando más fotos
+    </div>
+</div>
+
 {% if low_count_locations %}
 <div class="warning-box">
-    <h4>{{ low_count_locations|length }} ubicaciones con pocas fotos</h4>
-    <p>Las ubicaciones con menos de {{ min_photos }} fotos no generaran posts. Puedes mover sus fotos a otra ubicacion cercana.</p>
+    <h4>Ubicaciones esperando más fotos</h4>
+    <p>Las ubicaciones con menos de {{ min_photos }} fotos se quedan aquí hasta que agregues más fotos del mismo lugar, o puedes moverlas a otra ubicación cercana.</p>
 </div>
 {% endif %}
 
