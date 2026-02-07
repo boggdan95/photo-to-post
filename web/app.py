@@ -902,6 +902,60 @@ def confirm_schedule():
         return jsonify({"error": str(e)}), 500
 
 
+@app.route("/api/schedule/confirm-custom", methods=["POST"])
+def confirm_schedule_custom():
+    """Execute scheduled posts with custom order and dates from UI."""
+    body = request.get_json()
+    schedule_data = body.get("schedule", [])
+
+    if not schedule_data:
+        return jsonify({"error": "No schedule data provided"}), 400
+
+    settings = load_settings()
+    cloud_mode = settings.get("cloud_mode", False)
+
+    scheduled_count = 0
+
+    for item in schedule_data:
+        post_id = item.get("post_id")
+        scheduled_date = item.get("scheduled_date")
+        scheduled_time = item.get("scheduled_time")
+
+        if not all([post_id, scheduled_date, scheduled_time]):
+            continue
+
+        # Find post in approved
+        post_dir = APPROVED_DIR / f"post_{post_id}"
+        if not post_dir.exists():
+            continue
+
+        post_json = post_dir / "post.json"
+        with open(post_json, "r", encoding="utf-8") as f:
+            data = json.load(f)
+
+        # Update schedule
+        scheduled_at = f"{scheduled_date}T{scheduled_time}:00"
+        data["status"] = "scheduled"
+        data["schedule"]["scheduled_at"] = scheduled_at
+
+        # Upload to Cloudinary if cloud_mode
+        if cloud_mode:
+            from scripts.scheduler import _upload_photos_to_cloudinary
+            data["photos"] = _upload_photos_to_cloudinary(post_dir, data["photos"])
+
+        # Move to scheduled
+        SCHEDULED_DIR.mkdir(parents=True, exist_ok=True)
+        dest = SCHEDULED_DIR / post_dir.name
+        shutil.move(str(post_dir), str(dest))
+
+        with open(dest / "post.json", "w", encoding="utf-8") as f:
+            json.dump(data, f, ensure_ascii=False, indent=2)
+
+        scheduled_count += 1
+
+    return jsonify({"ok": True, "count": scheduled_count})
+
+
 @app.route("/api/post/<post_id>/publish-now", methods=["POST"])
 def publish_now(post_id):
     """Publish an approved post immediately."""

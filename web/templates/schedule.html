@@ -14,11 +14,20 @@
         display: flex; align-items: center; gap: 1rem;
         padding: 0.75rem; background: #f8f9fa; border-radius: 6px;
         border-left: 4px solid #4361ee;
+        cursor: grab;
     }
-    .preview-item .date-time { min-width: 140px; font-weight: 600; color: #4361ee; }
+    .preview-item:hover { background: #e8eaf6; }
+    .preview-item.dragging { opacity: 0.5; }
+    .preview-item .drag-handle { color: #999; cursor: grab; }
+    .preview-item .date-time {
+        min-width: 140px; font-weight: 600; color: #4361ee;
+        cursor: pointer; padding: 0.25rem; border-radius: 4px;
+    }
+    .preview-item .date-time:hover { background: #ddd; }
     .preview-item .location { flex: 1; }
     .preview-item .country { background: #e8eaf6; color: #4361ee; padding: 0.2rem 0.5rem; border-radius: 4px; font-size: 0.8rem; }
     .preview-item .photos { color: #999; font-size: 0.85rem; }
+    .preview-item .order-num { background: #4361ee; color: #fff; width: 24px; height: 24px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 0.8rem; font-weight: 600; }
 
     /* Calendar */
     .calendar { background: #fff; border-radius: 8px; }
@@ -76,10 +85,17 @@
     <!-- Preview column -->
     <div>
         <div class="section-title">Preview de programacion ({{ preview|length }} posts)</div>
-        <div class="preview-list">
+        <p style="color:#666;font-size:0.85rem;margin-bottom:0.75rem;">
+            Arrastra para reordenar. Click en fecha/hora para cambiar.
+        </p>
+        <div class="preview-list" id="preview-list">
             {% for item in preview %}
-            <div class="preview-item">
-                <div class="date-time">{{ item.scheduled_date }}<br>{{ item.scheduled_time }}</div>
+            <div class="preview-item" draggable="true" data-post-id="{{ item.post_id }}" data-index="{{ loop.index0 }}">
+                <span class="order-num">{{ loop.index }}</span>
+                <span class="drag-handle">☰</span>
+                <div class="date-time" onclick="editDateTime(this)" data-date="{{ item.scheduled_date }}" data-time="{{ item.scheduled_time }}">
+                    {{ item.scheduled_date }}<br>{{ item.scheduled_time }}
+                </div>
                 <div class="location">{{ item.location }}</div>
                 <span class="country">{{ item.country }}</span>
                 <span class="photos">{{ item.photos }} fotos</span>
@@ -89,7 +105,8 @@
 
         <div class="actions">
             <button class="btn btn-success" onclick="confirmSchedule()">Confirmar programacion</button>
-            <span style="color:#999;font-size:0.85rem;">Esto movera los posts a "Programados"</span>
+            <button class="btn" style="background:#666;color:#fff;" onclick="regenerateSchedule()">Regenerar fechas</button>
+            <span style="color:#999;font-size:0.85rem;">Confirmar movera los posts a "Programados"</span>
         </div>
     </div>
 
@@ -193,10 +210,16 @@ function renderCalendar() {
 }
 
 async function confirmSchedule() {
-    if (!confirm('Confirmar la programacion de {{ preview|length }} posts?')) return;
+    updatePreviewDataFromDOM();
+
+    if (!confirm(`Confirmar la programacion de ${scheduleData.length} posts?`)) return;
 
     try {
-        const res = await fetch('/api/schedule/confirm', {method: 'POST'});
+        const res = await fetch('/api/schedule/confirm-custom', {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify({schedule: scheduleData})
+        });
         const data = await res.json();
         if (data.ok) {
             alert(`${data.count} posts programados exitosamente!`);
@@ -211,6 +234,125 @@ async function confirmSchedule() {
 
 renderCalendar();
 renderInstagramGrid();
+initDragAndDrop();
+
+// Store editable schedule
+let scheduleData = [...previewData];
+
+function initDragAndDrop() {
+    const list = document.getElementById('preview-list');
+    if (!list) return;
+
+    let dragSrc = null;
+
+    list.querySelectorAll('.preview-item').forEach(item => {
+        item.addEventListener('dragstart', function(e) {
+            dragSrc = this;
+            this.classList.add('dragging');
+            e.dataTransfer.effectAllowed = 'move';
+        });
+
+        item.addEventListener('dragend', function() {
+            this.classList.remove('dragging');
+        });
+
+        item.addEventListener('dragover', function(e) {
+            e.preventDefault();
+            e.dataTransfer.dropEffect = 'move';
+        });
+
+        item.addEventListener('drop', function(e) {
+            e.preventDefault();
+            if (dragSrc !== this) {
+                const allItems = [...list.querySelectorAll('.preview-item')];
+                const fromIdx = allItems.indexOf(dragSrc);
+                const toIdx = allItems.indexOf(this);
+
+                // Reorder in DOM
+                if (fromIdx < toIdx) {
+                    list.insertBefore(dragSrc, this.nextSibling);
+                } else {
+                    list.insertBefore(dragSrc, this);
+                }
+
+                // Reorder data and recalculate dates
+                reorderSchedule();
+            }
+        });
+    });
+}
+
+function reorderSchedule() {
+    const list = document.getElementById('preview-list');
+    const items = list.querySelectorAll('.preview-item');
+
+    // Update order numbers and reassign dates from original schedule
+    items.forEach((item, idx) => {
+        item.querySelector('.order-num').textContent = idx + 1;
+
+        // Use the date/time slot from original position
+        if (previewData[idx]) {
+            const dateTime = item.querySelector('.date-time');
+            dateTime.dataset.date = previewData[idx].scheduled_date;
+            dateTime.dataset.time = previewData[idx].scheduled_time;
+            dateTime.innerHTML = `${previewData[idx].scheduled_date}<br>${previewData[idx].scheduled_time}`;
+        }
+    });
+
+    // Update calendar
+    updatePreviewDataFromDOM();
+    renderCalendar();
+}
+
+function updatePreviewDataFromDOM() {
+    const items = document.querySelectorAll('.preview-item');
+    scheduleData = [];
+    items.forEach((item, idx) => {
+        const dateTime = item.querySelector('.date-time');
+        scheduleData.push({
+            post_id: item.dataset.postId,
+            scheduled_date: dateTime.dataset.date,
+            scheduled_time: dateTime.dataset.time,
+            location: item.querySelector('.location').textContent,
+            country: item.querySelector('.country').textContent,
+            photos: parseInt(item.querySelector('.photos').textContent)
+        });
+    });
+}
+
+function editDateTime(el) {
+    const currentDate = el.dataset.date;
+    const currentTime = el.dataset.time;
+
+    const newDate = prompt('Fecha (YYYY-MM-DD):', currentDate);
+    if (!newDate) return;
+
+    const newTime = prompt('Hora (HH:MM):', currentTime);
+    if (!newTime) return;
+
+    // Validate format
+    if (!/^\d{4}-\d{2}-\d{2}$/.test(newDate)) {
+        alert('Formato de fecha invalido. Use YYYY-MM-DD');
+        return;
+    }
+    if (!/^\d{2}:\d{2}$/.test(newTime)) {
+        alert('Formato de hora invalido. Use HH:MM');
+        return;
+    }
+
+    el.dataset.date = newDate;
+    el.dataset.time = newTime;
+    el.innerHTML = `${newDate}<br>${newTime}`;
+
+    updatePreviewDataFromDOM();
+    renderCalendar();
+}
+
+function regenerateSchedule() {
+    if (confirm('Regenerar fechas automaticamente? Los cambios manuales se perderan.')) {
+        location.reload();
+    }
+}
 
 function renderInstagramGrid() {
     const container = document.getElementById('instagram-grid');
