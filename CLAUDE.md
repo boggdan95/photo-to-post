@@ -56,8 +56,8 @@ web/
 
 ## UI Web (http://localhost:5001)
 - **/classified** — Ver fotos clasificadas por ubicación, mover/merge ubicaciones con pocas fotos
-- **/review** — Revisar borradores: reordenar, eliminar fotos, editar caption, dividir posts grandes, aprobar/rechazar
-- **/approved** — Posts aprobados: ver carrusel con orden final, botón "Publicar ahora"
+- **/review** — Revisar borradores: vista expandida, reordenar, eliminar, dividir (selector visual), aprobar/rechazar
+- **/approved** — Posts aprobados: publicar ahora o regresar a Review con "Editar"
 - **/schedule** — Programación: preview de fechas, calendario mensual, preview del grid de Instagram
 - **/published** — Historial de posts publicados con fecha e ID de Instagram
 - **/settings** — Configuración: editar todo sin tocar JSON (idioma, posts/semana, horarios, grid_mode, cloud_mode, hashtags)
@@ -114,8 +114,10 @@ Para publicación automática local:
 ## Comportamiento importante
 - **min_photos**: Ubicaciones con menos de 3 fotos NO generan posts (configurable en `carousel.min_photos`)
 - **Fotos no se pierden**: Al eliminar foto de carrusel o rechazar post, las fotos regresan a `02_classified`
-- **Dividir posts**: Posts con 6+ fotos pueden dividirse en dos desde Review
+- **Dividir posts**: Posts con 6+ fotos pueden dividirse con selector visual (click en fotos a mover)
 - **Merge ubicaciones**: En /classified puedes fusionar ubicaciones pequeñas con otras cercanas
+- **Regresar a Review**: Posts aprobados pueden volver a Review con botón "Editar" para modificarlos
+- **Vista expandida**: En Review, botón "Ver" abre modal con fotos grandes y edición de caption
 
 ## Notas técnicas
 - Meta access token expira en ~60 días, renovar en Graph API Explorer y extender a long-lived
