@@ -44,8 +44,9 @@
             <span class="photo-count">{{ post.photos|length }} fotos</span>
             <div class="caption-text">{{ post.caption.text }}</div>
             <div class="hashtags">{{ post.caption.hashtags | join(' ') }}</div>
-            <div style="margin-top: 1rem;">
+            <div style="margin-top: 1rem; display: flex; gap: 0.5rem;">
                 <button class="btn btn-primary btn-sm" onclick="publishNow('{{ post.id }}', this)">Publicar ahora</button>
+                <button class="btn btn-sm" style="background:#666;color:#fff;" onclick="unapprove('{{ post.id }}')" title="Regresar a Review para editar">Editar</button>
             </div>
         </div>
     </div>
@@ -61,6 +62,22 @@
 
 {% block extra_js %}
 <script>
+async function unapprove(postId) {
+    if (!confirm('Regresar este post a Review para editarlo?')) return;
+
+    try {
+        const res = await fetch(`/api/post/${postId}/unapprove`, {method: 'POST'});
+        const data = await res.json();
+        if (data.ok) {
+            location.reload();
+        } else {
+            alert('Error: ' + data.error);
+        }
+    } catch (e) {
+        alert('Error: ' + e.message);
+    }
+}
+
 async function publishNow(postId, btn) {
     if (!confirm('Publicar este post ahora en Instagram?')) return;
 

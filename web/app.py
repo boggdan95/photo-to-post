@@ -553,6 +553,32 @@ def approve_post(post_id):
     return jsonify({"ok": True, "status": "approved"})
 
 
+@app.route("/api/post/<post_id>/unapprove", methods=["POST"])
+def unapprove_post(post_id):
+    """Move an approved post back to drafts for further editing."""
+    post_dir = APPROVED_DIR / f"post_{post_id}"
+    if not post_dir.exists():
+        return jsonify({"error": "Post not found in approved"}), 404
+
+    post_json = post_dir / "post.json"
+    with open(post_json, "r", encoding="utf-8") as f:
+        data = json.load(f)
+
+    # Update status back to draft
+    data["status"] = "draft"
+    data["meta"]["approved_at"] = None
+
+    # Move back to drafts
+    dest = DRAFTS_DIR / f"draft_{post_id}"
+    DRAFTS_DIR.mkdir(parents=True, exist_ok=True)
+    shutil.move(str(post_dir), str(dest))
+
+    with open(dest / "post.json", "w", encoding="utf-8") as f:
+        json.dump(data, f, ensure_ascii=False, indent=2)
+
+    return jsonify({"ok": True, "status": "draft"})
+
+
 @app.route("/api/post/<post_id>/reject", methods=["POST"])
 def reject_post(post_id):
     """Reject a draft and return photos to classified."""
