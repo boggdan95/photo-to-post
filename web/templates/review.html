@@ -21,6 +21,23 @@
     .bulk-bar { background: #1a1a2e; color: #fff; padding: 1rem 2rem; border-radius: 8px; margin-bottom: 1.5rem; display: flex; justify-content: space-between; align-items: center; }
     .save-indicator { font-size: 0.75rem; color: #2ec4b6; display: none; margin-left: 0.5rem; }
 
+    /* Expand post button */
+    .expand-btn { position: absolute; top: 8px; right: 8px; background: rgba(0,0,0,0.7); color: #fff; border: none; border-radius: 4px; padding: 4px 8px; cursor: pointer; font-size: 0.8rem; z-index: 5; }
+    .expand-btn:hover { background: rgba(0,0,0,0.9); }
+
+    /* View modal */
+    .view-modal { display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.9); z-index: 1000; overflow-y: auto; }
+    .view-modal.visible { display: block; }
+    .view-modal-content { max-width: 1000px; margin: 2rem auto; padding: 0 1rem; }
+    .view-modal-close { position: fixed; top: 20px; right: 30px; color: #fff; font-size: 2rem; cursor: pointer; z-index: 1001; }
+    .view-modal-photos { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 12px; margin-bottom: 1.5rem; }
+    .view-modal-photos img { width: 100%; height: 280px; object-fit: cover; border-radius: 8px; }
+    .view-modal-info { background: #fff; padding: 1.5rem; border-radius: 10px; }
+    .view-modal-info h2 { margin: 0 0 1rem 0; }
+    .view-modal-info textarea { width: 100%; border: 1px solid #ddd; border-radius: 6px; padding: 0.75rem; font-size: 1rem; resize: vertical; min-height: 100px; font-family: inherit; }
+    .view-modal-info .hashtags-edit { min-height: 60px; color: #4361ee; margin-top: 0.75rem; }
+    .view-modal-actions { margin-top: 1rem; display: flex; gap: 0.5rem; }
+
     /* Split modal */
     .split-modal { display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.8); z-index: 1000; justify-content: center; align-items: center; }
     .split-modal.visible { display: flex; }
@@ -58,6 +75,7 @@
 <div class="posts-grid">
 {% for post in posts %}
     <div class="card post-card" data-post-id="{{ post.id }}">
+        <button class="expand-btn" onclick="openViewModal('{{ post.id }}')" title="Ver en grande">⛶ Ver</button>
         <div class="photos-strip" id="strip-{{ post.id }}">
             {% for photo in post.photos %}
             <div class="photo-wrapper">
@@ -101,6 +119,24 @@
     <p style="margin-top:0.5rem;font-size:0.9rem;">Ejecuta <code>python run.py create-posts</code> para generar borradores.</p>
 </div>
 {% endif %}
+
+<!-- View Modal -->
+<div class="view-modal" id="view-modal">
+    <span class="view-modal-close" onclick="closeViewModal()">&times;</span>
+    <div class="view-modal-content">
+        <div class="view-modal-photos" id="view-modal-photos"></div>
+        <div class="view-modal-info">
+            <h2 id="view-modal-location"></h2>
+            <textarea id="view-modal-caption" onchange="saveViewCaption()"></textarea>
+            <textarea class="hashtags-edit" id="view-modal-hashtags" onchange="saveViewHashtags()"></textarea>
+            <div class="view-modal-actions">
+                <button class="btn btn-success" onclick="approveFromView()">Aprobar</button>
+                <button class="btn btn-danger" onclick="rejectFromView()">Rechazar</button>
+                <button class="btn btn-primary" id="view-split-btn" style="display:none;" onclick="closeViewModal(); openSplitModal(viewPostId);">Dividir</button>
+            </div>
+        </div>
+    </div>
+</div>
 
 <!-- Split Modal -->
 <div class="split-modal" id="split-modal">
@@ -184,6 +220,101 @@ function rejectOne(postId) {
             }
         });
 }
+
+// View post modal
+let viewPostId = null;
+
+function openViewModal(postId) {
+    viewPostId = postId;
+    const card = document.querySelector(`[data-post-id="${postId}"]`);
+    const strip = document.getElementById(`strip-${postId}`);
+    const imgs = strip.querySelectorAll('.photo-wrapper img');
+
+    // Build photo grid
+    const photosContainer = document.getElementById('view-modal-photos');
+    photosContainer.innerHTML = [...imgs].map(img =>
+        `<img src="${img.src}" alt="">`
+    ).join('');
+
+    // Set location
+    document.getElementById('view-modal-location').textContent =
+        card.querySelector('.location').textContent;
+
+    // Set caption and hashtags
+    document.getElementById('view-modal-caption').value =
+        card.querySelector('.caption-area').value;
+    document.getElementById('view-modal-hashtags').value =
+        card.querySelector('.hashtags-area').value;
+
+    // Show/hide split button
+    const splitBtn = document.getElementById('view-split-btn');
+    if (imgs.length >= 6) {
+        splitBtn.style.display = 'inline-block';
+    } else {
+        splitBtn.style.display = 'none';
+    }
+
+    document.getElementById('view-modal').classList.add('visible');
+    document.body.style.overflow = 'hidden';
+}
+
+function closeViewModal() {
+    document.getElementById('view-modal').classList.remove('visible');
+    document.body.style.overflow = '';
+    viewPostId = null;
+}
+
+function saveViewCaption() {
+    const text = document.getElementById('view-modal-caption').value;
+    fetch(`/api/post/${viewPostId}/caption`, {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({text})
+    }).then(() => {
+        // Sync with card
+        const card = document.querySelector(`[data-post-id="${viewPostId}"]`);
+        card.querySelector('.caption-area').value = text;
+    });
+}
+
+function saveViewHashtags() {
+    const text = document.getElementById('view-modal-hashtags').value;
+    const tags = text.split(/\s+/).filter(t => t.startsWith('#'));
+    fetch(`/api/post/${viewPostId}/caption`, {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({hashtags: tags})
+    }).then(() => {
+        // Sync with card
+        const card = document.querySelector(`[data-post-id="${viewPostId}"]`);
+        card.querySelector('.hashtags-area').value = tags.join(' ');
+    });
+}
+
+function approveFromView() {
+    if (!confirm('Aprobar este post?')) return;
+    fetch(`/api/post/${viewPostId}/approve`, {method: 'POST'})
+        .then(r => r.json())
+        .then(() => {
+            closeViewModal();
+            document.querySelector(`[data-post-id="${viewPostId}"]`).remove();
+        });
+}
+
+function rejectFromView() {
+    if (!confirm('Rechazar este borrador? Las fotos volveran a Clasificados.')) return;
+    fetch(`/api/post/${viewPostId}/reject`, {method: 'POST'})
+        .then(r => r.json())
+        .then(() => {
+            closeViewModal();
+            document.querySelector(`[data-post-id="${viewPostId}"]`).remove();
+        });
+}
+
+// Close view modal on Escape
+document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && viewPostId) closeViewModal();
+});
 
 // Split post with selection modal
 let splitPostId = null;
