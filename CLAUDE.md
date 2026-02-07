@@ -118,6 +118,7 @@ Para publicación automática local:
 - **Merge ubicaciones**: En /classified puedes fusionar ubicaciones pequeñas con otras cercanas
 - **Regresar a Review**: Posts aprobados pueden volver a Review con botón "Editar" para modificarlos
 - **Vista expandida**: En Review, botón "Ver" abre modal con fotos grandes y edición de caption
+- **Regenerar caption**: Botón "🔄 IA" permite regenerar caption con contexto opcional (ej: "pirámides, amanecer, drone")
 
 ## Notas técnicas
 - Meta access token expira en ~60 días, renovar en Graph API Explorer y extender a long-lived
@@ -126,3 +127,5 @@ Para publicación automática local:
 - **Carruseles**: El publisher espera a que Meta procese cada imagen (status FINISHED) antes de publicar
 - Si cloud_mode=true, las URLs de Cloudinary se guardan en post.json al programar
 - El publisher usa URLs existentes si ya están en post.json, evita subir duplicados
+- **Modelos Claude**: Sonnet para captions (económico), Haiku para clasificación por visión (más barato aún)
+- **Captions**: NO analiza fotos, usa ubicación + fecha + contexto opcional del usuario
