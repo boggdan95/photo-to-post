@@ -1,0 +1,71 @@
+{
+  "id": "post_20260203_194422",
+  "status": "published",
+  "country": "México",
+  "city": "Ciudad de México",
+  "location_display": "Ciudad de México, México",
+  "photos": [
+    {
+      "filename": "01.jpg",
+      "original_name": "20260115_20260115_215637.jpg",
+      "gps": {
+        "lat": 19.434487,
+        "lon": -99.141436
+      },
+      "taken_at": "2026-01-15T21:56:37"
+    },
+    {
+      "filename": "02.jpg",
+      "original_name": "20260115_20260115_204634.jpg",
+      "gps": {
+        "lat": 19.433924,
+        "lon": -99.140654
+      },
+      "taken_at": "2026-01-15T20:46:34"
+    },
+    {
+      "filename": "03.jpg",
+      "original_name": "20260115_20260115_215603.jpg",
+      "gps": {
+        "lat": 19.434479,
+        "lon": -99.14143
+      },
+      "taken_at": "2026-01-15T21:56:02"
+    },
+    {
+      "filename": "04.jpg",
+      "original_name": "20260115_20260115_204637.jpg",
+      "gps": {
+        "lat": 19.433924,
+        "lon": -99.140654
+      },
+      "taken_at": "2026-01-15T20:46:37"
+    }
+  ],
+  "caption": {
+    "text": "Caminar por las calles del Centro Histórico al amanecer me recordó por qué esta ciudad sigue siendo mi favorita para fotografiar. Con más de 1,400 edificios históricos concentrados en solo 9 kilómetros cuadrados, es el centro colonial más grande de América Latina y Patrimonio de la Humanidad desde 1987. La luz dorada sobre la arquitectura virreinal y los volcanes que asoman a lo lejos crean una combinación que nunca me cansa de capturar 📸",
+    "hashtags": [
+      "#centrohistoricocdmx",
+      "#ciudaddemexico",
+      "#patrimoniodelaumanidad",
+      "#naturephotography",
+      "#landscape",
+      "#photooftheday",
+      "#visitmexico",
+      "#mexico"
+    ],
+    "generated_by": "claude-api",
+    "edited": false
+  },
+  "schedule": {
+    "suggested_date": null,
+    "suggested_time": null,
+    "scheduled_at": "2026-02-03T20:04:07.475214",
+    "published_at": "2026-02-03T20:04:56.096534"
+  },
+  "meta": {
+    "created_at": "2026-02-03T19:44:30.780804",
+    "approved_at": "2026-02-03T19:46:43.405609",
+    "instagram_post_id": "17937978735119742"
+  }
+}

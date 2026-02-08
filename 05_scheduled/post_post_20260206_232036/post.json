@@ -1,0 +1,63 @@
+{
+  "id": "post_20260206_232036",
+  "status": "scheduled",
+  "country": "Norge",
+  "city": "Lyngen",
+  "location_display": "Lyngen, Norge",
+  "photos": [
+    {
+      "filename": "01.jpg",
+      "original_name": "20251125_20251125_103706.jpg",
+      "gps": {
+        "lat": 69.974487,
+        "lon": 20.199091
+      },
+      "taken_at": "2025-11-25T03:37:06",
+      "cloudinary_url": "https://res.cloudinary.com/dfz5xpnvy/image/upload/v1770510258/photo-to-post/puqmmzcfst3nay83l4ob.jpg"
+    },
+    {
+      "filename": "02.jpg",
+      "original_name": "20251125_20251125_103710.jpg",
+      "gps": {
+        "lat": 69.97477,
+        "lon": 20.200048
+      },
+      "taken_at": "2025-11-25T03:37:10",
+      "cloudinary_url": "https://res.cloudinary.com/dfz5xpnvy/image/upload/v1770510261/photo-to-post/tdkumt8irsbh04ztdqcg.jpg"
+    },
+    {
+      "filename": "03.jpg",
+      "original_name": "20251125_20251125_103708.jpg",
+      "gps": {
+        "lat": 69.974631,
+        "lon": 20.199583
+      },
+      "taken_at": "2025-11-25T10:37:08",
+      "cloudinary_url": "https://res.cloudinary.com/dfz5xpnvy/image/upload/v1770510262/photo-to-post/zrydcnwwnwtxqd047fd4.jpg"
+    }
+  ],
+  "caption": {
+    "text": "El frío de Lyngen me calaba hasta los huesos, pero no podía dejar de disparar mientras la luz del ártico pintaba estos fiordos de una manera que jamás había visto. Esta península al norte de Noruega es hogar de algunos de los picos más dramáticos que emergen directamente del mar, formados por glaciares que han esculpido la roca durante miles de años. Los sami han navegado estas aguas durante generaciones, y ahora entiendo por qué consideran este lugar sagrado ❄️",
+    "hashtags": [
+      "#lyngenalps",
+      "#norwaynature",
+      "#arcticlandscape",
+      "#naturephotography",
+      "#landscape",
+      "#traveltheworld"
+    ],
+    "generated_by": "claude-api",
+    "edited": false
+  },
+  "schedule": {
+    "suggested_date": null,
+    "suggested_time": null,
+    "scheduled_at": "2026-02-08T07:00:00",
+    "published_at": null
+  },
+  "meta": {
+    "created_at": "2026-02-06T23:20:41.887368",
+    "approved_at": "2026-02-07T07:59:00.235772",
+    "instagram_post_id": null
+  }
+}

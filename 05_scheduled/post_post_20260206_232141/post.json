@@ -1,0 +1,65 @@
+{
+  "id": "post_20260206_232141",
+  "status": "scheduled",
+  "country": "Guatemala",
+  "city": "Panajachel",
+  "location_display": "Panajachel, Guatemala",
+  "photos": [
+    {
+      "filename": "01.jpg",
+      "original_name": "20250118_20250118_092622.jpg",
+      "gps": {
+        "lat": 14.737835,
+        "lon": -91.160723
+      },
+      "taken_at": "2025-01-18T09:26:21",
+      "cloudinary_url": "https://res.cloudinary.com/dfz5xpnvy/image/upload/v1770510272/photo-to-post/woe65czxntk5g5gmvapn.jpg"
+    },
+    {
+      "filename": "02.jpg",
+      "original_name": "20250118_20250118_093245.jpg",
+      "gps": {
+        "lat": 14.73859,
+        "lon": -91.161592
+      },
+      "taken_at": "2025-01-18T09:32:44",
+      "cloudinary_url": "https://res.cloudinary.com/dfz5xpnvy/image/upload/v1770510273/photo-to-post/tikwwxvasu627bnrh9jz.jpg"
+    },
+    {
+      "filename": "03.jpg",
+      "original_name": "20250118_20250118_170237.jpg",
+      "gps": {
+        "lat": 14.736932,
+        "lon": -91.159916
+      },
+      "taken_at": "2025-01-18T17:02:37",
+      "cloudinary_url": "https://res.cloudinary.com/dfz5xpnvy/image/upload/v1770510274/photo-to-post/vsbrdttesq91xzucesor.jpg"
+    }
+  ],
+  "caption": {
+    "text": "Me quedé varios minutos contemplando cómo el Lago de Atitlán cambia de color según la hora del día, desde ese azul profundo hasta tonos casi plateados. Este lago volcánico, rodeado por tres imponentes volcanes, es considerado uno de los más bellos del mundo y tiene una profundidad máxima de 340 metros. Los locales me contaron que en días despejados como este, se pueden ver perfectamente los volcanes Tolimán, Atitlán y San Pedro reflejándose en sus aguas 🌋 Panajachel sigue siendo esa ventana perfecta para admirar esta maravilla natural guatemalteca.",
+    "hashtags": [
+      "#lagoatitlan",
+      "#panajachel",
+      "#guatemala",
+      "#photography",
+      "#landscapephotography",
+      "#travelphotography",
+      "#visitguatemala",
+      "#guatemalacity"
+    ],
+    "generated_by": "claude-api",
+    "edited": false
+  },
+  "schedule": {
+    "suggested_date": null,
+    "suggested_time": null,
+    "scheduled_at": "2026-02-12T19:00:00",
+    "published_at": null
+  },
+  "meta": {
+    "created_at": "2026-02-06T23:21:47.599926",
+    "approved_at": "2026-02-07T11:17:47.039369",
+    "instagram_post_id": null
+  }
+}

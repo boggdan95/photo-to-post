@@ -1,0 +1,65 @@
+{
+  "id": "post_20260206_232202",
+  "status": "scheduled",
+  "country": "Guatemala",
+  "city": "Tucurú",
+  "location_display": "Tucurú, Guatemala",
+  "photos": [
+    {
+      "filename": "01.jpg",
+      "original_name": "20191228_20191228_123044.jpg",
+      "gps": {
+        "lat": 15.285675,
+        "lon": -90.068314
+      },
+      "taken_at": "2019-12-28T12:30:44",
+      "cloudinary_url": "https://res.cloudinary.com/dfz5xpnvy/image/upload/v1770510275/photo-to-post/yfeixrtlpblivkpdm7pd.jpg"
+    },
+    {
+      "filename": "02.jpg",
+      "original_name": "20191228_20191228_121312.jpg",
+      "gps": {
+        "lat": 15.281829,
+        "lon": -90.067815
+      },
+      "taken_at": "2019-12-28T12:13:14",
+      "cloudinary_url": "https://res.cloudinary.com/dfz5xpnvy/image/upload/v1770510276/photo-to-post/k8zgwogkzo6gjfamtsnb.jpg"
+    },
+    {
+      "filename": "03.jpg",
+      "original_name": "20191228_20191228_123106.jpg",
+      "gps": {
+        "lat": 15.285675,
+        "lon": -90.068314
+      },
+      "taken_at": "2019-12-28T12:31:06",
+      "cloudinary_url": "https://res.cloudinary.com/dfz5xpnvy/image/upload/v1770510277/photo-to-post/yp1nsm42usqesqx7ekaf.jpg"
+    }
+  ],
+  "caption": {
+    "text": "Estar contemplando estas montañas de Tucurú me recordó lo pequeños que somos ante tanta inmensidad. Este rincón de Alta Verapaz alberga una de las reservas de bosque nuboso mejor conservadas de Guatemala, donde la neblina abraza los cerros casi todo el año 🌫️ Las comunidades locales han protegido estos ecosistemas por generaciones, manteniendo intacta la magia de un lugar que pocos conocen.",
+    "hashtags": [
+      "#tucuru",
+      "#altaverapaz",
+      "#bosquenuboso",
+      "#landscapephotography",
+      "#travel",
+      "#traveltheworld",
+      "#guatemala",
+      "#guatemalatravel"
+    ],
+    "generated_by": "claude-api",
+    "edited": true
+  },
+  "schedule": {
+    "suggested_date": null,
+    "suggested_time": null,
+    "scheduled_at": "2026-02-14T07:00:00",
+    "published_at": null
+  },
+  "meta": {
+    "created_at": "2026-02-06T23:22:07.496514",
+    "approved_at": "2026-02-07T11:17:35.157284",
+    "instagram_post_id": null
+  }
+}

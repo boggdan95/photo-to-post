@@ -1,0 +1,85 @@
+{
+  "id": "post_20260206_232117",
+  "status": "scheduled",
+  "country": "Guatemala",
+  "city": "Alta Verapaz",
+  "location_display": "Alta Verapaz, Guatemala",
+  "photos": [
+    {
+      "filename": "01.jpg",
+      "original_name": "20250309_20250309_120449.jpg",
+      "gps": {
+        "lat": 15.882003,
+        "lon": -90.181251
+      },
+      "taken_at": "2025-03-09T12:04:49",
+      "cloudinary_url": "https://res.cloudinary.com/dfz5xpnvy/image/upload/v1770510265/photo-to-post/jv2mvkszkzsb0eiuykgp.jpg"
+    },
+    {
+      "filename": "02.jpg",
+      "original_name": "20250126_20250126_083157.jpg",
+      "gps": {
+        "lat": 15.883361,
+        "lon": -90.14561
+      },
+      "taken_at": "2025-01-26T08:31:59",
+      "cloudinary_url": "https://res.cloudinary.com/dfz5xpnvy/image/upload/v1770510267/photo-to-post/e4dgwtxdvworimk9dcrs.jpg"
+    },
+    {
+      "filename": "03.jpg",
+      "original_name": "20250309_20250309_120455.jpg",
+      "gps": {
+        "lat": 15.882045,
+        "lon": -90.181338
+      },
+      "taken_at": "2025-03-09T12:04:54",
+      "cloudinary_url": "https://res.cloudinary.com/dfz5xpnvy/image/upload/v1770510269/photo-to-post/df4wdljzirzwbn6qzi9r.jpg"
+    },
+    {
+      "filename": "04.jpg",
+      "original_name": "20250126_20250126_084231.jpg",
+      "gps": {
+        "lat": 15.883361,
+        "lon": -90.14561
+      },
+      "taken_at": "2025-01-26T08:42:35",
+      "cloudinary_url": "https://res.cloudinary.com/dfz5xpnvy/image/upload/v1770510270/photo-to-post/kogm3aynmec9ysdneb3g.jpg"
+    },
+    {
+      "filename": "05.jpg",
+      "original_name": "20250126_20250126_100420.jpg",
+      "gps": {
+        "lat": 15.883361,
+        "lon": -90.14561
+      },
+      "taken_at": "2025-01-26T10:04:20",
+      "cloudinary_url": "https://res.cloudinary.com/dfz5xpnvy/image/upload/v1770510271/photo-to-post/y9xec5wgebksc0ryg1br.jpg"
+    }
+  ],
+  "caption": {
+    "text": "Hay algo en la bruma matutina de Alta Verapaz que te hace sentir como si estuvieras caminando entre las nubes. Esta región montañosa de Guatemala es conocida como \"la tierra de la eterna primavera\" por su clima templado y la constante humedad que crea estos paisajes envueltos en niebla. Los bosques nubosos de aquí albergan el quetzal, ave sagrada de los mayas, y son hogar de más de 800 especies de orquídeas 🌿",
+    "hashtags": [
+      "#altaverapaz",
+      "#guatemalanatural",
+      "#bosquesnubosos",
+      "#landscape",
+      "#travel",
+      "#landscapephotography",
+      "#visitguatemala",
+      "#guatemalatravel"
+    ],
+    "generated_by": "claude-api",
+    "edited": false
+  },
+  "schedule": {
+    "suggested_date": null,
+    "suggested_time": null,
+    "scheduled_at": "2026-02-10T12:00:00",
+    "published_at": null
+  },
+  "meta": {
+    "created_at": "2026-02-06T23:21:22.746215",
+    "approved_at": "2026-02-07T12:25:10.820106",
+    "instagram_post_id": null
+  }
+}

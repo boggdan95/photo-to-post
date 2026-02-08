@@ -1,0 +1,96 @@
+{
+  "id": "post_20260206_232050",
+  "status": "published",
+  "country": "Norge",
+  "city": "Moskenes",
+  "location_display": "Moskenes, Norge",
+  "photos": [
+    {
+      "filename": "01.jpg",
+      "original_name": "20251201_20251201_135952.jpg",
+      "gps": {
+        "lat": 67.880119,
+        "lon": 12.985008
+      },
+      "taken_at": "2025-12-01T04:59:52"
+    },
+    {
+      "filename": "02.jpg",
+      "original_name": "20251201_20251201_125824.jpg",
+      "gps": {
+        "lat": 67.881119,
+        "lon": 12.982385
+      },
+      "taken_at": "2025-12-01T03:58:24"
+    },
+    {
+      "filename": "03.jpg",
+      "original_name": "20251201_20251201_124437.jpg",
+      "gps": {
+        "lat": 67.87989,
+        "lon": 12.982458
+      },
+      "taken_at": "2025-12-01T03:44:37"
+    },
+    {
+      "filename": "04.jpg",
+      "original_name": "20251201_20251201_135544.jpg",
+      "gps": {
+        "lat": 67.880333,
+        "lon": 12.985883
+      },
+      "taken_at": "2025-12-01T04:55:44"
+    },
+    {
+      "filename": "05.jpg",
+      "original_name": "20251201_20251201_140056.jpg",
+      "gps": {
+        "lat": 67.880173,
+        "lon": 12.983803
+      },
+      "taken_at": "2025-12-01T05:00:56"
+    },
+    {
+      "filename": "06.jpg",
+      "original_name": "20251201_20251201_124105.jpg",
+      "gps": {
+        "lat": 67.88042,
+        "lon": 12.978703
+      },
+      "taken_at": "2025-12-01T12:41:05"
+    },
+    {
+      "filename": "07.jpg",
+      "original_name": "20251201_20251201_135051.jpg",
+      "gps": {
+        "lat": 67.880074,
+        "lon": 12.984334
+      },
+      "taken_at": "2025-12-01T13:50:51"
+    }
+  ],
+  "caption": {
+    "text": "El silencio aquí se siente tan profundo que hasta mi respiración parecía interrumpir la conversación entre las montañas y el mar. Moskenes marca el extremo sur de las Islas Lofoten, donde los picos emergen directamente del océano Ártico creando uno de los paisajes más dramáticos de Noruega 🏔️ Durante el invierno polar, este pequeño pueblo de apenas 1000 habitantes queda conectado al mundo principalmente por el ferry que cruza estas aguas heladas. Es increíble pensar que los vikingos navegaron estas mismas rutas hace más de mil años.",
+    "hashtags": [
+      "#lofoten",
+      "#moskenes",
+      "#noruega",
+      "#landscape",
+      "#landscapephotography",
+      "#naturephotography"
+    ],
+    "generated_by": "claude-api",
+    "edited": false
+  },
+  "schedule": {
+    "suggested_date": null,
+    "suggested_time": null,
+    "scheduled_at": "2026-02-07T08:03:49.839420",
+    "published_at": "2026-02-07T08:05:18.605246"
+  },
+  "meta": {
+    "created_at": "2026-02-06T23:20:56.026692",
+    "approved_at": "2026-02-06T23:38:20.535888",
+    "instagram_post_id": "17941186182115110"
+  }
+}

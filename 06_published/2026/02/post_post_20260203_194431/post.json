@@ -1,0 +1,80 @@
+{
+  "id": "post_20260203_194431",
+  "status": "published",
+  "country": "México",
+  "city": "San Martín de las Pirámides",
+  "location_display": "San Martín de las Pirámides, México",
+  "photos": [
+    {
+      "filename": "01.jpg",
+      "original_name": "20260117_20260117_074314.jpg",
+      "gps": {
+        "lat": 19.70714,
+        "lon": -98.822468
+      },
+      "taken_at": "2026-01-17T07:43:14"
+    },
+    {
+      "filename": "02.jpg",
+      "original_name": "20260117_20260117_072625.jpg",
+      "gps": {
+        "lat": 19.705982,
+        "lon": -98.821943
+      },
+      "taken_at": "2026-01-17T07:26:25"
+    },
+    {
+      "filename": "03.jpg",
+      "original_name": "20260117_20260117_074232.jpg",
+      "gps": {
+        "lat": 19.70702,
+        "lon": -98.82259
+      },
+      "taken_at": "2026-01-17T07:42:32"
+    },
+    {
+      "filename": "04.jpg",
+      "original_name": "20260117_20260117_072248.jpg",
+      "gps": {
+        "lat": 19.702645,
+        "lon": -98.824785
+      },
+      "taken_at": "2026-01-17T07:22:48"
+    },
+    {
+      "filename": "05.jpg",
+      "original_name": "20260117_20260117_072617.jpg",
+      "gps": {
+        "lat": 19.705982,
+        "lon": -98.821943
+      },
+      "taken_at": "2026-01-17T07:26:17"
+    }
+  ],
+  "caption": {
+    "text": "Volar entre estas pirámides al amanecer me hizo sentir la conexión directa con más de 2,000 años de historia mesoamericana. San Martín de las Pirámides alberga Teotihuacán, donde cada piedra cuenta la historia de una civilización que dominó el centro de México mucho antes de los aztecas. Lo que más me impresiona es que sus constructores siguen siendo un misterio, dejando solo estas monumentales estructuras como testimonio de su grandeza 🏛️ ",
+    "hashtags": [
+      "#teotihuacan",
+      "#piramidesdelsol",
+      "#mexicoancestrual",
+      "#photooftheday",
+      "#photography",
+      "#landscape",
+      "#mexicotravel",
+      "#viveméxico"
+    ],
+    "generated_by": "claude-api",
+    "edited": true
+  },
+  "schedule": {
+    "suggested_date": null,
+    "suggested_time": null,
+    "scheduled_at": "2026-02-04T20:01:06.127595",
+    "published_at": "2026-02-04T20:40:29.106087"
+  },
+  "meta": {
+    "created_at": "2026-02-03T19:44:38.047406",
+    "approved_at": "2026-02-03T19:55:52.479688",
+    "instagram_post_id": "17961846855030361"
+  }
+}

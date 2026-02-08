@@ -1,0 +1,78 @@
+{
+  "id": "post_20260202_210058",
+  "status": "published",
+  "country": "México",
+  "city": "Ciudad de México",
+  "location_display": "Ciudad de México, México",
+  "photos": [
+    {
+      "filename": "01.jpg",
+      "original_name": "20240219_20240219_113839.jpg",
+      "gps": {
+        "lat": 19.436737,
+        "lon": -99.145578
+      },
+      "taken_at": "2024-02-19T11:38:39"
+    },
+    {
+      "filename": "03.jpg",
+      "original_name": "20240219_20240219_130942.jpg",
+      "gps": {
+        "lat": 19.437416,
+        "lon": -99.145559
+      },
+      "taken_at": "2024-02-19T13:09:42"
+    },
+    {
+      "filename": "04.jpg",
+      "original_name": "20240219_20240219_130952.jpg",
+      "gps": {
+        "lat": 19.437416,
+        "lon": -99.145559
+      },
+      "taken_at": "2024-02-19T13:09:52"
+    },
+    {
+      "filename": "05.jpg",
+      "original_name": "20240219_20240219_133530.jpg",
+      "gps": {
+        "lat": 19.437113,
+        "lon": -99.144401
+      },
+      "taken_at": "2024-02-19T13:35:30"
+    },
+    {
+      "filename": "06.jpg",
+      "original_name": "20240219_20240219_133745.jpg",
+      "gps": {
+        "lat": 19.436908,
+        "lon": -99.143689
+      },
+      "taken_at": "2024-02-19T13:37:45"
+    }
+  ],
+  "caption": {
+    "text": "Cada amanecer en esta ciudad me recuerda por qué me enamoré de sus contrastes infinitos. La Ciudad de México se extiende por más de 1,400 kilómetros cuadrados y desde las alturas puedes ver cómo la arquitectura colonial convive con rascacielos modernos, mientras los volcanes Popocatépetl e Iztaccíhuatl custodian el horizonte. Lo que más me impresiona es cómo esta metrópoli, construida sobre un antiguo lago, sigue latiendo con la energía de sus más de 20 millones de habitantes 🌅",
+    "hashtags": [
+      "#mexico",
+      "#CDMX",
+      "#mexicocity",
+      "#photography",
+      "#naturephotography",
+      "#travel"
+    ],
+    "generated_by": "claude-api",
+    "edited": false
+  },
+  "schedule": {
+    "suggested_date": "2026-02-03",
+    "suggested_time": "07:00",
+    "scheduled_at": "2026-02-02T21:07:38.468782",
+    "published_at": "2026-02-02T21:16:40.180537"
+  },
+  "meta": {
+    "created_at": "2026-02-02T21:01:06.047443",
+    "approved_at": "2026-02-02T21:06:14.991520",
+    "instagram_post_id": "18055255016392671"
+  }
+}

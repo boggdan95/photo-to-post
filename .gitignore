@@ -11,8 +11,10 @@ config/credentials.json
 02_classified/
 03_drafts/
 04_approved/
-05_scheduled/
-06_published/
+
+# Scheduled y Published: solo subir post.json, no las fotos
+05_scheduled/**/photos/
+06_published/**/photos/
 
 # =====================
 # PYTHON

@@ -1,0 +1,83 @@
+{
+  "id": "post_20260206_232104",
+  "status": "scheduled",
+  "country": "Norge",
+  "city": "Vågan",
+  "location_display": "Vågan, Norge",
+  "photos": [
+    {
+      "filename": "01.jpg",
+      "original_name": "20251130_20251130_093512.jpg",
+      "gps": {
+        "lat": 68.233067,
+        "lon": 14.571705
+      },
+      "taken_at": "2025-11-30T09:35:13",
+      "cloudinary_url": "https://res.cloudinary.com/dfz5xpnvy/image/upload/v1770510281/photo-to-post/uo6gnkktgefhiv8yd3wn.jpg"
+    },
+    {
+      "filename": "02.jpg",
+      "original_name": "20251130_20251130_033122.jpg",
+      "gps": {
+        "lat": 68.233048,
+        "lon": 14.571696
+      },
+      "taken_at": "2025-11-30T03:31:23",
+      "cloudinary_url": "https://res.cloudinary.com/dfz5xpnvy/image/upload/v1770510282/photo-to-post/ijfu2p4rgkhn9wzlhav1.jpg"
+    },
+    {
+      "filename": "03.jpg",
+      "original_name": "20251130_20251130_032454.jpg",
+      "gps": {
+        "lat": 68.233517,
+        "lon": 14.571994
+      },
+      "taken_at": "2025-11-30T03:24:54",
+      "cloudinary_url": "https://res.cloudinary.com/dfz5xpnvy/image/upload/v1770510283/photo-to-post/aeffu8j4hz8g47mbxgez.jpg"
+    },
+    {
+      "filename": "04.jpg",
+      "original_name": "20251130_20251130_093806.jpg",
+      "gps": {
+        "lat": 68.233213,
+        "lon": 14.571092
+      },
+      "taken_at": "2025-11-30T09:38:06",
+      "cloudinary_url": "https://res.cloudinary.com/dfz5xpnvy/image/upload/v1770510284/photo-to-post/rfx2pcaqonu9pgzlhvxl.jpg"
+    },
+    {
+      "filename": "05.jpg",
+      "original_name": "20251130_20251130_032437.jpg",
+      "gps": {
+        "lat": 68.233502,
+        "lon": 14.571978
+      },
+      "taken_at": "2025-11-30T03:24:37",
+      "cloudinary_url": "https://res.cloudinary.com/dfz5xpnvy/image/upload/v1770510284/photo-to-post/otrjissv4ukbl6dmwuoc.jpg"
+    }
+  ],
+  "caption": {
+    "text": "El frío del Ártico se siente diferente aquí, como si el aire mismo tuviera historia que contar. Vågan es uno de los municipios más antiguos de Noruega, donde los vikingos establecieron uno de sus primeros asentamientos hace más de mil años. Estas montañas han visto pasar siglos de pescadores, comerciantes y ahora viajeros como yo, todos buscando algo en este rincón del mundo ❄️",
+    "hashtags": [
+      "#vagan",
+      "#lofoten",
+      "#noruegaartica",
+      "#photooftheday",
+      "#travelphotography",
+      "#traveltheworld"
+    ],
+    "generated_by": "claude-api",
+    "edited": false
+  },
+  "schedule": {
+    "suggested_date": null,
+    "suggested_time": null,
+    "scheduled_at": "2026-02-18T19:00:00",
+    "published_at": null
+  },
+  "meta": {
+    "created_at": "2026-02-06T23:21:09.976443",
+    "approved_at": "2026-02-07T12:24:37.185464",
+    "instagram_post_id": null
+  }
+}

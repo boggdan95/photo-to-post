@@ -1,0 +1,73 @@
+{
+  "id": "post_20260206_232057",
+  "status": "scheduled",
+  "country": "Norge",
+  "city": "Skjervøy",
+  "location_display": "Skjervøy, Norge",
+  "photos": [
+    {
+      "filename": "01.jpg",
+      "original_name": "20251125_20251125_104919.jpg",
+      "gps": {
+        "lat": 69.994983,
+        "lon": 20.401866
+      },
+      "taken_at": "2025-11-25T10:49:19",
+      "cloudinary_url": "https://res.cloudinary.com/dfz5xpnvy/image/upload/v1770510278/photo-to-post/dizhaoxromm0oempuggc.jpg"
+    },
+    {
+      "filename": "02.jpg",
+      "original_name": "20251125_20251125_105031.jpg",
+      "gps": {
+        "lat": 69.993723,
+        "lon": 20.42142
+      },
+      "taken_at": "2025-11-25T10:50:31",
+      "cloudinary_url": "https://res.cloudinary.com/dfz5xpnvy/image/upload/v1770510279/photo-to-post/whteyskmxyejsnbnsdu1.jpg"
+    },
+    {
+      "filename": "03.jpg",
+      "original_name": "20251125_20251125_105042.jpg",
+      "gps": {
+        "lat": 69.993432,
+        "lon": 20.423829
+      },
+      "taken_at": "2025-11-25T10:50:42",
+      "cloudinary_url": "https://res.cloudinary.com/dfz5xpnvy/image/upload/v1770510280/photo-to-post/fxggnx9ch5pvc8vzvmvg.jpg"
+    },
+    {
+      "filename": "04.jpg",
+      "original_name": "20251125_20251125_105428.jpg",
+      "gps": {
+        "lat": 69.987466,
+        "lon": 20.4787
+      },
+      "taken_at": "2025-11-25T10:54:28",
+      "cloudinary_url": "https://res.cloudinary.com/dfz5xpnvy/image/upload/v1770510280/photo-to-post/ztvcbultikkprhnhrv7o.jpg"
+    }
+  ],
+  "caption": {
+    "text": "El frío cortante de Skjervøy te recuerda lo pequeño que eres ante estos fiordos infinitos que se extienden hacia el horizonte ártico. Esta pequeña isla en el condado de Troms es uno de los puntos más septentrionales donde aún vive gente todo el año, desafiando los inviernos polares con una resistencia que admiro profundamente. Aquí, a 70° de latitud norte, el sol no aparecerá durante casi dos meses, pero la luz azul del crepúsculo ártico pinta el paisaje de una forma que nunca había visto ❄️",
+    "hashtags": [
+      "#skjervoy",
+      "#fiordosnoruegos",
+      "#arcticonorway",
+      "#naturephotography",
+      "#travelphotography",
+      "#landscapephotography"
+    ],
+    "generated_by": "claude-api",
+    "edited": false
+  },
+  "schedule": {
+    "suggested_date": null,
+    "suggested_time": null,
+    "scheduled_at": "2026-02-16T12:00:00",
+    "published_at": null
+  },
+  "meta": {
+    "created_at": "2026-02-06T23:21:03.901742",
+    "approved_at": "2026-02-07T11:08:06.819136",
+    "instagram_post_id": null
+  }
+}

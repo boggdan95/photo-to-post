@@ -1,0 +1,74 @@
+{
+  "id": "post_20260207_080432",
+  "status": "scheduled",
+  "country": "Norge",
+  "city": "Skjervøy",
+  "location_display": "Skjervøy, Norge",
+  "photos": [
+    {
+      "filename": "01.jpg",
+      "original_name": "20251125_20251125_114004(0).jpg",
+      "gps": {
+        "lat": 70.084632,
+        "lon": 21.004453
+      },
+      "taken_at": "2025-11-25T11:40:04",
+      "cloudinary_url": "https://res.cloudinary.com/dfz5xpnvy/image/upload/v1770510285/photo-to-post/w3tputl3h5sll85r60xa.jpg"
+    },
+    {
+      "filename": "02.jpg",
+      "original_name": "20251125_20251125_114005.jpg",
+      "gps": {
+        "lat": 70.084632,
+        "lon": 21.004453
+      },
+      "taken_at": "2025-11-25T11:40:05",
+      "cloudinary_url": "https://res.cloudinary.com/dfz5xpnvy/image/upload/v1770510286/photo-to-post/xy0iz3tqptim0lwpv9hj.jpg"
+    },
+    {
+      "filename": "03.jpg",
+      "original_name": "20251125_20251125_105437.jpg",
+      "gps": {
+        "lat": 69.987217,
+        "lon": 20.481098
+      },
+      "taken_at": "2025-11-25T10:54:37",
+      "cloudinary_url": "https://res.cloudinary.com/dfz5xpnvy/image/upload/v1770510287/photo-to-post/th72ngi1baalfmuu6zsd.jpg"
+    },
+    {
+      "filename": "04.jpg",
+      "original_name": "20251125_20251125_114004.jpg",
+      "gps": {
+        "lat": 70.084632,
+        "lon": 21.004453
+      },
+      "taken_at": "2025-11-25T11:40:04",
+      "cloudinary_url": "https://res.cloudinary.com/dfz5xpnvy/image/upload/v1770510288/photo-to-post/nvojrcp3ffslnhgfqmkl.jpg"
+    }
+  ],
+  "caption": {
+    "text": "Hay algo hipnotizante en observar las aguas del Ártico noruego, sabiendo que bajo esa superficie aparentemente tranquila se mueven las orcas más grandes del mundo. Skjervøy, en el condado de Tromso, se ha convertido en uno de los mejores puntos de Europa para avistar estos cetáceos, especialmente durante los meses de invierno cuando siguen a los bancos de arenques. Desde este pequeño pueblo pesquero, rodeado de fiordos y montañas nevadas, la naturaleza te recuerda lo pequeño que eres en este planeta 🐋",
+    "hashtags": [
+      "#skjervoy",
+      "#orcasnoruega",
+      "#tromsnorge",
+      "#landscapephotography",
+      "#travel",
+      "#photooftheday"
+    ],
+    "generated_by": "claude-api",
+    "edited": true
+  },
+  "schedule": {
+    "suggested_date": null,
+    "suggested_time": null,
+    "scheduled_at": "2026-02-20T07:00:00",
+    "published_at": null
+  },
+  "meta": {
+    "created_at": "2026-02-07T08:04:32.771894",
+    "approved_at": "2026-02-07T17:17:15.187324",
+    "instagram_post_id": null,
+    "split_from": "post_20260206_232057"
+  }
+}
