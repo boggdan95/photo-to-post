@@ -215,13 +215,33 @@ def cmd_auto_publish(args):
 
 
 def cmd_sync(args):
-    """Sync local folders with GitHub state after git pull.
+    """Sync local folders with GitHub state.
 
-    Moves photos from 05_scheduled to 06_published for posts that were
-    published by GitHub Actions.
+    1. Runs git pull to get latest changes
+    2. Moves photos from 05_scheduled to 06_published for posts that were
+       published by GitHub Actions.
     """
     logger = setup_logging()
     import shutil
+    import subprocess
+
+    # First, git pull
+    logger.info("Pulling latest changes from GitHub...")
+    try:
+        result = subprocess.run(
+            ["git", "pull"],
+            cwd=str(BASE_DIR),
+            capture_output=True,
+            text=True
+        )
+        if result.returncode == 0:
+            logger.info(result.stdout.strip() or "Already up to date.")
+        else:
+            logger.error(f"Git pull failed: {result.stderr}")
+            return
+    except Exception as e:
+        logger.error(f"Git pull error: {e}")
+        return
 
     scheduled_dir = BASE_DIR / "05_scheduled"
     published_dir = BASE_DIR / "06_published"
