@@ -117,9 +117,12 @@ Para publicación automática sin GitHub:
 - **Meta Graph API**: access_token (long-lived ~60 días, renovar antes de expirar), instagram_user_id
 - **Anthropic**: api_key — para generar captions con Claude API
 
+## Recordatorios
+- **10 Feb 2026 12:00 GT** — Primera publicación automática (Guatemala), verificar que funcionó
+- **~3 Abril 2026** — Renovar token de Meta (60 días desde 2 Feb), usar Graph API Explorer
+
 ## Pendientes / próximos pasos
-1. **Verificar auto-publish** — el 10 Feb 12:00 debería publicarse Guatemala automáticamente
-2. **Analytics** — considerar agregar métricas de engagement post-publicación
+1. **Analytics** — considerar agregar métricas de engagement post-publicación
 
 ## Errores comunes y soluciones
 | Error | Causa | Solución |
