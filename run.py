@@ -142,17 +142,36 @@ def cmd_publish(args):
 def cmd_auto_publish(args):
     """Auto-publish scheduled posts that are due."""
     logger = setup_logging()
-    from datetime import datetime
+    from datetime import datetime, timezone
     from pathlib import Path
     import json
     from scripts.publisher import publish_post
+    from scripts.utils import load_settings
 
     scheduled_dir = BASE_DIR / "05_scheduled"
     if not scheduled_dir.exists():
         logger.info("No scheduled posts folder found.")
         return
 
-    now = datetime.now()
+    # Get timezone from settings (default to UTC)
+    settings = load_settings()
+    tz_name = settings.get("timezone", "UTC")
+
+    try:
+        from zoneinfo import ZoneInfo
+        local_tz = ZoneInfo(tz_name)
+    except ImportError:
+        # Fallback for older Python
+        local_tz = None
+        logger.warning(f"zoneinfo not available, using system time")
+
+    # Get current time in the configured timezone
+    if local_tz:
+        now = datetime.now(timezone.utc).astimezone(local_tz).replace(tzinfo=None)
+        logger.info(f"Current time ({tz_name}): {now.strftime('%Y-%m-%d %H:%M')}")
+    else:
+        now = datetime.now()
+
     max_delay_hours = args.max_delay or 24  # Don't publish if more than 24h late
 
     published_count = 0

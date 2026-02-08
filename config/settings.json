@@ -1,5 +1,6 @@
 {
   "language": "es",
+  "timezone": "America/Guatemala",
   "posts_per_week": 3,
   "preferred_times": ["07:00", "12:00", "19:00"],
   "max_consecutive_same_country": 3,
