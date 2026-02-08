@@ -156,6 +156,7 @@ El grid mode considera los posts ya publicados en Instagram para mantener filas 
 - Lee el historial de `06_published/{año}/{mes}/` para detectar el estado actual del grid
 
 ## Notas técnicas
+- **BASE_DIR dinámico**: utils.py detecta si está en Windows (D:/photo-to-post) o en GitHub Actions (directorio del script)
 - Meta access token expira en ~60 días, renovar en Graph API Explorer y extender a long-lived
 - Cloudinary free tier: 25GB/mes, más que suficiente para ~60 fotos/mes
 - Instagram API: carruseles máximo 10 fotos
