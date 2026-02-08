@@ -176,6 +176,7 @@ def cmd_auto_publish(args):
 
     published_count = 0
     skipped_count = 0
+    pending_posts = []  # Posts scheduled for the future
 
     for post_dir in sorted(scheduled_dir.iterdir()):
         if not post_dir.is_dir():
@@ -229,8 +230,29 @@ def cmd_auto_publish(args):
                     logger.error(f"Failed to publish {data['id']}")
             except Exception as e:
                 logger.error(f"Error publishing {data['id']}: {e}")
+        else:
+            # Future post - track it
+            time_until = sched_dt - now
+            hours_until = time_until.total_seconds() / 3600
+            pending_posts.append({
+                "id": data["id"],
+                "country": data.get("country", "?"),
+                "scheduled": f"{sched_date} {sched_time}",
+                "hours_until": hours_until
+            })
 
+    # Summary
     logger.info(f"Auto-publish complete: {published_count} published, {skipped_count} skipped")
+
+    # Show next scheduled post
+    if pending_posts:
+        pending_posts.sort(key=lambda x: x["hours_until"])
+        next_post = pending_posts[0]
+        days = int(next_post["hours_until"] // 24)
+        hours = int(next_post["hours_until"] % 24)
+        time_str = f"{days}d {hours}h" if days > 0 else f"{hours}h"
+        logger.info(f"Found {len(pending_posts)} pending posts")
+        logger.info(f"Next: {next_post['country']} at {next_post['scheduled']} (in {time_str})")
 
 
 def cmd_sync(args):
