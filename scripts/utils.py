@@ -3,7 +3,15 @@ import logging
 import os
 from pathlib import Path
 
-BASE_DIR = Path("D:/photo-to-post")
+# Detect BASE_DIR: use script location or environment variable
+_script_dir = Path(__file__).resolve().parent.parent
+_hardcoded = Path("D:/photo-to-post")
+
+# Use hardcoded path if it exists (local Windows), otherwise use script directory (GitHub Actions)
+if _hardcoded.exists() and (_hardcoded / "config").exists():
+    BASE_DIR = _hardcoded
+else:
+    BASE_DIR = _script_dir
 STAGE_DIRS = [
     "01_input",
     "02_classified",
