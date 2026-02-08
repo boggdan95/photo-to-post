@@ -10,7 +10,7 @@ Sistema de automatización para publicar fotos de paisajes en Instagram. Flujo: 
 - **Credenciales configuradas**: Cloudinary, Meta Graph API (long-lived token ~60 días), Anthropic API
 - **Captions con IA**: Claude API genera captions estilo informativo+personal + 3 hashtags contextuales
 - **Clasificación por visión**: Si una foto no tiene GPS, usa Claude Haiku para identificar el lugar
-- **Grid mode**: Agrupa posts de 3 en 3 por país para filas coherentes en el perfil de Instagram
+- **Grid mode**: Agrupa posts de 3 en 3 por país para filas coherentes en el perfil de Instagram (considera posts ya publicados)
 - **Auto-publish**: Comando para publicación automática de posts programados
 
 ## Estructura del proyecto
@@ -96,9 +96,9 @@ Para publicación automática local:
 - **Anthropic**: api_key — para generar captions con Claude API
 
 ## Pendientes / próximos pasos
-1. **Probar flujo completo** con las nuevas fotos clasificadas
-2. **GitHub Actions** — activar cloud_mode y configurar secrets para auto-publish en la nube
-3. **Task Scheduler** — configurar auto-publish local si se desea publicación automática
+1. **Probar flujo completo** con las nuevas fotos clasificadas y el grid mode corregido
+2. **Task Scheduler local** — configurar auto-publish local si se desea publicación automática sin GitHub
+3. **Analytics** — considerar agregar métricas de engagement post-publicación
 
 ## Para retomar
 - Exportar fotos desde Lightroom: Long edge 2048px, quality 85%, limit 10MB
@@ -119,6 +119,12 @@ Para publicación automática local:
 - **Regresar a Review**: Posts aprobados pueden volver a Review con botón "Editar" para modificarlos
 - **Vista expandida**: En Review, botón "Ver" abre modal con fotos grandes y edición de caption
 - **Regenerar caption**: Botón "🔄 IA" permite regenerar caption con contexto opcional (ej: "pirámides, amanecer, drone")
+
+## Grid mode inteligente
+El grid mode considera los posts ya publicados en Instagram para mantener filas coherentes:
+- Si hay 2 posts de un país publicados (fila incompleta), primero programa 1 más del mismo país para completar la fila de 3
+- Luego programa los demás posts en grupos de 3 por país
+- Lee el historial de `06_published/{año}/{mes}/` para detectar el estado actual del grid
 
 ## Notas técnicas
 - Meta access token expira en ~60 días, renovar en Graph API Explorer y extender a long-lived

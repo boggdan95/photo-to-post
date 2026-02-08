@@ -150,16 +150,32 @@ def settings_page():
 
 @app.route("/schedule")
 def schedule_page():
-    from scripts.scheduler import preview_schedule, get_calendar, _load_posts_from
+    from scripts.scheduler import preview_schedule, get_calendar, _load_posts_from, _load_published_posts
     approved = _load_posts_from(APPROVED_DIR)
     preview = preview_schedule()
     calendar = get_calendar()
     settings = load_settings()
+
+    # Get recent published posts for grid preview (newest first)
+    published = _load_published_posts()
+    published_for_grid = []
+    for p in published:
+        schedule = p.get("schedule", {})
+        pub_date = schedule.get("published_at") or schedule.get("suggested_date") or p.get("id", "")
+        published_for_grid.append({
+            "country": p.get("country", ""),
+            "location": p.get("location_display", ""),
+            "date": pub_date[:10] if pub_date else "",
+        })
+    # Sort by date descending (newest first)
+    published_for_grid.sort(key=lambda x: x["date"], reverse=True)
+
     return render_template("schedule.html",
                            approved=approved,
                            preview=preview,
                            calendar=calendar,
-                           settings=settings)
+                           settings=settings,
+                           published_for_grid=published_for_grid)
 
 
 @app.route("/published")

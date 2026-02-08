@@ -31,6 +31,28 @@ def _load_posts_from(directory):
     return posts
 
 
+def _load_published_posts():
+    """Load all published posts from the nested year/month structure."""
+    posts = []
+    if not PUBLISHED_DIR.exists():
+        return posts
+
+    for year_dir in sorted(PUBLISHED_DIR.iterdir()):
+        if not year_dir.is_dir():
+            continue
+        for month_dir in sorted(year_dir.iterdir()):
+            if not month_dir.is_dir():
+                continue
+            for post_dir in sorted(month_dir.iterdir()):
+                pj = post_dir / "post.json"
+                if pj.exists():
+                    with open(pj, "r", encoding="utf-8") as f:
+                        data = json.load(f)
+                    data["_dir"] = str(post_dir)
+                    posts.append(data)
+    return posts
+
+
 def _get_scheduled_dates():
     """Return a dict of date -> list of post countries already scheduled."""
     scheduled = _load_posts_from(SCHEDULED_DIR)
@@ -45,7 +67,7 @@ def _get_scheduled_dates():
 def _get_last_scheduled_countries():
     """Return list of countries from most recent scheduled posts (newest first)."""
     scheduled = _load_posts_from(SCHEDULED_DIR)
-    published = _load_posts_from(PUBLISHED_DIR)
+    published = _load_published_posts()
     all_posts = scheduled + published
 
     dated = []
@@ -57,6 +79,70 @@ def _get_last_scheduled_countries():
 
     dated.sort(reverse=True)
     return [c for _, _, c in dated]
+
+
+def _get_grid_state():
+    """Get the current state of the Instagram grid (most recent posts first).
+
+    Returns (last_country, count_in_current_row) where count is how many posts
+    of last_country are already in the current incomplete row (0-2).
+    """
+    scheduled = _load_posts_from(SCHEDULED_DIR)
+    published = _load_published_posts()
+    all_posts = scheduled + published
+
+    if not all_posts:
+        return None, 0
+
+    # Sort by best available date (newest first)
+    # Priority: suggested_date > published_at > id (which contains timestamp)
+    dated = []
+    for p in all_posts:
+        schedule = p.get("schedule", {})
+        sd = schedule.get("suggested_date")
+        st = schedule.get("suggested_time", "00:00")
+
+        # Try published_at if no suggested_date
+        if not sd:
+            published_at = schedule.get("published_at")
+            if published_at:
+                # Extract date from ISO format
+                sd = published_at[:10]
+                st = published_at[11:16] if len(published_at) > 16 else "00:00"
+
+        # Fallback to post ID (contains YYYYMMDD_HHMMSS)
+        if not sd:
+            post_id = p.get("id", "")
+            if "_" in post_id:
+                # Extract date from id like "post_20260206_232050"
+                parts = post_id.split("_")
+                if len(parts) >= 2 and len(parts[1]) == 8:
+                    try:
+                        sd = f"{parts[1][:4]}-{parts[1][4:6]}-{parts[1][6:8]}"
+                        st = "00:00"
+                    except:
+                        pass
+
+        if sd:
+            dated.append((sd, st, p.get("country", "")))
+
+    dated.sort(reverse=True)
+
+    if not dated:
+        return None, 0
+
+    # Get the most recent posts and count consecutive same-country
+    last_country = dated[0][2]
+    count = 0
+    for _, _, country in dated:
+        if country == last_country:
+            count += 1
+        else:
+            break
+
+    # How many are in the current incomplete row (modulo 3)
+    remainder = count % 3
+    return last_country, remainder
 
 
 def _apply_diversity_rule(posts, max_consecutive):
@@ -86,21 +172,38 @@ def _apply_diversity_rule(posts, max_consecutive):
 
 
 def _apply_grid_mode(posts, group_size=3):
-    """Reorder posts to group same country in blocks of group_size for Instagram grid aesthetics."""
+    """Reorder posts to group same country in blocks of group_size for Instagram grid aesthetics.
+
+    Considers already published/scheduled posts to complete the current row first.
+    """
     if not posts:
         return posts
 
     from collections import defaultdict
+
+    # Get current grid state (last country and how many in incomplete row)
+    last_country, remainder = _get_grid_state()
 
     # Group posts by country
     by_country = defaultdict(list)
     for post in posts:
         by_country[post.get("country", "Unknown")].append(post)
 
+    result = []
+
+    # If there's an incomplete row, try to complete it first
+    if last_country and remainder > 0:
+        needed = group_size - remainder  # How many more needed to complete row
+        if last_country in by_country and by_country[last_country]:
+            # Take posts of the same country to complete the row
+            while by_country[last_country] and needed > 0:
+                result.append(by_country[last_country].pop(0))
+                needed -= 1
+            logger.info(f"Grid mode: completing row with {group_size - remainder - needed} more {last_country} posts (had {remainder} published)")
+
     # Sort countries by number of posts (descending) to handle larger groups first
     sorted_countries = sorted(by_country.keys(), key=lambda c: len(by_country[c]), reverse=True)
 
-    result = []
     # Keep taking groups of 3 from each country in round-robin fashion
     while any(by_country.values()):
         for country in sorted_countries:

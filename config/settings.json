@@ -4,7 +4,7 @@
   "preferred_times": ["07:00", "12:00", "19:00"],
   "max_consecutive_same_country": 3,
   "grid_mode": true,
-  "cloud_mode": false,
+  "cloud_mode": true,
 
   "caption_style": {
     "tone": "inspirador, reflexivo, cercano",

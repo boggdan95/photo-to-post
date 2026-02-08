@@ -90,7 +90,7 @@
         </p>
         <div class="preview-list" id="preview-list">
             {% for item in preview %}
-            <div class="preview-item" draggable="true" data-post-id="{{ item.post_id }}" data-index="{{ loop.index0 }}">
+            <div class="preview-item" draggable="true" data-post-id="{{ item.id }}" data-index="{{ loop.index0 }}">
                 <span class="order-num">{{ loop.index }}</span>
                 <span class="drag-handle">☰</span>
                 <div class="date-time" onclick="editDateTime(this)" data-date="{{ item.scheduled_date }}" data-time="{{ item.scheduled_time }}">
@@ -144,14 +144,18 @@
 <script>
 const calendarData = {{ calendar | tojson | safe }};
 const previewData = {{ preview | tojson | safe }};
+const publishedData = {{ published_for_grid | default([]) | tojson | safe }};
 
 function renderCalendar() {
     const container = document.getElementById('calendar');
     if (!container) return;
 
-    // Combine calendar data with preview
+    // Use scheduleData if available (after reordering), otherwise previewData
+    const currentSchedule = scheduleData.length > 0 ? scheduleData : previewData;
+
+    // Combine calendar data with current schedule
     const allEvents = {...calendarData};
-    previewData.forEach(p => {
+    currentSchedule.forEach(p => {
         if (!allEvents[p.scheduled_date]) allEvents[p.scheduled_date] = [];
         allEvents[p.scheduled_date].push({
             ...p,
@@ -232,12 +236,12 @@ async function confirmSchedule() {
     }
 }
 
+// Store editable schedule (must be defined before render functions)
+let scheduleData = [...previewData];
+
 renderCalendar();
 renderInstagramGrid();
 initDragAndDrop();
-
-// Store editable schedule
-let scheduleData = [...previewData];
 
 function initDragAndDrop() {
     const list = document.getElementById('preview-list');
@@ -299,9 +303,10 @@ function reorderSchedule() {
         }
     });
 
-    // Update calendar
+    // Update calendar and grid
     updatePreviewDataFromDOM();
     renderCalendar();
+    renderInstagramGrid();
 }
 
 function updatePreviewDataFromDOM() {
@@ -374,43 +379,60 @@ function renderInstagramGrid() {
         return countryColors[country];
     }
 
-    // Combine preview (upcoming) with recent published posts
-    // Preview posts go first (they'll be at top = most recent)
-    const gridPosts = [];
+    // Build grid showing how Instagram will look as posts are published
+    // Each preview post goes to top-left, pushing others down
+    // We want to show rows completing correctly
 
-    // Add preview posts (reversed so first to post is at bottom)
-    const previewReversed = [...previewData].reverse();
-    previewReversed.forEach((p, i) => {
-        gridPosts.push({
-            country: p.country,
-            location: p.location,
-            status: 'preview',
-            num: previewData.length - i
-        });
-    });
+    // Show grid state AFTER publishing all scheduled posts
+    // #1 will complete the current row, then subsequent posts continue
 
-    // Render grid (show up to 12 posts = 4 rows)
-    const postsToShow = gridPosts.slice(0, 12);
+    // Published posts (newest first from backend)
+    const published = publishedData.map(p => ({
+        country: p.country,
+        location: p.location,
+        status: 'published',
+        label: '✓'
+    }));
 
-    // Reverse again so newest is at top
-    postsToShow.reverse();
+    // Use scheduleData if available (after reordering), otherwise previewData
+    const currentSchedule = scheduleData.length > 0 ? scheduleData : previewData;
 
+    // All preview posts in publishing order
+    const preview = currentSchedule.map((p, i) => ({
+        country: p.country,
+        location: p.location,
+        status: 'preview',
+        label: `#${i + 1}`
+    }));
+
+    // Build grid simulating Instagram behavior:
+    // Each new post pushes everything down, newest at top-left
+    // After publishing all, the order is: #N...#2, #1, published...
+    const gridState = [];
+
+    // Add preview in reverse (last published = top-left)
+    for (let i = preview.length - 1; i >= 0; i--) {
+        gridState.push(preview[i]);
+    }
+
+    // Add published after
+    published.forEach(p => gridState.push(p));
+
+    // Show 9 posts (3x3 grid)
+    const postsToShow = gridState.slice(0, 9);
+
+    // Build grid HTML
     let html = '';
     postsToShow.forEach((post, idx) => {
         const bg = getColor(post.country);
         const statusClass = post.status === 'published' ? 'published' : '';
         html += `<div class="grid-cell ${statusClass}" style="background: ${bg};" title="${post.location}">
-            <span class="post-num">#${post.num}</span>
+            <span class="post-num">${post.label}</span>
             <span class="country-name">${post.country}</span>
         </div>`;
-
-        // Add row marker every 3 posts
-        if ((idx + 1) % 3 === 0 && idx < postsToShow.length - 1) {
-            html += `<div class="grid-row-marker">↑ Fila ${Math.floor(idx / 3) + 1}</div>`;
-        }
     });
 
-    // If we have less than 3 posts, pad with empty cells
+    // Pad to complete last row if needed
     const remainder = postsToShow.length % 3;
     if (remainder > 0) {
         for (let i = 0; i < 3 - remainder; i++) {
@@ -421,14 +443,21 @@ function renderInstagramGrid() {
     container.innerHTML = html || '<p style="color:#999;text-align:center;padding:1rem;">No hay posts para mostrar</p>';
 
     // Add legend
-    const legend = document.createElement('div');
-    legend.style.cssText = 'margin-top: 1rem; display: flex; flex-wrap: wrap; gap: 0.5rem;';
-    legend.innerHTML = Object.entries(countryColors).map(([country, color]) =>
-        `<span style="display:inline-flex;align-items:center;gap:0.25rem;font-size:0.75rem;">
-            <span style="width:12px;height:12px;background:${color};border-radius:2px;"></span>${country}
-        </span>`
-    ).join('');
-    container.parentElement.appendChild(legend);
+    const footer = document.createElement('div');
+    footer.style.cssText = 'margin-top: 1rem;';
+    footer.innerHTML = `
+        <div style="display: flex; flex-wrap: wrap; gap: 0.5rem; margin-bottom: 0.5rem;">
+            ${Object.entries(countryColors).map(([country, color]) =>
+                `<span style="display:inline-flex;align-items:center;gap:0.25rem;font-size:0.75rem;">
+                    <span style="width:12px;height:12px;background:${color};border-radius:2px;"></span>${country}
+                </span>`
+            ).join('')}
+        </div>
+        <p style="font-size:0.75rem;color:#666;">
+            ✓ = publicados, # = programados. Fila inferior muestra #1 completando la fila de Norge.
+        </p>
+    `;
+    container.parentElement.appendChild(footer);
 }
 </script>
 {% endblock %}

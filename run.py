@@ -169,8 +169,15 @@ def cmd_auto_publish(args):
         with open(post_json, "r", encoding="utf-8") as f:
             data = json.load(f)
 
-        sched_date = data.get("schedule", {}).get("suggested_date")
-        sched_time = data.get("schedule", {}).get("suggested_time", "00:00")
+        schedule = data.get("schedule", {})
+        sched_date = schedule.get("suggested_date")
+        sched_time = schedule.get("suggested_time", "00:00")
+
+        # Fallback to scheduled_at if suggested_date is null
+        if not sched_date and schedule.get("scheduled_at"):
+            scheduled_at = schedule["scheduled_at"]
+            sched_date = scheduled_at[:10]  # YYYY-MM-DD
+            sched_time = scheduled_at[11:16] if len(scheduled_at) > 16 else "00:00"  # HH:MM
 
         if not sched_date:
             continue
