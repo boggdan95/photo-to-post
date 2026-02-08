@@ -214,6 +214,63 @@ def cmd_auto_publish(args):
     logger.info(f"Auto-publish complete: {published_count} published, {skipped_count} skipped")
 
 
+def cmd_sync(args):
+    """Sync local folders with GitHub state after git pull.
+
+    Moves photos from 05_scheduled to 06_published for posts that were
+    published by GitHub Actions.
+    """
+    logger = setup_logging()
+    import shutil
+
+    scheduled_dir = BASE_DIR / "05_scheduled"
+    published_dir = BASE_DIR / "06_published"
+
+    if not published_dir.exists():
+        logger.info("No published folder found.")
+        return
+
+    synced = 0
+
+    # Find published posts that have post.json but no photos folder
+    for year_dir in published_dir.iterdir():
+        if not year_dir.is_dir():
+            continue
+        for month_dir in year_dir.iterdir():
+            if not month_dir.is_dir():
+                continue
+            for post_dir in month_dir.iterdir():
+                if not post_dir.is_dir():
+                    continue
+
+                photos_dir = post_dir / "photos"
+                post_json = post_dir / "post.json"
+
+                # If has post.json but no photos, look for them in scheduled
+                if post_json.exists() and not photos_dir.exists():
+                    # Find matching folder in scheduled
+                    scheduled_post = scheduled_dir / post_dir.name
+                    scheduled_photos = scheduled_post / "photos"
+
+                    if scheduled_photos.exists():
+                        # Move photos to published
+                        shutil.move(str(scheduled_photos), str(photos_dir))
+                        logger.info(f"Synced photos: {post_dir.name}")
+                        synced += 1
+
+                        # Remove empty scheduled folder
+                        if scheduled_post.exists():
+                            try:
+                                scheduled_post.rmdir()
+                            except OSError:
+                                pass  # Not empty, leave it
+
+    if synced:
+        logger.info(f"Synced {synced} posts")
+    else:
+        logger.info("Everything already in sync")
+
+
 def main():
     parser = argparse.ArgumentParser(
         description="photo-to-post: Automatización de Instagram"
@@ -234,6 +291,8 @@ def main():
     auto = sub.add_parser("auto-publish", help="Publicar automaticamente posts programados que ya toca")
     auto.add_argument("--max-delay", type=int, default=24, help="Max horas de retraso permitido (default: 24)")
 
+    sub.add_parser("sync", help="Sincronizar fotos locales con estado de GitHub (despues de git pull)")
+
     args = parser.parse_args()
 
     commands = {
@@ -246,6 +305,7 @@ def main():
         "calendar": cmd_calendar,
         "publish": cmd_publish,
         "auto-publish": cmd_auto_publish,
+        "sync": cmd_sync,
     }
 
     if args.command in commands:
