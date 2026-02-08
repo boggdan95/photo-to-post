@@ -1007,5 +1007,60 @@ def publish_now(post_id):
         return jsonify({"error": str(e)}), 500
 
 
+@app.route("/api/sync", methods=["POST"])
+def api_sync():
+    """Run git pull and sync local photos with GitHub state."""
+    import subprocess
+    import shutil
+
+    results = {"pulled": False, "synced": 0, "errors": []}
+
+    # Git pull
+    try:
+        result = subprocess.run(
+            ["git", "pull"],
+            cwd=str(BASE_DIR),
+            capture_output=True,
+            text=True
+        )
+        if result.returncode == 0:
+            results["pulled"] = True
+            results["pull_message"] = result.stdout.strip() or "Already up to date"
+        else:
+            results["errors"].append(f"Git pull failed: {result.stderr}")
+    except Exception as e:
+        results["errors"].append(f"Git pull error: {e}")
+
+    # Sync photos
+    for year_dir in PUBLISHED_DIR.iterdir() if PUBLISHED_DIR.exists() else []:
+        if not year_dir.is_dir():
+            continue
+        for month_dir in year_dir.iterdir():
+            if not month_dir.is_dir():
+                continue
+            for post_dir in month_dir.iterdir():
+                if not post_dir.is_dir():
+                    continue
+
+                photos_dir = post_dir / "photos"
+                post_json = post_dir / "post.json"
+
+                if post_json.exists() and not photos_dir.exists():
+                    scheduled_post = SCHEDULED_DIR / post_dir.name
+                    scheduled_photos = scheduled_post / "photos"
+
+                    if scheduled_photos.exists():
+                        shutil.move(str(scheduled_photos), str(photos_dir))
+                        results["synced"] += 1
+
+                        if scheduled_post.exists():
+                            try:
+                                scheduled_post.rmdir()
+                            except OSError:
+                                pass
+
+    return jsonify({"ok": True, **results})
+
+
 if __name__ == "__main__":
     app.run(debug=True, port=5000)

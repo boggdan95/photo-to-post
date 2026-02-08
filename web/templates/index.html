@@ -166,6 +166,7 @@
 
 <div class="quick-actions">
     <a href="/settings" class="btn btn-primary">Configuracion</a>
+    <button class="btn" style="background:#6c757d;color:#fff;" onclick="runSync(this)">Sync GitHub</button>
     <button class="btn btn-success" onclick="refreshCounts()">Actualizar</button>
 </div>
 {% endblock %}
@@ -201,6 +202,38 @@ async function runCommand(command, btn) {
     btn.innerHTML = originalText;
     btn.disabled = false;
     btn.classList.remove('loading');
+}
+
+async function runSync(btn) {
+    const originalText = btn.innerHTML;
+    btn.innerHTML = '<span class="spinner"></span> Sincronizando...';
+    btn.disabled = true;
+
+    const logOutput = document.getElementById('log-output');
+    logOutput.classList.add('visible');
+    logOutput.textContent = 'Ejecutando git pull + sync...\n';
+
+    try {
+        const res = await fetch('/api/sync', {method: 'POST'});
+        const data = await res.json();
+
+        if (data.ok) {
+            logOutput.textContent += `Git: ${data.pull_message || 'OK'}\n`;
+            logOutput.textContent += `Fotos sincronizadas: ${data.synced}\n`;
+            if (data.errors && data.errors.length > 0) {
+                logOutput.textContent += `Errores: ${data.errors.join(', ')}\n`;
+            }
+            logOutput.textContent += '\n✓ Sync completado';
+            await refreshCounts();
+        } else {
+            logOutput.textContent += `Error: ${data.error || 'Unknown'}`;
+        }
+    } catch (e) {
+        logOutput.textContent += `Error: ${e.message}`;
+    }
+
+    btn.innerHTML = originalText;
+    btn.disabled = false;
 }
 
 async function refreshCounts() {
