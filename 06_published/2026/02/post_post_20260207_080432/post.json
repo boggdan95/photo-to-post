@@ -1,6 +1,6 @@
 {
   "id": "post_20260207_080432",
-  "status": "scheduled",
+  "status": "published",
   "country": "Norge",
   "city": "Skjervøy",
   "location_display": "Skjervøy, Norge",
@@ -63,12 +63,12 @@
     "suggested_date": null,
     "suggested_time": null,
     "scheduled_at": "2026-02-20T07:00:00",
-    "published_at": null
+    "published_at": "2026-02-20T13:10:14.316281"
   },
   "meta": {
     "created_at": "2026-02-07T08:04:32.771894",
     "approved_at": "2026-02-07T17:17:15.187324",
-    "instagram_post_id": null,
+    "instagram_post_id": "18077037593082997",
     "split_from": "post_20260206_232057"
   }
 }
