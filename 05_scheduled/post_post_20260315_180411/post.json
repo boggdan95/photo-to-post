@@ -1,0 +1,64 @@
+{
+  "id": "post_20260315_180411",
+  "status": "scheduled",
+  "country": "Norge",
+  "city": "Tromsø",
+  "location_display": "Tromsø, Norge",
+  "photos": [
+    {
+      "filename": "01.jpg",
+      "original_name": "20251127_20251127_142444.jpg",
+      "gps": {
+        "lat": 69.648313,
+        "lon": 18.986526
+      },
+      "taken_at": "2025-11-27T14:24:44",
+      "cloudinary_url": "https://res.cloudinary.com/dfz5xpnvy/image/upload/v1773629011/photo-to-post/mox8i9omqymp4zzjhitm.jpg"
+    },
+    {
+      "filename": "02.jpg",
+      "original_name": "20251127_20251127_142449.jpg",
+      "gps": {
+        "lat": 69.648313,
+        "lon": 18.986526
+      },
+      "taken_at": "2025-11-27T14:24:49",
+      "cloudinary_url": "https://res.cloudinary.com/dfz5xpnvy/image/upload/v1773629012/photo-to-post/cp1fnuxoozcdssgekepk.jpg"
+    },
+    {
+      "filename": "03.jpg",
+      "original_name": "20251127_20251127_142832.jpg",
+      "gps": {
+        "lat": 69.648286,
+        "lon": 18.986707
+      },
+      "taken_at": "2025-11-27T14:28:32",
+      "cloudinary_url": "https://res.cloudinary.com/dfz5xpnvy/image/upload/v1773629013/photo-to-post/ksfeztqrayqm7t2a561d.jpg"
+    }
+  ],
+  "caption": {
+    "text": "Estar aquí en pleno invierno ártico te hace sentir pequeño ante la inmensidad del paisaje noruego. Tromsø, conocida como la \"París del Norte\", es una de las ciudades más grandes del mundo por encima del Círculo Polar Ártico, y su catedral del ártico con esa arquitectura triangular tan distintiva se ha convertido en el símbolo de la ciudad. Lo que más me impresiona es cómo esta comunidad de 75,000 habitantes ha florecido en un lugar donde el sol no sale durante dos meses al año ❄️",
+    "hashtags": [
+      "#tromso",
+      "#catedraldelartico",
+      "#noruegartica",
+      "#landscape",
+      "#travel",
+      "#landscapephotography"
+    ],
+    "generated_by": "claude-api",
+    "edited": false
+  },
+  "schedule": {
+    "suggested_date": null,
+    "suggested_time": null,
+    "scheduled_at": "2026-03-26T07:00:00",
+    "published_at": null
+  },
+  "meta": {
+    "created_at": "2026-03-15T18:04:11.154213",
+    "approved_at": "2026-03-15T18:19:19.187278",
+    "instagram_post_id": null,
+    "split_from": "post_20260315_171332"
+  }
+}

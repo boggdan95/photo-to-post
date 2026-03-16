@@ -1,0 +1,93 @@
+{
+  "id": "post_20260315_200916",
+  "status": "scheduled",
+  "country": "الأردن",
+  "city": "Petra camino al Monasterio",
+  "location_display": "Petra camino al Monasterio, الأردن",
+  "photos": [
+    {
+      "filename": "01.jpg",
+      "original_name": "20240505_20240505_163003.jpg",
+      "gps": {
+        "lat": 30.336747,
+        "lon": 35.433737
+      },
+      "taken_at": "2024-05-05T16:30:03",
+      "cloudinary_url": "https://res.cloudinary.com/dfz5xpnvy/image/upload/v1773629980/photo-to-post/ceygmqdptl0j95upnsb8.jpg"
+    },
+    {
+      "filename": "02.jpg",
+      "original_name": "20240505_20240505_163537.jpg",
+      "gps": {
+        "lat": 30.336152,
+        "lon": 35.435085
+      },
+      "taken_at": "2024-05-05T16:35:37",
+      "cloudinary_url": "https://res.cloudinary.com/dfz5xpnvy/image/upload/v1773629982/photo-to-post/wscwtbc82npz3actbp1v.jpg"
+    },
+    {
+      "filename": "03.jpg",
+      "original_name": "20240505_20240505_163707.jpg",
+      "gps": {
+        "lat": 30.335967,
+        "lon": 35.435572
+      },
+      "taken_at": "2024-05-05T16:37:07",
+      "cloudinary_url": "https://res.cloudinary.com/dfz5xpnvy/image/upload/v1773629983/photo-to-post/vgn3ydturidj1nig4cmf.jpg"
+    },
+    {
+      "filename": "04.jpg",
+      "original_name": "20240505_20240505_163724.jpg",
+      "gps": {
+        "lat": 30.335988,
+        "lon": 35.435586
+      },
+      "taken_at": "2024-05-05T16:37:24",
+      "cloudinary_url": "https://res.cloudinary.com/dfz5xpnvy/image/upload/v1773629984/photo-to-post/kal2vig7lgxbdgmc3fng.jpg"
+    },
+    {
+      "filename": "05.jpg",
+      "original_name": "20240505_20240505_164518.jpg",
+      "gps": {
+        "lat": 30.334841,
+        "lon": 35.439175
+      },
+      "taken_at": "2024-05-05T16:45:19",
+      "cloudinary_url": "https://res.cloudinary.com/dfz5xpnvy/image/upload/v1773629985/photo-to-post/ykymuydnmmgjogfctjfm.jpg"
+    },
+    {
+      "filename": "06.jpg",
+      "original_name": "20240505_20240505_165246.jpg",
+      "gps": {
+        "lat": 30.331862,
+        "lon": 35.439896
+      },
+      "taken_at": "2024-05-05T16:52:47",
+      "cloudinary_url": "https://res.cloudinary.com/dfz5xpnvy/image/upload/v1773629986/photo-to-post/qa58ktfo5e0obzzslg4a.jpg"
+    }
+  ],
+  "caption": {
+    "text": "Cada paso hacia el Monasterio de Petra se siente como un viaje en el tiempo, donde el desierto jordano guarda secretos tallados en piedra hace más de 2,000 años. Este sendero de 8 kilómetros serpentea entre cañones y formaciones rocosas que los nabateos conocían como la palma de su mano. Lo que más me impresiona es cómo lograron crear esta ruta comercial que conectaba Arabia con el Mediterráneo, convirtiendo estas montañas en su fortaleza perfecta 🏔️",
+    "hashtags": [
+      "#petra",
+      "#jordan",
+      "#monasterytrail",
+      "#naturephotography",
+      "#photography",
+      "#photooftheday"
+    ],
+    "generated_by": "claude-api",
+    "edited": false
+  },
+  "schedule": {
+    "suggested_date": null,
+    "suggested_time": null,
+    "scheduled_at": "2026-04-01T07:00:00",
+    "published_at": null
+  },
+  "meta": {
+    "created_at": "2026-03-15T20:09:22.150165",
+    "approved_at": "2026-03-15T20:53:51.443430",
+    "instagram_post_id": null
+  }
+}

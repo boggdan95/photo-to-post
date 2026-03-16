@@ -1,0 +1,125 @@
+{
+  "id": "post_20260206_232155",
+  "status": "scheduled",
+  "country": "Guatemala",
+  "city": "Sololá",
+  "location_display": "Sololá, Guatemala",
+  "photos": [
+    {
+      "filename": "01.jpg",
+      "original_name": "20250118_20250118_160004.jpg",
+      "gps": {
+        "lat": 14.696076,
+        "lon": -91.284571
+      },
+      "taken_at": "2025-01-18T16:00:04",
+      "cloudinary_url": "https://res.cloudinary.com/dfz5xpnvy/image/upload/v1773628961/photo-to-post/ymh5zhbjcebxyt25koqi.jpg"
+    },
+    {
+      "filename": "02.jpg",
+      "original_name": "20250118_20250118_162002.jpg",
+      "gps": {
+        "lat": 14.696886,
+        "lon": -91.282987
+      },
+      "taken_at": "2025-01-18T16:20:02",
+      "cloudinary_url": "https://res.cloudinary.com/dfz5xpnvy/image/upload/v1773628963/photo-to-post/gftfu4twgykpxdvxe2ym.jpg"
+    },
+    {
+      "filename": "03.jpg",
+      "original_name": "20250118_20250118_165729.jpg",
+      "gps": {
+        "lat": 14.736453,
+        "lon": -91.159608
+      },
+      "taken_at": "2025-01-18T16:57:30",
+      "cloudinary_url": "https://res.cloudinary.com/dfz5xpnvy/image/upload/v1773628964/photo-to-post/ouzxgvhjieexlc6dfyqz.jpg"
+    },
+    {
+      "filename": "04.jpg",
+      "original_name": "20250118_20250118_174301.jpg",
+      "gps": {
+        "lat": 14.74847,
+        "lon": -91.167225
+      },
+      "taken_at": "2025-01-18T17:43:01",
+      "cloudinary_url": "https://res.cloudinary.com/dfz5xpnvy/image/upload/v1773628964/photo-to-post/kxtkuiuddkcbozbxgvgv.jpg"
+    },
+    {
+      "filename": "05.jpg",
+      "original_name": "20250119_20250119_082736.jpg",
+      "gps": {
+        "lat": 14.748575,
+        "lon": -91.167204
+      },
+      "taken_at": "2025-01-19T08:27:36",
+      "cloudinary_url": "https://res.cloudinary.com/dfz5xpnvy/image/upload/v1773628966/photo-to-post/srmzedrp8hxkk5pdwpbh.jpg"
+    },
+    {
+      "filename": "06.jpg",
+      "original_name": "20250119_20250119_082743.jpg",
+      "gps": {
+        "lat": 14.748575,
+        "lon": -91.167204
+      },
+      "taken_at": "2025-01-19T08:27:43",
+      "cloudinary_url": "https://res.cloudinary.com/dfz5xpnvy/image/upload/v1773628967/photo-to-post/utpmiq9max0oxqt7uvaj.jpg"
+    },
+    {
+      "filename": "07.jpg",
+      "original_name": "20250119_20250119_082803.jpg",
+      "gps": {
+        "lat": 14.748519,
+        "lon": -91.167238
+      },
+      "taken_at": "2025-01-19T08:28:03",
+      "cloudinary_url": "https://res.cloudinary.com/dfz5xpnvy/image/upload/v1773628967/photo-to-post/dxxa9tzzai4jhzbl7ink.jpg"
+    },
+    {
+      "filename": "08.jpg",
+      "original_name": "20250119_20250119_082824.jpg",
+      "gps": {
+        "lat": 14.748519,
+        "lon": -91.167238
+      },
+      "taken_at": "2025-01-19T08:28:24",
+      "cloudinary_url": "https://res.cloudinary.com/dfz5xpnvy/image/upload/v1773628968/photo-to-post/w4ghiyy7emuh04iptaao.jpg"
+    },
+    {
+      "filename": "09.jpg",
+      "original_name": "20250119_20250119_100642.jpg",
+      "gps": {
+        "lat": 14.748026,
+        "lon": -91.167693
+      },
+      "taken_at": "2025-01-19T10:06:42",
+      "cloudinary_url": "https://res.cloudinary.com/dfz5xpnvy/image/upload/v1773628969/photo-to-post/t00fb7ce6gcqyise4p3o.jpg"
+    }
+  ],
+  "caption": {
+    "text": "Despertar con la neblina abrazando el lago Atitlán mientras los volcanes emergen lentamente es de esas experiencias que te recuerdan por qué viajas. Sololá, que significa \"lugar de codornices\" en k'iche', se alza a más de 2,100 metros sobre el nivel del mar y es la puerta de entrada a uno de los lagos más hermosos del mundo 🌄 Desde aquí puedes ver los tres volcanes guardianes: Atitlán, Tolimán y San Pedro, que han custodiado estas tierras mayas por siglos. Te juro que cada amanecer aquí es diferente al anterior.",
+    "hashtags": [
+      "#solola",
+      "#lagoatitlan",
+      "#guatemalanatural",
+      "#travel",
+      "#landscape",
+      "#photooftheday",
+      "#guatemalatravel",
+      "#visitguatemala"
+    ],
+    "generated_by": "claude-api",
+    "edited": false
+  },
+  "schedule": {
+    "suggested_date": null,
+    "suggested_time": null,
+    "scheduled_at": "2026-03-20T07:00:00",
+    "published_at": null
+  },
+  "meta": {
+    "created_at": "2026-02-06T23:22:01.287989",
+    "approved_at": "2026-03-15T18:23:43.586223",
+    "instagram_post_id": null
+  }
+}

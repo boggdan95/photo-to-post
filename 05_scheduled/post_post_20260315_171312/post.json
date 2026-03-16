@@ -1,0 +1,68 @@
+{
+  "id": "post_20260315_171312",
+  "status": "scheduled",
+  "country": "Norge",
+  "city": "Noruega",
+  "location_display": "Noruega, Norge",
+  "photos": [
+    {
+      "filename": "01.jpg",
+      "original_name": "20251201__DSC6786.jpg",
+      "gps": null,
+      "taken_at": "2025-12-01T22:21:16",
+      "cloudinary_url": "https://res.cloudinary.com/dfz5xpnvy/image/upload/v1773628947/photo-to-post/sp7keysw6kkhj1ht4ecb.jpg"
+    },
+    {
+      "filename": "02.jpg",
+      "original_name": "20251201__DSC6781.jpg",
+      "gps": null,
+      "taken_at": "2025-12-01T22:20:32",
+      "cloudinary_url": "https://res.cloudinary.com/dfz5xpnvy/image/upload/v1773628949/photo-to-post/a21r76iezojxnmgnteul.jpg"
+    },
+    {
+      "filename": "03.jpg",
+      "original_name": "20251201__DSC6787.jpg",
+      "gps": null,
+      "taken_at": "2025-12-01T22:21:19",
+      "cloudinary_url": "https://res.cloudinary.com/dfz5xpnvy/image/upload/v1773628952/photo-to-post/efncpnk4fwyziana52ob.jpg"
+    },
+    {
+      "filename": "04.jpg",
+      "original_name": "20251201__DSC6784.jpg",
+      "gps": null,
+      "taken_at": "2025-12-01T22:20:53",
+      "cloudinary_url": "https://res.cloudinary.com/dfz5xpnvy/image/upload/v1773628953/photo-to-post/hmyvllswhjfu4nt9yriv.jpg"
+    },
+    {
+      "filename": "05.jpg",
+      "original_name": "20251201__DSC6785.jpg",
+      "gps": null,
+      "taken_at": "2025-12-01T22:21:02",
+      "cloudinary_url": "https://res.cloudinary.com/dfz5xpnvy/image/upload/v1773628955/photo-to-post/jsgbezswa1hfj9dxpngj.jpg"
+    }
+  ],
+  "caption": {
+    "text": "Nunca había sentido tanto frío y tanta emoción al mismo tiempo, viendo cómo el cielo se pintaba de verde sobre mi cabeza en pleno invierno noruego. Las auroras boreales aparecen cuando las partículas solares chocan con nuestra atmósfera a más de 100 kilómetros de altura, creando este espectáculo que solo es visible cerca de los polos magnéticos. En Noruega, la temporada va de septiembre a marzo, pero diciembre nos regaló una de las noches más activas del año ✨ Cinco fotos que capturan apenas una fracción de las tres horas que duró este baile celestial.",
+    "hashtags": [
+      "#auroraborealis",
+      "#noruega",
+      "#fotografianocturna",
+      "#photooftheday",
+      "#naturephotography",
+      "#travelphotography"
+    ],
+    "generated_by": "claude-api",
+    "edited": false
+  },
+  "schedule": {
+    "suggested_date": null,
+    "suggested_time": null,
+    "scheduled_at": "2026-03-18T07:00:00",
+    "published_at": null
+  },
+  "meta": {
+    "created_at": "2026-03-15T17:13:17.126747",
+    "approved_at": "2026-03-15T18:19:19.058042",
+    "instagram_post_id": null
+  }
+}

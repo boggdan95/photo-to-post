@@ -1,0 +1,93 @@
+{
+  "id": "post_20260315_200937",
+  "status": "scheduled",
+  "country": "Norge",
+  "city": "Bergen",
+  "location_display": "Bergen, Norge",
+  "photos": [
+    {
+      "filename": "01.jpg",
+      "original_name": "20251203_20251203_134317.jpg",
+      "gps": {
+        "lat": 60.375743,
+        "lon": 5.385754
+      },
+      "taken_at": "2025-12-03T13:43:17",
+      "cloudinary_url": "https://res.cloudinary.com/dfz5xpnvy/image/upload/v1773629015/photo-to-post/ylz5lamoro71cko89lwj.jpg"
+    },
+    {
+      "filename": "02.jpg",
+      "original_name": "20251203_20251203_131836.jpg",
+      "gps": {
+        "lat": 60.377163,
+        "lon": 5.381233
+      },
+      "taken_at": "2025-12-03T13:18:36",
+      "cloudinary_url": "https://res.cloudinary.com/dfz5xpnvy/image/upload/v1773629016/photo-to-post/vczkfp8dfk9lx6zplpqa.jpg"
+    },
+    {
+      "filename": "03.jpg",
+      "original_name": "20251203_20251203_132223.jpg",
+      "gps": {
+        "lat": 60.377546,
+        "lon": 5.381462
+      },
+      "taken_at": "2025-12-03T13:22:23",
+      "cloudinary_url": "https://res.cloudinary.com/dfz5xpnvy/image/upload/v1773629018/photo-to-post/m3lbsexipsu7vvkigbjm.jpg"
+    },
+    {
+      "filename": "04.jpg",
+      "original_name": "20251203_20251203_133430.jpg",
+      "gps": {
+        "lat": 60.376204,
+        "lon": 5.385401
+      },
+      "taken_at": "2025-12-03T13:34:30",
+      "cloudinary_url": "https://res.cloudinary.com/dfz5xpnvy/image/upload/v1773629019/photo-to-post/elflkiygq7ma4zilcw86.jpg"
+    },
+    {
+      "filename": "05.jpg",
+      "original_name": "20251203_20251203_134604.jpg",
+      "gps": {
+        "lat": 60.375681,
+        "lon": 5.386222
+      },
+      "taken_at": "2025-12-03T13:46:04",
+      "cloudinary_url": "https://res.cloudinary.com/dfz5xpnvy/image/upload/v1773629021/photo-to-post/xdnple3n7pgeoygkzclr.jpg"
+    },
+    {
+      "filename": "06.jpg",
+      "original_name": "20251203_20251203_131848.jpg",
+      "gps": {
+        "lat": 60.377163,
+        "lon": 5.381233
+      },
+      "taken_at": "2025-12-03T13:18:48",
+      "cloudinary_url": "https://res.cloudinary.com/dfz5xpnvy/image/upload/v1773629022/photo-to-post/l5glq92krucviekcidbp.jpg"
+    }
+  ],
+  "caption": {
+    "text": "El aire frío de Bergen me cortaba la cara, pero no podía dejar de caminar por sus calles empedradas mientras la lluvia amenazaba con caer. Esta ciudad noruega, rodeada por siete montañas y conocida como la puerta de entrada a los fiordos, recibe lluvia más de 200 días al año, pero eso solo intensifica los colores de sus casas de madera del barrio Bryggen 🌧️ Cada rincón cuenta historias de cuando era el centro comercial de la Liga Hanseática, y desde el mirador de Fløyen toda la ciudad se extiende como un mapa viviente entre montañas y mar.",
+    "hashtags": [
+      "#bergen",
+      "#noruega",
+      "#bryggen",
+      "#landscapephotography",
+      "#travel",
+      "#travelphotography"
+    ],
+    "generated_by": "claude-api",
+    "edited": false
+  },
+  "schedule": {
+    "suggested_date": null,
+    "suggested_time": null,
+    "scheduled_at": "2026-03-27T19:00:00",
+    "published_at": null
+  },
+  "meta": {
+    "created_at": "2026-03-15T20:09:44.312533",
+    "approved_at": "2026-03-15T20:10:15.098428",
+    "instagram_post_id": null
+  }
+}

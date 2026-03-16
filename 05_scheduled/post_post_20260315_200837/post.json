@@ -1,0 +1,83 @@
+{
+  "id": "post_20260315_200837",
+  "status": "scheduled",
+  "country": "الأردن",
+  "city": "Amán",
+  "location_display": "Amán, الأردن",
+  "photos": [
+    {
+      "filename": "01.jpg",
+      "original_name": "20240502_20240502_131116.jpg",
+      "gps": {
+        "lat": 31.953984,
+        "lon": 35.934769
+      },
+      "taken_at": "2024-05-02T13:11:16",
+      "cloudinary_url": "https://res.cloudinary.com/dfz5xpnvy/image/upload/v1773628984/photo-to-post/vsap8g9h1semffl2wss1.jpg"
+    },
+    {
+      "filename": "02.jpg",
+      "original_name": "20240502_20240502_122802.jpg",
+      "gps": {
+        "lat": 31.954126,
+        "lon": 35.936476
+      },
+      "taken_at": "2024-05-02T12:28:01",
+      "cloudinary_url": "https://res.cloudinary.com/dfz5xpnvy/image/upload/v1773628985/photo-to-post/xwfj4aak2tcucv6dzx4y.jpg"
+    },
+    {
+      "filename": "03.jpg",
+      "original_name": "20240502_20240502_125529.jpg",
+      "gps": {
+        "lat": 31.953853,
+        "lon": 35.935074
+      },
+      "taken_at": "2024-05-02T12:55:29",
+      "cloudinary_url": "https://res.cloudinary.com/dfz5xpnvy/image/upload/v1773628986/photo-to-post/gwgntp5aywqe2oowayvs.jpg"
+    },
+    {
+      "filename": "04.jpg",
+      "original_name": "20240502_20240502_130321.jpg",
+      "gps": {
+        "lat": 31.954027,
+        "lon": 35.934923
+      },
+      "taken_at": "2024-05-02T13:03:21",
+      "cloudinary_url": "https://res.cloudinary.com/dfz5xpnvy/image/upload/v1773628987/photo-to-post/vsawoiri79wcdojmze11.jpg"
+    },
+    {
+      "filename": "05.jpg",
+      "original_name": "20240502_20240502_131643.jpg",
+      "gps": {
+        "lat": 31.947876,
+        "lon": 35.942611
+      },
+      "taken_at": "2024-05-02T13:16:42",
+      "cloudinary_url": "https://res.cloudinary.com/dfz5xpnvy/image/upload/v1773628989/photo-to-post/my64ukawlx3bgiupraze.jpg"
+    }
+  ],
+  "caption": {
+    "text": "Cada amanecer desde la Ciudadela de Amán me recordó por qué esta ciudad lleva 9,000 años siendo habitada sin interrupción. Construida sobre siete colinas como Roma, Amán es una de las capitales más antiguas del mundo donde los edificios de piedra blanca se extienden hasta donde alcanza la vista 🏛️ Las ruinas romanas, bizantinas y omeyas conviven con la vida moderna en cada rincón, creando un contraste que solo entiendes cuando lo vives.",
+    "hashtags": [
+      "#aman",
+      "#jordan",
+      "#ciudadela",
+      "#landscapephotography",
+      "#travel",
+      "#landscape"
+    ],
+    "generated_by": "claude-api",
+    "edited": false
+  },
+  "schedule": {
+    "suggested_date": null,
+    "suggested_time": null,
+    "scheduled_at": "2026-03-22T07:00:00",
+    "published_at": null
+  },
+  "meta": {
+    "created_at": "2026-03-15T20:08:46.157884",
+    "approved_at": "2026-03-15T20:12:06.307011",
+    "instagram_post_id": null
+  }
+}

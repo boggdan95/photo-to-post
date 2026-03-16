@@ -1,0 +1,83 @@
+{
+  "id": "post_20260315_200847",
+  "status": "scheduled",
+  "country": "الأردن",
+  "city": "Little Petra",
+  "location_display": "Little Petra, الأردن",
+  "photos": [
+    {
+      "filename": "01.jpg",
+      "original_name": "20240506_20240506_121749.jpg",
+      "gps": {
+        "lat": 30.374647,
+        "lon": 35.450195
+      },
+      "taken_at": "2024-05-06T12:17:49",
+      "cloudinary_url": "https://res.cloudinary.com/dfz5xpnvy/image/upload/v1773628990/photo-to-post/wwgrwqckurjki6k6qekz.jpg"
+    },
+    {
+      "filename": "02.jpg",
+      "original_name": "20240506_20240506_124440.jpg",
+      "gps": {
+        "lat": 30.375293,
+        "lon": 35.451837
+      },
+      "taken_at": "2024-05-06T12:44:39",
+      "cloudinary_url": "https://res.cloudinary.com/dfz5xpnvy/image/upload/v1773628991/photo-to-post/yusaimfyb96kzxkanwht.jpg"
+    },
+    {
+      "filename": "03.jpg",
+      "original_name": "20240506_20240506_125644.jpg",
+      "gps": {
+        "lat": 30.375284,
+        "lon": 35.451891
+      },
+      "taken_at": "2024-05-06T12:56:44",
+      "cloudinary_url": "https://res.cloudinary.com/dfz5xpnvy/image/upload/v1773628992/photo-to-post/srrzwof2mwhoso00dvzl.jpg"
+    },
+    {
+      "filename": "04.jpg",
+      "original_name": "20240506_20240506_125653.jpg",
+      "gps": {
+        "lat": 30.375284,
+        "lon": 35.451891
+      },
+      "taken_at": "2024-05-06T12:56:53",
+      "cloudinary_url": "https://res.cloudinary.com/dfz5xpnvy/image/upload/v1773628994/photo-to-post/zkmlfgjoybex9d5eaact.jpg"
+    },
+    {
+      "filename": "05.jpg",
+      "original_name": "20240506_20240506_131942.jpg",
+      "gps": {
+        "lat": 30.375204,
+        "lon": 35.451845
+      },
+      "taken_at": "2024-05-06T13:19:42",
+      "cloudinary_url": "https://res.cloudinary.com/dfz5xpnvy/image/upload/v1773628994/photo-to-post/aqwkmxv2ohkzbumhuf9u.jpg"
+    }
+  ],
+  "caption": {
+    "text": "Caminar por estos senderos de arenisca me hizo sentir como si explorara los secretos mejor guardados de Petra. Little Petra, conocida localmente como Siq al-Barid, fue el lugar donde las caravanas nabateas descansaban antes de llegar a la ciudad principal, y aún conserva frescos coloridos en algunas de sus fachadas talladas. Es increíble pensar que estos corredores estrechos una vez resonaron con los pasos de comerciantes que transportaban seda y especias desde Arabia 🏛️ Lo mejor de todo es que puedes recorrerla casi en soledad, sin las multitudes de su hermana mayor.",
+    "hashtags": [
+      "#littlepetra",
+      "#jordania",
+      "#arqueologia",
+      "#landscape",
+      "#travel",
+      "#travelphotography"
+    ],
+    "generated_by": "claude-api",
+    "edited": false
+  },
+  "schedule": {
+    "suggested_date": null,
+    "suggested_time": null,
+    "scheduled_at": "2026-03-23T19:00:00",
+    "published_at": null
+  },
+  "meta": {
+    "created_at": "2026-03-15T20:08:53.385682",
+    "approved_at": "2026-03-15T20:11:51.974201",
+    "instagram_post_id": null
+  }
+}

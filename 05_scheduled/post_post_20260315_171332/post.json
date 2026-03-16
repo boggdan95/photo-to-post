@@ -1,0 +1,93 @@
+{
+  "id": "post_20260315_171332",
+  "status": "scheduled",
+  "country": "Norge",
+  "city": "Tromsø",
+  "location_display": "Tromsø, Norge",
+  "photos": [
+    {
+      "filename": "01.jpg",
+      "original_name": "20251124_20251124_235904.jpg",
+      "gps": {
+        "lat": 69.66089,
+        "lon": 18.932514
+      },
+      "taken_at": "2025-11-24T23:59:04",
+      "cloudinary_url": "https://res.cloudinary.com/dfz5xpnvy/image/upload/v1773628934/photo-to-post/t5ger17umoi24y4fo1j6.jpg"
+    },
+    {
+      "filename": "02.jpg",
+      "original_name": "20251124_20251124_230017.jpg",
+      "gps": {
+        "lat": 69.644652,
+        "lon": 19.007202
+      },
+      "taken_at": "2025-11-24T23:00:17",
+      "cloudinary_url": "https://res.cloudinary.com/dfz5xpnvy/image/upload/v1773628935/photo-to-post/stf4jfiw8evt6kemlsqx.jpg"
+    },
+    {
+      "filename": "03.jpg",
+      "original_name": "20251124_20251124_234504.jpg",
+      "gps": {
+        "lat": 69.661161,
+        "lon": 18.933764
+      },
+      "taken_at": "2025-11-24T23:45:04",
+      "cloudinary_url": "https://res.cloudinary.com/dfz5xpnvy/image/upload/v1773628936/photo-to-post/yg1axklppmybsqdm6kbt.jpg"
+    },
+    {
+      "filename": "04.jpg",
+      "original_name": "20251124_20251124_230024.jpg",
+      "gps": {
+        "lat": 69.644652,
+        "lon": 19.007202
+      },
+      "taken_at": "2025-11-24T23:00:24",
+      "cloudinary_url": "https://res.cloudinary.com/dfz5xpnvy/image/upload/v1773628937/photo-to-post/agobk39wfiue199xrxjk.jpg"
+    },
+    {
+      "filename": "05.jpg",
+      "original_name": "20251124_20251124_234523.jpg",
+      "gps": {
+        "lat": 69.661165,
+        "lon": 18.933771
+      },
+      "taken_at": "2025-11-24T23:45:23",
+      "cloudinary_url": "https://res.cloudinary.com/dfz5xpnvy/image/upload/v1773628938/photo-to-post/pqsgndtchbguhalohf4b.jpg"
+    },
+    {
+      "filename": "06.jpg",
+      "original_name": "20251124_20251124_234509.jpg",
+      "gps": {
+        "lat": 69.661165,
+        "lon": 18.933771
+      },
+      "taken_at": "2025-11-24T23:45:09",
+      "cloudinary_url": "https://res.cloudinary.com/dfz5xpnvy/image/upload/v1773628939/photo-to-post/yzluwvtmtbwoxe22zfxq.jpg"
+    }
+  ],
+  "caption": {
+    "text": "Llegué a Tromsø con la esperanza de ver auroras boreales y la primera noche me recibió con este regalo inesperado bailando en el cielo ártico. Esta ciudad noruega, situada a 350 kilómetros al norte del Círculo Polar Ártico, es conocida como la capital mundial de las auroras boreales por su ubicación privilegiada bajo el óvalo auroral. Tromsø combina perfectamente la vida urbana con la naturaleza salvaje del Ártico, rodeada de fiordos y montañas que crean el escenario perfecto para este fenómeno natural 🌌 Definitivamente entiendo por qué los locales consideran noviembre como uno de los mejores meses para la caza de auroras.",
+    "hashtags": [
+      "#tromso",
+      "#auroraborealis",
+      "#nortedenoruega",
+      "#travel",
+      "#photography",
+      "#travelphotography"
+    ],
+    "generated_by": "claude-api",
+    "edited": false
+  },
+  "schedule": {
+    "suggested_date": null,
+    "suggested_time": null,
+    "scheduled_at": "2026-03-16T07:00:00",
+    "published_at": null
+  },
+  "meta": {
+    "created_at": "2026-03-15T17:13:38.435938",
+    "approved_at": "2026-03-15T18:19:19.132966",
+    "instagram_post_id": null
+  }
+}

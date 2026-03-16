@@ -1,0 +1,85 @@
+{
+  "id": "post_20260206_232148",
+  "status": "scheduled",
+  "country": "Guatemala",
+  "city": "Sololá",
+  "location_display": "Sololá, Guatemala",
+  "photos": [
+    {
+      "filename": "01.jpg",
+      "original_name": "20250118_20250118_061647.jpg",
+      "gps": {
+        "lat": 14.748473,
+        "lon": -91.167247
+      },
+      "taken_at": "2025-01-18T06:16:47",
+      "cloudinary_url": "https://res.cloudinary.com/dfz5xpnvy/image/upload/v1773628956/photo-to-post/pje6uty77ewjko9urns0.jpg"
+    },
+    {
+      "filename": "02.jpg",
+      "original_name": "20250118_20250118_114933.jpg",
+      "gps": {
+        "lat": 14.709097,
+        "lon": -91.259305
+      },
+      "taken_at": "2025-01-18T11:49:33",
+      "cloudinary_url": "https://res.cloudinary.com/dfz5xpnvy/image/upload/v1773628957/photo-to-post/zzc6qw6di5ekrlmhwiyp.jpg"
+    },
+    {
+      "filename": "03.jpg",
+      "original_name": "20250118_20250118_114945.jpg",
+      "gps": {
+        "lat": 14.709097,
+        "lon": -91.259305
+      },
+      "taken_at": "2025-01-18T11:49:44",
+      "cloudinary_url": "https://res.cloudinary.com/dfz5xpnvy/image/upload/v1773628958/photo-to-post/hihyftta8vz10io27hrc.jpg"
+    },
+    {
+      "filename": "04.jpg",
+      "original_name": "20250118_20250118_114954.jpg",
+      "gps": {
+        "lat": 14.709097,
+        "lon": -91.259305
+      },
+      "taken_at": "2025-01-18T11:49:54",
+      "cloudinary_url": "https://res.cloudinary.com/dfz5xpnvy/image/upload/v1773628959/photo-to-post/tfgsxlz3mjqrjhyi6tca.jpg"
+    },
+    {
+      "filename": "05.jpg",
+      "original_name": "20250118_20250118_061808.jpg",
+      "gps": {
+        "lat": 14.748454,
+        "lon": -91.167251
+      },
+      "taken_at": "2025-01-18T06:18:08",
+      "cloudinary_url": "https://res.cloudinary.com/dfz5xpnvy/image/upload/v1773628960/photo-to-post/p1m8izzaiqkchekb5inx.jpg"
+    }
+  ],
+  "caption": {
+    "text": "Hay algo hipnótico en la forma como la neblina abraza las montañas de Sololá cada mañana, creando capas infinitas que parecen desvanecerse en el horizonte. Este departamento alberga el espectacular Lago de Atitlán, considerado uno de los lagos más hermosos del mundo y rodeado por tres imponentes volcanes que dominan el paisaje. Los pueblos indígenas que rodean estas tierras altas han mantenido sus tradiciones mayas durante siglos, convirtiendo cada vista en un testimonio vivo de historia y naturaleza 🌄",
+    "hashtags": [
+      "#sololaguatemala",
+      "#lagoatitlan",
+      "#paisajesguatemala",
+      "#landscape",
+      "#photooftheday",
+      "#naturephotography",
+      "#guatemala",
+      "#visitguatemala"
+    ],
+    "generated_by": "claude-api",
+    "edited": false
+  },
+  "schedule": {
+    "suggested_date": null,
+    "suggested_time": null,
+    "scheduled_at": "2026-03-19T19:00:00",
+    "published_at": null
+  },
+  "meta": {
+    "created_at": "2026-02-06T23:21:54.181664",
+    "approved_at": "2026-03-15T18:23:47.552451",
+    "instagram_post_id": null
+  }
+}

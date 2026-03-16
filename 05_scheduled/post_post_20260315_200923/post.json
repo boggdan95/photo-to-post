@@ -1,0 +1,100 @@
+{
+  "id": "post_20260315_200923",
+  "status": "scheduled",
+  "country": "الأردن",
+  "city": "Wadi Rum",
+  "location_display": "Wadi Rum, الأردن",
+  "photos": [
+    {
+      "filename": "01.jpg",
+      "original_name": "20240503_20240503_141418.jpg",
+      "gps": {
+        "lat": 29.613933,
+        "lon": 35.480792
+      },
+      "taken_at": "2024-05-03T14:14:18",
+      "cloudinary_url": "https://res.cloudinary.com/dfz5xpnvy/image/upload/v1773628995/photo-to-post/fe6awk7uarlxnsvc6joa.jpg"
+    },
+    {
+      "filename": "02.jpg",
+      "original_name": "20240503_20240503_140042.jpg",
+      "gps": null,
+      "taken_at": "2024-05-03T14:00:42",
+      "cloudinary_url": "https://res.cloudinary.com/dfz5xpnvy/image/upload/v1773628996/photo-to-post/g63cz0merwkvinjqky8e.jpg"
+    },
+    {
+      "filename": "03.jpg",
+      "original_name": "20240503_20240503_142754.jpg",
+      "gps": {
+        "lat": 29.595507,
+        "lon": 35.472549
+      },
+      "taken_at": "2024-05-03T14:27:54",
+      "cloudinary_url": "https://res.cloudinary.com/dfz5xpnvy/image/upload/v1773628997/photo-to-post/hfv6htucznkzx1jqwofn.jpg"
+    },
+    {
+      "filename": "04.jpg",
+      "original_name": "20240503_20240503_144610.jpg",
+      "gps": {
+        "lat": 29.528577,
+        "lon": 35.459311
+      },
+      "taken_at": "2024-05-03T14:46:10",
+      "cloudinary_url": "https://res.cloudinary.com/dfz5xpnvy/image/upload/v1773628998/photo-to-post/phzazjdlzoanvntmmbuj.jpg"
+    },
+    {
+      "filename": "05.jpg",
+      "original_name": "20240503_20240503_143738.jpg",
+      "gps": {
+        "lat": 29.554795,
+        "lon": 35.467614
+      },
+      "taken_at": "2024-05-03T14:37:38",
+      "cloudinary_url": "https://res.cloudinary.com/dfz5xpnvy/image/upload/v1773628999/photo-to-post/krqtdkbff3ryeska5dub.jpg"
+    },
+    {
+      "filename": "06.jpg",
+      "original_name": "20240503_20240503_142853.jpg",
+      "gps": {
+        "lat": 29.591978,
+        "lon": 35.47111
+      },
+      "taken_at": "2024-05-03T14:28:54",
+      "cloudinary_url": "https://res.cloudinary.com/dfz5xpnvy/image/upload/v1773629001/photo-to-post/bxsmbdla8iwc7yntgbom.jpg"
+    },
+    {
+      "filename": "07.jpg",
+      "original_name": "20240503_20240503_173151.jpg",
+      "gps": {
+        "lat": 29.569975,
+        "lon": 35.499761
+      },
+      "taken_at": "2024-05-03T17:31:51",
+      "cloudinary_url": "https://res.cloudinary.com/dfz5xpnvy/image/upload/v1773629002/photo-to-post/kykmpsohd7ll9p6fskpd.jpg"
+    }
+  ],
+  "caption": {
+    "text": "Caminar por este desierto al amanecer me hizo sentir como si estuviera en otro planeta, con esas formaciones rocosas rojas que se extienden hasta donde alcanza la vista. Wadi Rum es conocido como el \"Valle de la Luna\" y no es casualidad que Lawrence de Arabia eligiera este lugar para sus aventuras, ni que Hollywood lo use constantemente para simular paisajes marcianos 🏜️ Este desierto jordano tiene más de 30,000 años de historia grabada en sus rocas, con petroglifos nabateos que aún se conservan perfectamente.",
+    "hashtags": [
+      "#wadirum",
+      "#jordania",
+      "#desiertorojо",
+      "#travelphotography",
+      "#photography",
+      "#traveltheworld"
+    ],
+    "generated_by": "claude-api",
+    "edited": false
+  },
+  "schedule": {
+    "suggested_date": null,
+    "suggested_time": null,
+    "scheduled_at": "2026-03-24T07:00:00",
+    "published_at": null
+  },
+  "meta": {
+    "created_at": "2026-03-15T20:09:28.727171",
+    "approved_at": "2026-03-15T20:10:40.411843",
+    "instagram_post_id": null
+  }
+}

@@ -1,0 +1,90 @@
+{
+  "id": "post_20260315_200908",
+  "status": "scheduled",
+  "country": "الأردن",
+  "city": "Petra by the Night",
+  "location_display": "Petra by the Night, الأردن",
+  "photos": [
+    {
+      "filename": "01.jpg",
+      "original_name": "20240506_20240506_210141.jpg",
+      "gps": {
+        "lat": 30.322136,
+        "lon": 35.451811
+      },
+      "taken_at": "2024-05-06T21:01:44",
+      "cloudinary_url": "https://res.cloudinary.com/dfz5xpnvy/image/upload/v1773629975/photo-to-post/atvtl71yxowifsqvewrr.jpg"
+    },
+    {
+      "filename": "02.jpg",
+      "original_name": "20240506_20240506_211255.jpg",
+      "gps": {
+        "lat": 30.322137,
+        "lon": 35.451792
+      },
+      "taken_at": "2024-05-06T21:12:55",
+      "cloudinary_url": "https://res.cloudinary.com/dfz5xpnvy/image/upload/v1773629976/photo-to-post/ahstlynpihvojktd55ik.jpg"
+    },
+    {
+      "filename": "03.jpg",
+      "original_name": "20240506_20240506_211259.jpg",
+      "gps": {
+        "lat": 30.322137,
+        "lon": 35.451792
+      },
+      "taken_at": "2024-05-06T21:12:58",
+      "cloudinary_url": "https://res.cloudinary.com/dfz5xpnvy/image/upload/v1773629977/photo-to-post/ecnlqilhwjzapoe3jedb.jpg"
+    },
+    {
+      "filename": "04.jpg",
+      "original_name": "20240506_20240506_212627.jpg",
+      "gps": {
+        "lat": 30.322121,
+        "lon": 35.451805
+      },
+      "taken_at": "2024-05-06T21:26:26",
+      "cloudinary_url": "https://res.cloudinary.com/dfz5xpnvy/image/upload/v1773629978/photo-to-post/hdv0to426xkqolt6ghro.jpg"
+    },
+    {
+      "filename": "05.jpg",
+      "original_name": "20240506_20240506_212642.jpg",
+      "gps": {
+        "lat": 30.322119,
+        "lon": 35.451803
+      },
+      "taken_at": "2024-05-06T21:26:41",
+      "cloudinary_url": "https://res.cloudinary.com/dfz5xpnvy/image/upload/v1773629978/photo-to-post/cb7zknu4bzvocbcqch8u.jpg"
+    },
+    {
+      "filename": "06.jpg",
+      "original_name": "20240505_20240505_114735.jpg",
+      "gps": null,
+      "taken_at": "2024-05-05T11:47:35",
+      "cloudinary_url": "https://res.cloudinary.com/dfz5xpnvy/image/upload/v1773629979/photo-to-post/us3qjjwoefty9b4ft3h9.jpg"
+    }
+  ],
+  "caption": {
+    "text": "Caminar entre las velas mientras el Treasury se ilumina tenuemente me hizo sentir como si hubiera retrocedido 2,000 años en el tiempo. Esta experiencia nocturna solo se ofrece los lunes, miércoles y jueves, cuando más de 1,500 velas guían el sendero de 1.2 kilómetros hasta el corazón de Petra. La música beduina tradicional que resuena entre las rocas rosadas crea una atmósfera que ninguna visita diurna puede igualar 🕯️ Es increíble pensar que los nabateos tallaron esta ciudad directamente en la piedra arenisca hace más de dos milenios.",
+    "hashtags": [
+      "#petrabynight",
+      "#jordania",
+      "#nabateos",
+      "#traveltheworld",
+      "#travel",
+      "#landscapephotography"
+    ],
+    "generated_by": "claude-api",
+    "edited": false
+  },
+  "schedule": {
+    "suggested_date": null,
+    "suggested_time": null,
+    "scheduled_at": "2026-03-31T19:00:00",
+    "published_at": null
+  },
+  "meta": {
+    "created_at": "2026-03-15T20:09:15.644544",
+    "approved_at": "2026-03-15T20:53:51.438405",
+    "instagram_post_id": null
+  }
+}

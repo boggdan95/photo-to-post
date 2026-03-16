@@ -1,0 +1,73 @@
+{
+  "id": "post_20260315_171324",
+  "status": "scheduled",
+  "country": "Norge",
+  "city": "Moskenes",
+  "location_display": "Moskenes, Norge",
+  "photos": [
+    {
+      "filename": "01.jpg",
+      "original_name": "20251130_20251130_135113.jpg",
+      "gps": {
+        "lat": 67.946502,
+        "lon": 13.137656
+      },
+      "taken_at": "2025-11-30T13:51:13",
+      "cloudinary_url": "https://res.cloudinary.com/dfz5xpnvy/image/upload/v1773628940/photo-to-post/qjlkrj09ebdaynqhwaek.jpg"
+    },
+    {
+      "filename": "02.jpg",
+      "original_name": "20251130_20251130_140947.jpg",
+      "gps": {
+        "lat": 67.935097,
+        "lon": 13.094151
+      },
+      "taken_at": "2025-11-30T14:09:47",
+      "cloudinary_url": "https://res.cloudinary.com/dfz5xpnvy/image/upload/v1773628941/photo-to-post/dij1jb9a1nmnmbln9cjs.jpg"
+    },
+    {
+      "filename": "03.jpg",
+      "original_name": "20251130_20251130_152922.jpg",
+      "gps": {
+        "lat": 67.935054,
+        "lon": 13.08801
+      },
+      "taken_at": "2025-11-30T15:29:23",
+      "cloudinary_url": "https://res.cloudinary.com/dfz5xpnvy/image/upload/v1773628942/photo-to-post/xahmjia3g0ymupiqenuz.jpg"
+    },
+    {
+      "filename": "04.jpg",
+      "original_name": "20251130_20251130_153013.jpg",
+      "gps": {
+        "lat": 67.934975,
+        "lon": 13.088069
+      },
+      "taken_at": "2025-11-30T15:30:13",
+      "cloudinary_url": "https://res.cloudinary.com/dfz5xpnvy/image/upload/v1773628945/photo-to-post/r0num0h0aqg8ni1jgjkr.jpg"
+    }
+  ],
+  "caption": {
+    "text": "El frío cortante de noviembre en Moskenes me recordó por qué amo tanto fotografiar en los extremos del mundo. Este pequeño pueblo pesquero en las islas Lofoten es uno de los puntos más al norte donde aún puedes encontrar comunidades que han vivido del mar durante siglos 🌊 Las casas rojas tradicionales, llamadas rorbuer, originalmente servían como refugio temporal para los pescadores durante la temporada de bacalao, y ahora son testigos silenciosos de paisajes que cambian dramáticamente con cada hora del día. Cuatro perspectivas de un lugar que se siente como el fin del mundo, pero que pulsa con una vida ancestral ❄️",
+    "hashtags": [
+      "#moskenes",
+      "#lofoten",
+      "#noruega",
+      "#travelphotography",
+      "#traveltheworld",
+      "#landscapephotography"
+    ],
+    "generated_by": "claude-api",
+    "edited": false
+  },
+  "schedule": {
+    "suggested_date": null,
+    "suggested_time": null,
+    "scheduled_at": "2026-03-17T19:00:00",
+    "published_at": null
+  },
+  "meta": {
+    "created_at": "2026-03-15T17:13:30.995649",
+    "approved_at": "2026-03-15T18:19:19.103371",
+    "instagram_post_id": null
+  }
+}

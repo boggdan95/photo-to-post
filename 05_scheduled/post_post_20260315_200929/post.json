@@ -1,0 +1,73 @@
+{
+  "id": "post_20260315_200929",
+  "status": "scheduled",
+  "country": "الأردن",
+  "city": "Wadi Rum (Lawrance de Arabia)",
+  "location_display": "Wadi Rum (Lawrance de Arabia), الأردن",
+  "photos": [
+    {
+      "filename": "01.jpg",
+      "original_name": "20240503_20240503_173625.jpg",
+      "gps": {
+        "lat": 29.569947,
+        "lon": 35.499752
+      },
+      "taken_at": "2024-05-03T17:36:25",
+      "cloudinary_url": "https://res.cloudinary.com/dfz5xpnvy/image/upload/v1773629988/photo-to-post/fuwod5pczl1mdzwyld54.jpg"
+    },
+    {
+      "filename": "02.jpg",
+      "original_name": "20240503_20240503_174941.jpg",
+      "gps": {
+        "lat": 29.615469,
+        "lon": 35.486791
+      },
+      "taken_at": "2024-05-03T17:49:41",
+      "cloudinary_url": "https://res.cloudinary.com/dfz5xpnvy/image/upload/v1773629990/photo-to-post/l5ts62b1kucsyirz8wnn.jpg"
+    },
+    {
+      "filename": "03.jpg",
+      "original_name": "20240503_20240503_180435.jpg",
+      "gps": {
+        "lat": 29.619564,
+        "lon": 35.493993
+      },
+      "taken_at": "2024-05-03T18:04:35",
+      "cloudinary_url": "https://res.cloudinary.com/dfz5xpnvy/image/upload/v1773629992/photo-to-post/mr4rficyo1q0tvqyxvdf.jpg"
+    },
+    {
+      "filename": "04.jpg",
+      "original_name": "20240503_20240503_181426.jpg",
+      "gps": {
+        "lat": 29.61973,
+        "lon": 35.493214
+      },
+      "taken_at": "2024-05-03T18:14:26",
+      "cloudinary_url": "https://res.cloudinary.com/dfz5xpnvy/image/upload/v1773629994/photo-to-post/snzxfxbmr0crri0nqr9j.jpg"
+    }
+  ],
+  "caption": {
+    "text": "Caminar entre estas formaciones rocosas me hizo sentir como si hubiera viajado a otro planeta, con ese silencio absoluto que solo existe en el desierto. Wadi Rum es conocido como el \"Valle de la Luna\" y no es casualidad que aquí se hayan filmado películas como Lawrence de Arabia y The Martian. Este desierto protegido de Jordania alberga petroglifos de 4,000 años de antigüedad y paisajes que han permanecido casi intactos durante milenios 🏜️ Las dunas rojas contrastan con el cielo azul creando una paleta de colores que cambia con cada hora del día.",
+    "hashtags": [
+      "#wadirum",
+      "#jordania",
+      "#desiertorojо",
+      "#naturephotography",
+      "#photooftheday",
+      "#landscapephotography"
+    ],
+    "generated_by": "claude-api",
+    "edited": false
+  },
+  "schedule": {
+    "suggested_date": null,
+    "suggested_time": null,
+    "scheduled_at": "2026-04-02T19:00:00",
+    "published_at": null
+  },
+  "meta": {
+    "created_at": "2026-03-15T20:09:36.539656",
+    "approved_at": "2026-03-15T20:53:51.449157",
+    "instagram_post_id": null
+  }
+}

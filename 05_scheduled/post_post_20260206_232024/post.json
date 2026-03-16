@@ -1,0 +1,63 @@
+{
+  "id": "post_20260206_232024",
+  "status": "scheduled",
+  "country": "United States",
+  "city": "Alaska",
+  "location_display": "Alaska, United States",
+  "photos": [
+    {
+      "filename": "01.jpg",
+      "original_name": "20241225_20241225_122738.jpg",
+      "gps": {
+        "lat": 65.053445,
+        "lon": -146.058718
+      },
+      "taken_at": "2024-12-25T12:27:38",
+      "cloudinary_url": "https://res.cloudinary.com/dfz5xpnvy/image/upload/v1773629959/photo-to-post/u1tuhpkba3f5s25szget.jpg"
+    },
+    {
+      "filename": "02.jpg",
+      "original_name": "20241225_20241225_125536.jpg",
+      "gps": {
+        "lat": 65.056734,
+        "lon": -146.065091
+      },
+      "taken_at": "2024-12-25T12:55:36",
+      "cloudinary_url": "https://res.cloudinary.com/dfz5xpnvy/image/upload/v1773629960/photo-to-post/blxwzkcf4sxktyneurhx.jpg"
+    },
+    {
+      "filename": "03.jpg",
+      "original_name": "20241225_20241225_131206.jpg",
+      "gps": {
+        "lat": 65.0555,
+        "lon": -146.061239
+      },
+      "taken_at": "2024-12-25T13:12:06",
+      "cloudinary_url": "https://res.cloudinary.com/dfz5xpnvy/image/upload/v1773629961/photo-to-post/ykeu0d1ivo5mb8oyqp4j.jpg"
+    }
+  ],
+  "caption": {
+    "text": "Pasar la Navidad rodeado de glaciares y montañas nevadas me recordó lo pequeño que somos ante la naturaleza. Alaska alberga más de 100,000 glaciares, y desde aquí puedes ver cómo algunos de ellos han esculpido estos valles durante miles de años ❄️ El silencio aquí es tan profundo que puedes escuchar el crujido del hielo moviéndose lentamente hacia el mar.",
+    "hashtags": [
+      "#alaska",
+      "#glaciares",
+      "#paisajesnevados",
+      "#landscape",
+      "#naturephotography",
+      "#photography"
+    ],
+    "generated_by": "claude-api",
+    "edited": false
+  },
+  "schedule": {
+    "suggested_date": null,
+    "suggested_time": null,
+    "scheduled_at": "2026-03-28T07:00:00",
+    "published_at": null
+  },
+  "meta": {
+    "created_at": "2026-02-06T23:20:29.394552",
+    "approved_at": "2026-03-15T20:53:51.379374",
+    "instagram_post_id": null
+  }
+}

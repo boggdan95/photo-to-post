@@ -1,0 +1,93 @@
+{
+  "id": "post_20260206_232030",
+  "status": "scheduled",
+  "country": "United States",
+  "city": "Alaska",
+  "location_display": "Alaska, United States",
+  "photos": [
+    {
+      "filename": "01.jpg",
+      "original_name": "20241227_20241227_131530.jpg",
+      "gps": {
+        "lat": 64.768929,
+        "lon": -147.222894
+      },
+      "taken_at": "2024-12-27T13:15:30",
+      "cloudinary_url": "https://res.cloudinary.com/dfz5xpnvy/image/upload/v1773629962/photo-to-post/bmv73klmp87aeshm5aev.jpg"
+    },
+    {
+      "filename": "02.jpg",
+      "original_name": "20241227_20241227_131532.jpg",
+      "gps": {
+        "lat": 64.768929,
+        "lon": -147.222894
+      },
+      "taken_at": "2024-12-27T13:15:32",
+      "cloudinary_url": "https://res.cloudinary.com/dfz5xpnvy/image/upload/v1773629964/photo-to-post/ehxygx8vx4ert156uqul.jpg"
+    },
+    {
+      "filename": "03.jpg",
+      "original_name": "20241227_20241227_131536.jpg",
+      "gps": {
+        "lat": 64.768929,
+        "lon": -147.222894
+      },
+      "taken_at": "2024-12-27T13:15:36",
+      "cloudinary_url": "https://res.cloudinary.com/dfz5xpnvy/image/upload/v1773629966/photo-to-post/zjzqzofbqp858lrgq8sq.jpg"
+    },
+    {
+      "filename": "04.jpg",
+      "original_name": "20241227_20241227_131839.jpg",
+      "gps": {
+        "lat": 64.768871,
+        "lon": -147.222121
+      },
+      "taken_at": "2024-12-27T13:18:39",
+      "cloudinary_url": "https://res.cloudinary.com/dfz5xpnvy/image/upload/v1773629968/photo-to-post/mjfqaqbbrlsfaio3zsn6.jpg"
+    },
+    {
+      "filename": "05.jpg",
+      "original_name": "20241227_20241227_131928.jpg",
+      "gps": {
+        "lat": 64.768889,
+        "lon": -147.222103
+      },
+      "taken_at": "2024-12-27T13:19:28",
+      "cloudinary_url": "https://res.cloudinary.com/dfz5xpnvy/image/upload/v1773629970/photo-to-post/s11gcmp9fkahsca6ph6z.jpg"
+    },
+    {
+      "filename": "06.jpg",
+      "original_name": "20241227_20241227_132105.jpg",
+      "gps": {
+        "lat": 64.768922,
+        "lon": -147.222094
+      },
+      "taken_at": "2024-12-27T13:21:06",
+      "cloudinary_url": "https://res.cloudinary.com/dfz5xpnvy/image/upload/v1773629971/photo-to-post/yhjgarefnvd9t3fbwfnb.jpg"
+    }
+  ],
+  "caption": {
+    "text": "El silencio aquí es tan profundo que puedes escuchar tu propia respiración cristalizarse en el aire. Alaska alberga más de 100,000 glaciares, algunos con miles de años de antigüedad que han esculpido estos valles con una paciencia que nosotros apenas podemos imaginar. En invierno, cuando el sol apenas asoma unas pocas horas al día, cada rayo de luz se convierte en un regalo ❄️",
+    "hashtags": [
+      "#alaska",
+      "#glaciares",
+      "#inviernopolar",
+      "#landscape",
+      "#travel",
+      "#naturephotography"
+    ],
+    "generated_by": "claude-api",
+    "edited": false
+  },
+  "schedule": {
+    "suggested_date": null,
+    "suggested_time": null,
+    "scheduled_at": "2026-03-29T19:00:00",
+    "published_at": null
+  },
+  "meta": {
+    "created_at": "2026-02-06T23:20:35.538862",
+    "approved_at": "2026-03-15T20:53:51.426793",
+    "instagram_post_id": null
+  }
+}
