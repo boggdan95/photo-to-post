@@ -28,6 +28,7 @@
     .preview-item .country { background: #e8eaf6; color: #4361ee; padding: 0.2rem 0.5rem; border-radius: 4px; font-size: 0.8rem; }
     .preview-item .photos { color: #999; font-size: 0.85rem; }
     .preview-item .order-num { background: #4361ee; color: #fff; width: 24px; height: 24px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 0.8rem; font-weight: 600; }
+    .preview-item .thumb { width: 50px; height: 50px; object-fit: cover; border-radius: 4px; }
 
     /* Calendar */
     .calendar { background: #fff; border-radius: 8px; }
@@ -62,11 +63,12 @@
     .grid-cell {
         aspect-ratio: 1; display: flex; align-items: center; justify-content: center;
         font-size: 0.7rem; font-weight: 600; color: #fff; text-align: center;
-        border-radius: 2px; padding: 4px; position: relative; overflow: hidden;
+        border-radius: 2px; padding: 0; position: relative; overflow: hidden;
+        background-size: cover; background-position: center;
     }
-    .grid-cell .country-name { position: relative; z-index: 1; text-shadow: 0 1px 2px rgba(0,0,0,0.5); }
-    .grid-cell .post-num { position: absolute; top: 2px; left: 4px; font-size: 0.6rem; opacity: 0.8; }
-    .grid-cell.published { opacity: 0.5; }
+    .grid-cell .country-name { position: relative; z-index: 1; text-shadow: 0 1px 3px rgba(0,0,0,0.8); }
+    .grid-cell .post-num { position: absolute; top: 2px; left: 4px; font-size: 0.6rem; opacity: 0.9; z-index: 1; text-shadow: 0 1px 2px rgba(0,0,0,0.8); }
+    .grid-cell.published { opacity: 0.6; }
     .grid-row-marker { grid-column: span 3; text-align: center; font-size: 0.7rem; color: #999; padding: 0.25rem; background: #f5f5f5; }
 </style>
 {% endblock %}
@@ -93,6 +95,7 @@
             <div class="preview-item" draggable="true" data-post-id="{{ item.id }}" data-index="{{ loop.index0 }}">
                 <span class="order-num">{{ loop.index }}</span>
                 <span class="drag-handle">☰</span>
+                <img class="thumb" src="/api/photo/{{ item.id }}/01.jpg" alt="">
                 <div class="date-time" onclick="editDateTime(this)" data-date="{{ item.scheduled_date }}" data-time="{{ item.scheduled_time }}">
                     {{ item.scheduled_date }}<br>{{ item.scheduled_time }}
                 </div>
@@ -104,9 +107,15 @@
         </div>
 
         <div class="actions">
-            <button class="btn btn-success" onclick="confirmSchedule()">Confirmar programacion</button>
+            <button class="btn btn-success" id="btn-confirm" onclick="confirmSchedule()">Confirmar programacion</button>
             <button class="btn" style="background:#666;color:#fff;" onclick="regenerateSchedule()">Regenerar fechas</button>
-            <span style="color:#999;font-size:0.85rem;">Confirmar movera los posts a "Programados"</span>
+            <span id="schedule-status" style="color:#999;font-size:0.85rem;">Confirmar movera los posts a "Programados"</span>
+        </div>
+        <div id="progress-bar" style="display:none;margin-top:1rem;">
+            <div style="background:#e8eaf6;border-radius:8px;overflow:hidden;height:24px;">
+                <div id="progress-fill" style="background:#4361ee;height:100%;width:0%;transition:width 0.3s;display:flex;align-items:center;justify-content:center;color:#fff;font-size:0.75rem;font-weight:600;min-width:fit-content;padding:0 0.5rem;"></div>
+            </div>
+            <div id="progress-detail" style="margin-top:0.5rem;font-size:0.85rem;color:#666;"></div>
         </div>
     </div>
 
@@ -146,6 +155,18 @@ const calendarData = {{ calendar | tojson | safe }};
 const previewData = {{ preview | tojson | safe }};
 const publishedData = {{ published_for_grid | default([]) | tojson | safe }};
 
+function parseLocalDate(str) {
+    const [y, m, d] = str.split('-').map(Number);
+    return new Date(y, m - 1, d);
+}
+
+function dateToStr(date) {
+    const y = date.getFullYear();
+    const m = String(date.getMonth() + 1).padStart(2, '0');
+    const d = String(date.getDate()).padStart(2, '0');
+    return `${y}-${m}-${d}`;
+}
+
 function renderCalendar() {
     const container = document.getElementById('calendar');
     if (!container) return;
@@ -164,11 +185,12 @@ function renderCalendar() {
         });
     });
 
-    // Get date range
+    // Get date range (use local dates to avoid timezone offset)
     const dates = Object.keys(allEvents).sort();
     const today = new Date();
-    const startDate = dates.length ? new Date(dates[0]) : today;
-    const endDate = dates.length ? new Date(dates[dates.length - 1]) : today;
+    const todayStr = dateToStr(today);
+    const startDate = dates.length ? parseLocalDate(dates[0]) : new Date(today);
+    const endDate = dates.length ? parseLocalDate(dates[dates.length - 1]) : new Date(today);
 
     // Adjust to show full months
     startDate.setDate(1);
@@ -185,9 +207,9 @@ function renderCalendar() {
     current.setDate(current.getDate() - current.getDay());
 
     while (current <= endDate || current.getDay() !== 0) {
-        const dateStr = current.toISOString().split('T')[0];
+        const dateStr = dateToStr(current);
         const isOtherMonth = current.getMonth() !== startDate.getMonth() && current < startDate;
-        const isToday = dateStr === today.toISOString().split('T')[0];
+        const isToday = dateStr === todayStr;
 
         let classes = 'calendar-day';
         if (isOtherMonth) classes += ' other-month';
@@ -215,24 +237,73 @@ function renderCalendar() {
 
 async function confirmSchedule() {
     updatePreviewDataFromDOM();
+    const total = scheduleData.length;
+    if (!confirm(`Confirmar la programacion de ${total} posts?`)) return;
 
-    if (!confirm(`Confirmar la programacion de ${scheduleData.length} posts?`)) return;
+    const btn = document.getElementById('btn-confirm');
+    const status = document.getElementById('schedule-status');
+    const progressBar = document.getElementById('progress-bar');
+    const progressFill = document.getElementById('progress-fill');
+    const progressDetail = document.getElementById('progress-detail');
+    const items = document.querySelectorAll('.preview-item');
 
-    try {
-        const res = await fetch('/api/schedule/confirm-custom', {
-            method: 'POST',
-            headers: {'Content-Type': 'application/json'},
-            body: JSON.stringify({schedule: scheduleData})
-        });
-        const data = await res.json();
-        if (data.ok) {
-            alert(`${data.count} posts programados exitosamente!`);
-            location.reload();
-        } else {
-            alert('Error: ' + (data.error || 'Unknown'));
+    btn.disabled = true;
+    btn.textContent = 'Programando...';
+    btn.style.opacity = '0.6';
+    status.style.display = 'none';
+    progressBar.style.display = 'block';
+
+    let completed = 0;
+    let errors = 0;
+
+    for (let i = 0; i < total; i++) {
+        const post = scheduleData[i];
+        const pct = Math.round(((i) / total) * 100);
+        progressFill.style.width = pct + '%';
+        progressFill.textContent = `${i}/${total}`;
+        progressDetail.innerHTML = `Programando <strong>${post.location}</strong> para ${post.scheduled_date} ${post.scheduled_time}...`;
+
+        // Highlight current item
+        if (items[i]) {
+            items[i].style.background = '#e8eaf6';
+            items[i].style.borderLeftColor = '#ffd166';
         }
-    } catch (e) {
-        alert('Error: ' + e.message);
+
+        try {
+            const res = await fetch('/api/schedule/confirm-custom', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({schedule: [post]})
+            });
+            const data = await res.json();
+            if (data.ok) {
+                completed++;
+                if (items[i]) {
+                    items[i].style.opacity = '0.4';
+                    items[i].style.borderLeftColor = '#2ec4b6';
+                }
+            } else {
+                errors++;
+                if (items[i]) items[i].style.borderLeftColor = '#e63946';
+            }
+        } catch (e) {
+            errors++;
+            if (items[i]) items[i].style.borderLeftColor = '#e63946';
+        }
+    }
+
+    progressFill.style.width = '100%';
+    progressFill.textContent = `${total}/${total}`;
+
+    if (errors === 0) {
+        progressFill.style.background = '#2ec4b6';
+        progressDetail.innerHTML = `<strong style="color:#2ec4b6;">${completed} posts programados. Redirigiendo...</strong>`;
+        setTimeout(() => location.reload(), 1000);
+    } else {
+        progressDetail.innerHTML = `<strong>${completed} programados, ${errors} con error.</strong>`;
+        btn.disabled = false;
+        btn.textContent = 'Reintentar';
+        btn.style.opacity = '1';
     }
 }
 
@@ -391,7 +462,8 @@ function renderInstagramGrid() {
         country: p.country,
         location: p.location,
         status: 'published',
-        label: '✓'
+        label: '✓',
+        postId: p.id
     }));
 
     // Use scheduleData if available (after reordering), otherwise previewData
@@ -402,7 +474,8 @@ function renderInstagramGrid() {
         country: p.country,
         location: p.location,
         status: 'preview',
-        label: `#${i + 1}`
+        label: `#${i + 1}`,
+        postId: p.id || p.post_id
     }));
 
     // Build grid simulating Instagram behavior:
@@ -426,7 +499,8 @@ function renderInstagramGrid() {
     postsToShow.forEach((post, idx) => {
         const bg = getColor(post.country);
         const statusClass = post.status === 'published' ? 'published' : '';
-        html += `<div class="grid-cell ${statusClass}" style="background: ${bg};" title="${post.location}">
+        const bgImage = post.postId ? `background-image: url('/api/photo/${post.postId}/01.jpg');` : '';
+        html += `<div class="grid-cell ${statusClass}" style="${bgImage} background-color: ${bg};" title="${post.location}">
             <span class="post-num">${post.label}</span>
             <span class="country-name">${post.country}</span>
         </div>`;

@@ -58,7 +58,11 @@ def _get_scheduled_dates():
     scheduled = _load_posts_from(SCHEDULED_DIR)
     by_date = defaultdict(list)
     for p in scheduled:
-        sd = p.get("schedule", {}).get("suggested_date")
+        sched = p.get("schedule", {})
+        sd = sched.get("suggested_date")
+        # Also check scheduled_at (set by confirm-custom endpoint)
+        if not sd and sched.get("scheduled_at"):
+            sd = sched["scheduled_at"][:10]
         if sd:
             by_date[sd].append(p.get("country", ""))
     return by_date
@@ -72,8 +76,13 @@ def _get_last_scheduled_countries():
 
     dated = []
     for p in all_posts:
-        sd = p.get("schedule", {}).get("suggested_date")
-        st = p.get("schedule", {}).get("suggested_time", "00:00")
+        sched = p.get("schedule", {})
+        sd = sched.get("suggested_date")
+        st = sched.get("suggested_time", "00:00")
+        # Also check scheduled_at (set by confirm-custom endpoint)
+        if not sd and sched.get("scheduled_at"):
+            sd = sched["scheduled_at"][:10]
+            st = sched["scheduled_at"][11:16] if len(sched["scheduled_at"]) >= 16 else "00:00"
         if sd:
             dated.append((sd, st, p.get("country", "")))
 

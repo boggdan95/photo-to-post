@@ -69,6 +69,37 @@
     .photo-modal.visible { display: flex; }
     .photo-modal img { max-width: 90%; max-height: 90%; object-fit: contain; }
     .photo-modal .close { position: absolute; top: 20px; right: 30px; color: #fff; font-size: 2rem; cursor: pointer; }
+
+    .btn-rename {
+        background: none; border: none; cursor: pointer; font-size: 1rem;
+        color: #999; padding: 0.2rem 0.4rem; border-radius: 4px;
+    }
+    .btn-rename:hover { color: #4361ee; background: #eef; }
+
+    .selection-bar {
+        display: none; padding: 0.5rem 1rem; background: #4361ee; color: #fff;
+        align-items: center; gap: 1rem; border-top: 1px solid #eee;
+    }
+    .selection-bar.visible { display: flex; }
+    .selection-bar select { padding: 0.4rem; border-radius: 4px; border: 1px solid #ddd; }
+    .selection-bar .btn-move {
+        background: #fff; color: #4361ee; border: none; padding: 0.4rem 1rem;
+        border-radius: 6px; font-weight: 600; cursor: pointer;
+    }
+    .selection-bar .btn-move:hover { background: #eef; }
+    .selection-bar .btn-clear {
+        background: none; border: 1px solid #fff; color: #fff; padding: 0.3rem 0.8rem;
+        border-radius: 6px; cursor: pointer; font-size: 0.85rem;
+    }
+    .selection-bar .btn-clear:hover { background: rgba(255,255,255,0.2); }
+
+    .new-location-inputs {
+        display: none; gap: 0.5rem; align-items: center;
+    }
+    .new-location-inputs.visible { display: flex; }
+    .new-location-inputs input {
+        padding: 0.4rem; border-radius: 4px; border: 1px solid #ddd; width: 140px;
+    }
 </style>
 {% endblock %}
 
@@ -118,6 +149,7 @@
         <div class="location-header" onclick="toggleLocation(this)">
             <span class="location-title">
                 {{ loc.city }} <span class="country">/ {{ loc.country }}</span>
+                <button class="btn-rename" onclick="renameLocation(event, this)" title="Renombrar">&#9998;</button>
             </span>
             <span class="location-count {{ 'low' if loc.count < min_photos else 'good' }}">
                 {{ loc.count }} fotos
@@ -128,9 +160,26 @@
             <img src="/api/classified/{{ photo.path }}"
                  class="photo-thumb"
                  data-path="{{ photo.path }}"
-                 onclick="viewPhoto(this, event)"
+                 onclick="toggleSelect(this, event)"
+                 ondblclick="viewPhoto(this, event)"
                  title="{{ photo.filename }}">
             {% endfor %}
+        </div>
+        <div class="selection-bar">
+            <span class="sel-count">0 seleccionadas</span>
+            <select class="move-select" onchange="onMoveSelectChange(this)">
+                <option value="">Mover a...</option>
+                {% for other in locations if other.country != loc.country or other.city != loc.city %}
+                <option value="{{ other.country }}|{{ other.city }}">{{ other.city }} / {{ other.country }}</option>
+                {% endfor %}
+                <option value="__new__">+ Nueva ubicacion...</option>
+            </select>
+            <div class="new-location-inputs">
+                <input type="text" class="new-country-input" placeholder="Pais" value="{{ loc.country }}">
+                <input type="text" class="new-city-input" placeholder="Ciudad">
+            </div>
+            <button class="btn-move" onclick="moveSelected(this)">Mover</button>
+            <button class="btn-clear" onclick="clearSelection(this)">Cancelar</button>
         </div>
         <div class="location-actions">
             <span style="font-size:0.85rem;color:#666;">Mover todo a:</span>
@@ -163,6 +212,7 @@ function toggleLocation(header) {
 
 function viewPhoto(img, event) {
     event.stopPropagation();
+    event.preventDefault();
     const modal = document.querySelector('.photo-modal');
     document.getElementById('modal-img').src = img.src;
     modal.classList.add('visible');
@@ -172,6 +222,112 @@ function closeModal() {
     document.querySelector('.photo-modal').classList.remove('visible');
 }
 
+/* --- Rename location --- */
+async function renameLocation(event, btn) {
+    event.stopPropagation();
+    const card = btn.closest('.location-card');
+    const country = card.dataset.country;
+    const oldCity = card.dataset.city;
+    const newCity = prompt(`Renombrar "${oldCity}":`, oldCity);
+    if (!newCity || newCity.trim() === oldCity) return;
+
+    try {
+        const res = await fetch('/api/classified/rename', {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify({ country, old_city: oldCity, new_city: newCity.trim() })
+        });
+        const data = await res.json();
+        if (data.ok) {
+            location.reload();
+        } else {
+            alert('Error: ' + data.error);
+        }
+    } catch (e) {
+        alert('Error: ' + e.message);
+    }
+}
+
+/* --- Photo selection --- */
+function toggleSelect(img, event) {
+    event.stopPropagation();
+    img.classList.toggle('selected');
+    updateSelectionBar(img.closest('.location-card'));
+}
+
+function updateSelectionBar(card) {
+    const selected = card.querySelectorAll('.photo-thumb.selected');
+    const bar = card.querySelector('.selection-bar');
+    const count = selected.length;
+    if (count > 0) {
+        bar.classList.add('visible');
+        bar.querySelector('.sel-count').textContent = count + ' seleccionada' + (count > 1 ? 's' : '');
+    } else {
+        bar.classList.remove('visible');
+    }
+}
+
+function clearSelection(btn) {
+    const card = btn.closest('.location-card');
+    card.querySelectorAll('.photo-thumb.selected').forEach(img => img.classList.remove('selected'));
+    updateSelectionBar(card);
+}
+
+function onMoveSelectChange(select) {
+    const card = select.closest('.location-card');
+    const newInputs = card.querySelector('.new-location-inputs');
+    if (select.value === '__new__') {
+        newInputs.classList.add('visible');
+    } else {
+        newInputs.classList.remove('visible');
+    }
+}
+
+async function moveSelected(btn) {
+    const card = btn.closest('.location-card');
+    const selected = card.querySelectorAll('.photo-thumb.selected');
+    if (selected.length === 0) { alert('Selecciona fotos primero'); return; }
+
+    const select = card.querySelector('.move-select');
+    let destCountry, destCity;
+
+    if (select.value === '__new__') {
+        destCountry = card.querySelector('.new-country-input').value.trim();
+        destCity = card.querySelector('.new-city-input').value.trim();
+        if (!destCountry || !destCity) { alert('Escribe el pais y la ciudad'); return; }
+    } else if (select.value) {
+        [destCountry, destCity] = select.value.split('|');
+    } else {
+        alert('Selecciona un destino'); return;
+    }
+
+    if (!confirm(`Mover ${selected.length} foto(s) a "${destCity} / ${destCountry}"?`)) return;
+
+    btn.disabled = true;
+    btn.textContent = 'Moviendo...';
+    let moved = 0;
+    for (const img of selected) {
+        try {
+            const res = await fetch('/api/classified/move', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({
+                    photo_path: img.dataset.path,
+                    new_country: destCountry,
+                    new_city: destCity
+                })
+            });
+            const data = await res.json();
+            if (data.ok) moved++;
+        } catch (e) {
+            console.error('Error moving photo:', e);
+        }
+    }
+    alert(`${moved} foto(s) movida(s). Recargando...`);
+    location.reload();
+}
+
+/* --- Merge (existing) --- */
 async function mergeLocation(select) {
     const dest = select.value;
     if (!dest) return;

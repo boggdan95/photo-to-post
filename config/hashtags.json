@@ -1,34 +1,101 @@
 {
   "base": [
-    "#travel", "#photography", "#landscapephotography",
-    "#travelphotography", "#naturephotography", "#photooftheday",
-    "#landscape", "#traveltheworld"
+    "#travel",
+    "#photography",
+    "#landscapephotography",
+    "#travelphotography",
+    "#naturephotography",
+    "#photooftheday",
+    "#landscape",
+    "#traveltheworld"
   ],
-
   "by_country": {
-    "México": ["#mexico", "#visitmexico", "#mexicotravel", "#viveméxico"],
-    "España": ["#españa", "#spain", "#visitspain", "#españaturismo"],
-    "Guatemala": ["#guatemala", "#visitguatemala", "#guatemalatravel", "#guatemalacity"],
-    "Colombia": ["#colombia", "#visitcolombia", "#colombiatravel"],
-    "Perú": ["#peru", "#visitperu", "#perutravel"],
-    "Argentina": ["#argentina", "#visitargentina", "#argentinatravel"],
-    "Chile": ["#chile", "#visitchile", "#chiletravel"],
-    "Costa Rica": ["#costarica", "#visitcostarica", "#puravida"],
-    "Estados Unidos": ["#usa", "#visitusa", "#americatravel"],
-    "Noruega": ["#norway", "#visitnorway", "#norwaynature"],
-    "Italia": ["#italy", "#visititaly", "#italytravel"],
-    "Francia": ["#france", "#visitfrance", "#francetravel"],
-    "Japón": ["#japan", "#visitjapan", "#japantravel"]
+    "México": [
+      "#mexico",
+      "#visitmexico",
+      "#mexicotravel",
+      "#viveméxico"
+    ],
+    "España": [
+      "#españa",
+      "#spain",
+      "#visitspain",
+      "#españaturismo"
+    ],
+    "Guatemala": [
+      "#guatemala",
+      "#visitguatemala",
+      "#guatemalatravel",
+      "#guatemalacity"
+    ],
+    "Colombia": [
+      "#colombia",
+      "#visitcolombia",
+      "#colombiatravel"
+    ],
+    "Perú": [
+      "#peru",
+      "#visitperu",
+      "#perutravel"
+    ],
+    "Argentina": [
+      "#argentina",
+      "#visitargentina",
+      "#argentinatravel"
+    ],
+    "Chile": [
+      "#chile",
+      "#visitchile",
+      "#chiletravel"
+    ],
+    "Costa Rica": [
+      "#costarica",
+      "#visitcostarica",
+      "#puravida"
+    ],
+    "Estados Unidos": [
+      "#usa",
+      "#visitusa",
+      "#americatravel"
+    ],
+    "Noruega": [
+      "#norway",
+      "#visitnorway",
+      "#norwaynature"
+    ],
+    "Italia": [
+      "#italy",
+      "#visititaly",
+      "#italytravel"
+    ],
+    "Francia": [
+      "#france",
+      "#visitfrance",
+      "#francetravel"
+    ],
+    "Japón": [
+      "#japan",
+      "#visitjapan",
+      "#japantravel"
+    ]
   },
-
   "rotation_pool": [
-    "#wanderlust", "#explorer", "#travelgram", "#instatravel",
-    "#beautifuldestinations", "#travelblogger", "#worldcaptures",
-    "#fantastic_earth", "#discoverearth", "#earthpix",
-    "#traveladdict", "#roamtheplanet", "#passionpassport",
-    "#lonelyplanet", "#natgeotravel"
+    "#wanderlust",
+    "#explorer",
+    "#travelgram",
+    "#instatravel",
+    "#beautifuldestinations",
+    "#travelblogger",
+    "#worldcaptures",
+    "#fantastic_earth",
+    "#discoverearth",
+    "#earthpix",
+    "#traveladdict",
+    "#roamtheplanet",
+    "#passionpassport",
+    "#lonelyplanet",
+    "#natgeotravel"
   ],
-
   "hashtags_per_post": {
     "base": 3,
     "country": 2

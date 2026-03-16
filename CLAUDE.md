@@ -119,7 +119,7 @@ Para publicación automática sin GitHub:
 
 ## Recordatorios
 - **10 Feb 2026 12:00 GT** — Primera publicación automática (Guatemala), verificar que funcionó
-- **~3 Abril 2026** — Renovar token de Meta (60 días desde 2 Feb), usar Graph API Explorer
+- **Token Meta permanente** — Page Token que no expira (configurado 15 Mar 2026), no requiere renovación
 
 ## Pendientes / próximos pasos
 1. **Analytics** — considerar agregar métricas de engagement post-publicación
@@ -136,7 +136,7 @@ Para publicación automática sin GitHub:
 - Exportar fotos desde Lightroom: Long edge 2048px, quality 85%, limit 10MB
 - Poner fotos en `01_input/` y correr flujo: classify → create-posts → review (web) → aprobar → schedule/publicar
 - El servidor web se abre con `run.py review`
-- Meta token expira aprox. 2026-04-03 (60 días desde 2026-02-02), renovar antes
+- Meta token es Page Token permanente (no expira), configurado 2026-03-15
 
 ## Lanzador de escritorio
 - **photo-to-post.bat** — Abre el servidor y el navegador automáticamente

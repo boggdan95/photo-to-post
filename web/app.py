@@ -15,6 +15,68 @@ from scripts.utils import BASE_DIR, load_settings, load_hashtags, count_files, c
 app = Flask(__name__)
 
 
+def _auto_sync_on_startup():
+    """Git pull + sync photos from scheduled to published on startup."""
+    import subprocess
+
+    # Git pull first to get latest state from GitHub
+    try:
+        result = subprocess.run(
+            ["git", "pull"],
+            cwd=str(BASE_DIR),
+            capture_output=True,
+            text=True,
+            timeout=30,
+        )
+        if result.returncode == 0:
+            msg = result.stdout.strip() or "Already up to date"
+            print(f"[auto-sync] git pull: {msg}")
+        else:
+            print(f"[auto-sync] git pull failed: {result.stderr.strip()}")
+    except Exception as e:
+        print(f"[auto-sync] git pull error: {e}")
+
+    scheduled_dir = Path(BASE_DIR) / "05_scheduled"
+    published_dir = Path(BASE_DIR) / "06_published"
+
+    if not published_dir.exists() or not scheduled_dir.exists():
+        return
+
+    synced = 0
+    for year_dir in published_dir.iterdir():
+        if not year_dir.is_dir():
+            continue
+        for month_dir in year_dir.iterdir():
+            if not month_dir.is_dir():
+                continue
+            for post_dir in month_dir.iterdir():
+                if not post_dir.is_dir():
+                    continue
+
+                photos_dir = post_dir / "photos"
+                post_json = post_dir / "post.json"
+
+                if post_json.exists() and not photos_dir.exists():
+                    scheduled_post = scheduled_dir / post_dir.name
+                    scheduled_photos = scheduled_post / "photos"
+
+                    if scheduled_photos.exists():
+                        shutil.move(str(scheduled_photos), str(photos_dir))
+                        synced += 1
+
+                        if scheduled_post.exists():
+                            try:
+                                scheduled_post.rmdir()
+                            except OSError:
+                                pass
+
+    if synced:
+        print(f"[auto-sync] Synced photos for {synced} published posts")
+
+
+_auto_sync_on_startup()
+
+
 def _get_counts():
     """Get counts for all pipeline stages."""
     return {
@@ -163,6 +225,7 @@ def schedule_page():
         schedule = p.get("schedule", {})
         pub_date = schedule.get("published_at") or schedule.get("suggested_date") or p.get("id", "")
         published_for_grid.append({
+            "id": p.get("id", ""),
             "country": p.get("country", ""),
             "location": p.get("location_display", ""),
             "date": pub_date[:10] if pub_date else "",
@@ -304,6 +367,29 @@ def merge_locations():
         country_dir.rmdir()
 
     return jsonify({"ok": True, "moved": moved})
+
+
+@app.route("/api/classified/rename", methods=["POST"])
+def rename_location():
+    """Rename a classified location (city folder)."""
+    body = request.get_json()
+    country = body.get("country")
+    old_city = body.get("old_city")
+    new_city = body.get("new_city", "").strip()
+
+    if not all([country, old_city, new_city]):
+        return jsonify({"error": "Missing required fields"}), 400
+
+    src_dir = CLASSIFIED_DIR / country / old_city
+    if not src_dir.exists():
+        return jsonify({"error": "Source location not found"}), 404
+
+    dest_dir = CLASSIFIED_DIR / country / new_city
+    if dest_dir.exists():
+        return jsonify({"error": f"Location '{new_city}' already exists in {country}"}), 400
+
+    shutil.move(str(src_dir), str(dest_dir))
+    return jsonify({"ok": True})
 
 
 @app.route("/api/run/<command>", methods=["POST"])
@@ -968,6 +1054,17 @@ def confirm_schedule_custom():
             json.dump(data, f, ensure_ascii=False, indent=2)
 
         scheduled_count += 1
+
+    # Auto commit + push scheduled post.json files to GitHub
+    if scheduled_count > 0 and cloud_mode:
+        try:
+            import subprocess
+            subprocess.run(["git", "add", "05_scheduled/*/post.json"], cwd=str(BASE_DIR), check=True)
+            subprocess.run(["git", "commit", "-m", f"chore: schedule {scheduled_count} post(s)"],
+                           cwd=str(BASE_DIR), check=True)
+            subprocess.run(["git", "push"], cwd=str(BASE_DIR), check=True)
+        except Exception as e:
+            logger.warning(f"Auto git push failed: {e}")
 
     return jsonify({"ok": True, "count": scheduled_count})
 
