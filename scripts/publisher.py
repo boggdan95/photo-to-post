@@ -63,7 +63,7 @@ def _check_container_status(container_id, access_token, max_attempts=10):
     import requests
     import time
 
-    api_base = "https://graph.facebook.com/v21.0"
+    api_base = "https://graph.facebook.com/v22.0"
 
     for attempt in range(max_attempts):
         resp = requests.get(
@@ -95,6 +95,33 @@ def _check_container_status(container_id, access_token, max_attempts=10):
     return False
 
 
+def _ensure_size_limit(image_urls, max_bytes=8 * 1024 * 1024):
+    """Apply Cloudinary q_auto transformation to URLs exceeding the size limit.
+
+    Meta API rejects images over 8MB. For Cloudinary URLs, we can add
+    a quality transformation to reduce file size without re-uploading.
+    """
+    import requests as _req
+
+    result = []
+    for url in image_urls:
+        if "res.cloudinary.com" not in url or "/upload/q_" in url:
+            result.append(url)
+            continue
+        try:
+            r = _req.head(url, timeout=10)
+            size = int(r.headers.get("content-length", 0))
+            if size > max_bytes:
+                optimized = url.replace("/upload/", "/upload/q_auto/")
+                logger.info(f"Image too large ({size / 1024 / 1024:.1f}MB), applying q_auto: {Path(url).name}")
+                result.append(optimized)
+            else:
+                result.append(url)
+        except Exception:
+            result.append(url)
+    return result
+
+
 def _publish_to_instagram(image_urls, caption_text, hashtags):
     """Publish a carousel post to Instagram via Meta Graph API.
 
@@ -115,11 +142,14 @@ def _publish_to_instagram(image_urls, caption_text, hashtags):
     import requests
     import time
 
+    # Ensure no image exceeds Meta's 8MB limit
+    image_urls = _ensure_size_limit(image_urls)
+
     full_caption = caption_text
     if hashtags:
         full_caption += "\n\n" + " ".join(hashtags)
 
-    api_base = "https://graph.facebook.com/v21.0"
+    api_base = "https://graph.facebook.com/v22.0"
 
     if len(image_urls) == 1:
         # Single image post
