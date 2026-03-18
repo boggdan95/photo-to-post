@@ -50,6 +50,7 @@ jobs:
           python run.py auto-publish --max-delay 12
 
       - name: Commit published status
+        if: always()
         run: |
           git config --local user.email "github-actions[bot]@users.noreply.github.com"
           git config --local user.name "github-actions[bot]"

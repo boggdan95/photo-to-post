@@ -176,6 +176,7 @@ def cmd_auto_publish(args):
 
     published_count = 0
     skipped_count = 0
+    failed_count = 0
     pending_posts = []  # Posts scheduled for the future
 
     for post_dir in sorted(scheduled_dir.iterdir()):
@@ -228,8 +229,10 @@ def cmd_auto_publish(args):
                     published_count += 1
                 else:
                     logger.error(f"Failed to publish {data['id']}")
+                    failed_count += 1
             except Exception as e:
                 logger.error(f"Error publishing {data['id']}: {e}")
+                failed_count += 1
         else:
             # Future post - track it
             time_until = sched_dt - now
@@ -242,7 +245,7 @@ def cmd_auto_publish(args):
             })
 
     # Summary
-    logger.info(f"Auto-publish complete: {published_count} published, {skipped_count} skipped")
+    logger.info(f"Auto-publish complete: {published_count} published, {failed_count} failed, {skipped_count} skipped")
 
     # Show next scheduled post
     if pending_posts:
@@ -253,6 +256,10 @@ def cmd_auto_publish(args):
         time_str = f"{days}d {hours}h" if days > 0 else f"{hours}h"
         logger.info(f"Found {len(pending_posts)} pending posts")
         logger.info(f"Next: {next_post['country']} at {next_post['scheduled']} (in {time_str})")
+
+    # Exit with error if any publish failed, so GitHub Actions reports failure
+    if failed_count > 0:
+        sys.exit(1)
 
 
 def cmd_sync(args):
