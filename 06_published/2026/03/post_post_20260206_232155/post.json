@@ -1,6 +1,6 @@
 {
   "id": "post_20260206_232155",
-  "status": "scheduled",
+  "status": "published",
   "country": "Guatemala",
   "city": "Sololá",
   "location_display": "Sololá, Guatemala",
@@ -115,11 +115,11 @@
     "suggested_date": null,
     "suggested_time": null,
     "scheduled_at": "2026-03-20T07:00:00",
-    "published_at": null
+    "published_at": "2026-03-20T13:11:55.254955"
   },
   "meta": {
     "created_at": "2026-02-06T23:22:01.287989",
     "approved_at": "2026-03-15T18:23:43.586223",
-    "instagram_post_id": null
+    "instagram_post_id": "18073437860547349"
   }
 }
