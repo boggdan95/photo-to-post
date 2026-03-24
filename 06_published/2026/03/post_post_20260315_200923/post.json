@@ -1,6 +1,6 @@
 {
   "id": "post_20260315_200923",
-  "status": "scheduled",
+  "status": "published",
   "country": "الأردن",
   "city": "Wadi Rum",
   "location_display": "Wadi Rum, الأردن",
@@ -90,11 +90,11 @@
     "suggested_date": null,
     "suggested_time": null,
     "scheduled_at": "2026-03-24T07:00:00",
-    "published_at": null
+    "published_at": "2026-03-24T13:57:57.218861"
   },
   "meta": {
     "created_at": "2026-03-15T20:09:28.727171",
     "approved_at": "2026-03-15T20:10:40.411843",
-    "instagram_post_id": null
+    "instagram_post_id": "18086704766338216"
   }
 }
