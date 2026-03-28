@@ -1,6 +1,6 @@
 {
   "id": "post_20260315_200937",
-  "status": "scheduled",
+  "status": "published",
   "country": "Norge",
   "city": "Bergen",
   "location_display": "Bergen, Norge",
@@ -83,11 +83,11 @@
     "suggested_date": null,
     "suggested_time": null,
     "scheduled_at": "2026-03-27T19:00:00",
-    "published_at": null
+    "published_at": "2026-03-28T02:39:53.629879"
   },
   "meta": {
     "created_at": "2026-03-15T20:09:44.312533",
     "approved_at": "2026-03-15T20:10:15.098428",
-    "instagram_post_id": null
+    "instagram_post_id": "18572266435039979"
   }
 }
