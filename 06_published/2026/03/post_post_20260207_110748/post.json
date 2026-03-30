@@ -1,6 +1,6 @@
 {
   "id": "post_20260207_110748",
-  "status": "scheduled",
+  "status": "published",
   "country": "United States",
   "city": "Alaska",
   "location_display": "Alaska, United States",
@@ -63,12 +63,12 @@
     "suggested_date": null,
     "suggested_time": null,
     "scheduled_at": "2026-03-30T07:00:00",
-    "published_at": null
+    "published_at": "2026-03-30T13:51:01.169761"
   },
   "meta": {
     "created_at": "2026-02-07T11:07:48.494405",
     "approved_at": "2026-03-15T20:53:51.431316",
-    "instagram_post_id": null,
+    "instagram_post_id": "17864602485610612",
     "split_from": "post_20260206_232030"
   }
 }
