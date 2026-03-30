@@ -1,6 +1,6 @@
 {
   "id": "post_20260206_232030",
-  "status": "scheduled",
+  "status": "published",
   "country": "United States",
   "city": "Alaska",
   "location_display": "Alaska, United States",
@@ -83,11 +83,11 @@
     "suggested_date": null,
     "suggested_time": null,
     "scheduled_at": "2026-03-29T19:00:00",
-    "published_at": null
+    "published_at": "2026-03-30T02:56:51.717079"
   },
   "meta": {
     "created_at": "2026-02-06T23:20:35.538862",
     "approved_at": "2026-03-15T20:53:51.426793",
-    "instagram_post_id": null
+    "instagram_post_id": "18102153634931611"
   }
 }
