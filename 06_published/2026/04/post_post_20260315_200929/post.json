@@ -1,6 +1,6 @@
 {
   "id": "post_20260315_200929",
-  "status": "scheduled",
+  "status": "published",
   "country": "الأردن",
   "city": "Wadi Rum (Lawrance de Arabia)",
   "location_display": "Wadi Rum (Lawrance de Arabia), الأردن",
@@ -63,11 +63,11 @@
     "suggested_date": null,
     "suggested_time": null,
     "scheduled_at": "2026-04-02T19:00:00",
-    "published_at": null
+    "published_at": "2026-04-03T03:23:06.318933"
   },
   "meta": {
     "created_at": "2026-03-15T20:09:36.539656",
     "approved_at": "2026-03-15T20:53:51.449157",
-    "instagram_post_id": null
+    "instagram_post_id": "17912128665363349"
   }
 }
